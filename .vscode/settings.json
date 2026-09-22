@@ -3,5 +3,7 @@
     "*.md": "vscode.markdown.preview.editor"
   },
   "markdown.preview.openMarkdownLinks": "inPreview",
-  "markdown.preview.doubleClickToSwitchToEditor": true
+  "markdown.preview.doubleClickToSwitchToEditor": true,
+  "typescript.tsdk": "backend/node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
 }

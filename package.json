@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "BrewLite - Cashless Coffee Ordering Application (Agile Scrum)",
   "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
   "scripts": {
     "dev:backend": "npm --prefix backend run start:dev",
     "dev:frontend": "npm --prefix frontend run dev",
