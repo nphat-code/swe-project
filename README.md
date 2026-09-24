@@ -6,10 +6,9 @@
 
 ---
 
-## 📚 Tài liệu Dự án & Trình bày Sản phẩm
+## 📚 Tài liệu & Đặc Tả Dự Án
 * 📋 **[Bản Đặc Tả Yêu Cầu Phần Mềm (SRS)](docs/DAC_TA_YEU_CAU_PHAN_MEM.md)**: Đặc tả chi tiết 10 Task Backlog, Tiêu chí chấp nhận (Acceptance Criteria), Đặc tả CSDL, API Contracts, và 4 Quy tắc nghiệp vụ cốt lõi (State Machine, Idempotent, Concurrency, Loyalty).
-* 📑 **[Tài liệu Trình bày & Báo cáo Sản phẩm (Chi tiết)](docs/TAI_LIEU_TRINH_BAY_SAN_PHAM.md)**: Tổng quan bối cảnh, Stakeholders, Chân dung người dùng, 10 User Stories, Kiến trúc, Cỗ máy trạng thái (State Machine), Kịch bản Demo 10 phút, Sprint Retrospective.
-* 🖥️ **[Slide Thuyết trình Sản phẩm Tương tác Web (presentation.html)](docs/presentation.html)**: Slide deck 10 trang thiết kế hiện đại, sẵn sàng mở trực tiếp bằng trình duyệt (nhấn phím `F` để full-screen, phím mũi tên `←` / `→` chuyển trang) để báo cáo trước Giảng viên và Hội đồng.
+* 📑 **[Tài liệu Báo cáo & Trình bày Sản phẩm](docs/TAI_LIEU_TRINH_BAY_SAN_PHAM.md)**: Tổng quan bối cảnh, Stakeholders, Chân dung người dùng, 10 User Stories, Kiến trúc, Cỗ máy trạng thái (State Machine), Kịch bản Demo 10 phút, Sprint Retrospective.
 * 📖 **[Sổ tay Kiến thức Công nghệ Phần mềm](docs/KIENTHUC_CNPM.md)**: Khái niệm cốt lõi Monorepo, Dependency Injection, DTO, ValidationPipe, CORS, Docker, Agile Scrum.
 
 ---
