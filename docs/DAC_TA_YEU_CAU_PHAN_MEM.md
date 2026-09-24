@@ -11,20 +11,38 @@
 
 ---
 
-## 1. TỔNG QUAN & ĐỊNH NGHĨA "ĐẶC TẢ" TRONG DỰ ÁN
+## 1. GIỚI THIỆU TỔNG QUAN & PHẠM VI HỆ THỐNG (INTRODUCTION & SCOPE)
 
-### 1.1. "Đặc tả yêu cầu" (Specification) là gì?
-Trong môn **Công nghệ Phần mềm**, **Đặc tả (Specification)** là văn bản kỹ thuật mô tả chính xác, chi tiết và không nhập nhằng về:
-* Hệ thống phải làm gì (Yêu cầu chức năng - Functional Requirements).
-* Hệ thống phải đạt những tiêu chuẩn chất lượng nào (Yêu cầu phi chức năng - Non-functional Requirements).
-* Hành vi của hệ thống khi tương tác với người dùng (Use Cases / User Stories / Luồng xử lý bình thường & ngoại lệ).
-* Cấu trúc dữ liệu và giao thức giao tiếp giữa các thành phần (Data Dictionary & API Contracts).
-* Các ràng buộc nghiệp vụ không được phép vi phạm (Business Rules: Chống trừ tiền trùng, chống bán vượt tồn kho, máy trạng thái đơn hàng).
+### 1.1. Mục đích tài liệu (Document Purpose)
+Tài liệu này là **Bản đặc tả yêu cầu phần mềm (Software Requirements Specification - SRS)** chính thức của hệ thống **BrewLite — Cashless Coffee Ordering System**. Tài liệu xác định chi tiết các yêu cầu chức năng, phi chức năng, cấu trúc dữ liệu, giao diện lập trình (API), và các quy tắc nghiệp vụ ràng buộc nhằm:
+* Làm cơ sở kỹ thuật thống nhất giữa Product Owner (PO), Giảng viên nghiệm thu và Đội ngũ phát triển (Development Team).
+* Định nghĩa bộ tiêu chí chấp nhận (Acceptance Criteria - AC) làm căn cứ kiểm thử và nghiệm thu sản phẩm tăng dần (Increment) qua từng Sprint.
 
-### 1.2. Mục đích của Bản Đặc tả
-1. **Làm hợp đồng kỹ thuật giữa các bên:** Giúp Product Owner, Giảng viên chấm thi và Đội ngũ phát triển (Developers) có cùng một cách hiểu duy nhất.
-2. **Căn cứ để nghiệm thu (Acceptance):** Xác định rõ tiêu chí thế nào là một tính năng "hoàn thành" (Definition of Done & Acceptance Criteria).
-3. **Tránh lỗi phát sinh muộn:** Phát hiện mâu thuẫn nghiệp vụ ngay từ khâu phân tích thay vì chờ đến khi viết code mới nhận ra.
+### 1.2. Phạm vi sản phẩm (Product Scope)
+* **Trong phạm vi (In-Scope - MVP):**
+  * Khách hàng xem danh mục đồ uống, tùy biến kích cỡ (Size S/M/L) và topping.
+  * Quản lý giỏ hàng phía Client, đồng bộ trạng thái đơn hàng.
+  * Đăng ký, đăng nhập tài khoản khách hàng bảo mật bằng JWT.
+  * Tạo đơn hàng và thanh toán trực tuyến không dùng tiền mặt (giả lập MoMo/VNPay).
+  * Tra cứu mã nhận đồ uống và lịch sử đơn hàng cá nhân.
+  * Cỗ máy trạng thái đơn hàng (Order State Machine), xử lý thanh toán Idempotent, và kiểm soát tồn kho đồng thời (Concurrency Control).
+* **Ngoài phạm vi MVP (Out-of-Scope / Giai đoạn sau):**
+  * Giao diện quản lý pha chế thời gian thực của Barista tại quầy (tích hợp WebSocket).
+  * Cổng kết nối thanh toán thật với ngân hàng thương mại.
+
+### 1.3. Bảng thuật ngữ & Từ viết tắt (Definitions, Acronyms & Abbreviations)
+
+| Thuật ngữ / Viết tắt | Tên đầy đủ | Định nghĩa trong dự án BrewLite |
+| :--- | :--- | :--- |
+| **SRS** | Software Requirements Specification | Bản tài liệu đặc tả toàn bộ yêu cầu phần mềm của hệ thống. |
+| **MVP** | Minimum Viable Product | Sản phẩm khả dụng tối thiểu, đáp ứng trọn vẹn luồng từ chọn món đến thanh toán. |
+| **AC** | Acceptance Criteria | Tiêu chí chấp nhận để xác định một User Story đã hoàn thành đạt chuẩn. |
+| **DoD** | Definition of Done | Định nghĩa hoàn thành chung cho mọi Task trong quy trình Scrum. |
+| **DTO** | Data Transfer Object | Đối tượng định nghĩa cấu trúc dữ liệu gửi qua lại giữa Client và Server. |
+| **State Machine** | Finite State Machine | Cỗ máy hữu hạn trạng thái kiểm soát vòng đời đơn hàng (`PENDING` $\rightarrow$ `PAID` $\rightarrow$ `READY`...). |
+| **Idempotency** | Tính lũy thừa / Bất biến lặp | Cơ chế đảm bảo một request thanh toán nếu bị gửi lặp lại nhiều lần chỉ được xử lý trừ tiền duy nhất 1 lần. |
+| **Optimistic Locking** | Khóa lạc quan | Cơ chế kiểm soát đồng thời dùng trường `version` để ngăn chặn việc bán vượt số lượng tồn kho (`stock`) khi nhiều khách cùng đặt một lúc. |
+| **JWT** | JSON Web Token | Chuỗi mã hóa không trạng thái dùng để xác thực và phân quyền người dùng. |
 
 ---
 
