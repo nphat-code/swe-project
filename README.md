@@ -6,6 +6,13 @@
 
 ---
 
+## 📚 Tài liệu Dự án & Trình bày Sản phẩm
+* 📑 **[Tài liệu Trình bày & Báo cáo Sản phẩm (Chi tiết)](docs/TAI_LIEU_TRINH_BAY_SAN_PHAM.md)**: Tổng quan bối cảnh, Stakeholders, Chân dung người dùng, 10 User Stories, Kiến trúc, Cỗ máy trạng thái (State Machine), Kịch bản Demo 10 phút, Sprint Retrospective.
+* 🖥️ **[Slide Thuyết trình Sản phẩm Tương tác Web (presentation.html)](docs/presentation.html)**: Slide deck 10 trang thiết kế hiện đại, sẵn sàng mở trực tiếp bằng trình duyệt (nhấn phím `F` để full-screen, phím mũi tên `←` / `→` chuyển trang) để báo cáo trước Giảng viên và Hội đồng.
+* 📖 **[Sổ tay Kiến thức Công nghệ Phần mềm](docs/KIENTHUC_CNPM.md)**: Khái niệm cốt lõi Monorepo, Dependency Injection, DTO, ValidationPipe, CORS, Docker, Agile Scrum.
+
+---
+
 ## 🏗️ Kiến trúc & Công nghệ
 
 * **Frontend:** [Next.js](https://nextjs.org/) (React 19, TypeScript, TailwindCSS v4, App Router, Lucide Icons, Zustand / React Query)
