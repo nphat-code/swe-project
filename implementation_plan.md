@@ -23,7 +23,7 @@ Theo yêu cầu: **Hoàn thành đến đâu sẽ commit và `git push` lên Git
 
 ### 🏃 Sprint 1: Nền tảng & Hiển thị Menu (Task 1 - 4)
 - **Task 1 (Completed):** Khởi tạo cấu trúc monorepo (`frontend/`, `backend/`), `.gitignore`, root `package.json`, `.env.example`, `README.md`, kiểm tra chạy "Hello World" cả 2 phía. $\rightarrow$ *Commit & Push Task 1*.
-- **Task 2:** Khởi tạo CSDL Prisma PostgreSQL, seed dữ liệu mẫu đồ uống (cà phê sữa, americano, cappuccino, trà đào,... size, topping, giá, ảnh), tạo API `GET /products` và `GET /products/:id`. $\rightarrow$ *Commit & Push Task 2*.
+- **Task 2 (Completed):** Khởi tạo CSDL Prisma PostgreSQL (Neon Cloud), seed dữ liệu mẫu đồ uống (cà phê sữa, bạc xỉu, americano, trà đào, đá xay,... kèm sizes, toppings, giá, ảnh), tạo API `GET /products`, `GET /products/categories`, `GET /products/toppings` và `GET /products/:id`. $\rightarrow$ *Commit & Push Task 2*.
 - **Task 3:** Dựng giao diện trang Menu trên Next.js: Header (logo, giỏ hàng badge), thanh danh mục, lưới hiển thị đồ uống, xử lý Loading skeleton và Empty state. $\rightarrow$ *Commit & Push Task 3*.
 - **Task 4:** Màn hình / Modal chi tiết sản phẩm: chọn Size (S/M/L) và Topping (Trân châu, Kem,...), cập nhật realtime đơn giá tạm tính. $\rightarrow$ *Commit & Push Task 4*.
 

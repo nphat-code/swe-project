@@ -1,0 +1,156 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  CUSTOMER
+  STAFF
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PREPARING
+  READY
+  COMPLETED
+  CANCELLED
+  PAYMENT_FAILED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  FAILED
+}
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password      String
+  fullName      String
+  phone         String?
+  role          Role     @default(CUSTOMER)
+  loyaltyPoints Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  orders        Order[]
+
+  @@map("users")
+}
+
+model Category {
+  id           String    @id @default(uuid())
+  name         String
+  slug         String    @unique
+  description  String?
+  imageUrl     String?
+  displayOrder Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  products     Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id          String       @id @default(uuid())
+  name        String
+  slug        String       @unique
+  description String
+  basePrice   Int          // Đơn vị VND (ví dụ: 35000)
+  imageUrl    String
+  isAvailable Boolean      @default(true)
+  stock       Int          @default(100)
+  version     Int          @default(1) // Cho Optimistic Locking ở Task 10
+  categoryId  String
+  category    Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  sizes       SizeOption[]
+  orderItems  OrderItem[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("products")
+}
+
+model SizeOption {
+  id         String   @id @default(uuid())
+  name       String   // Nhỏ (S), Vừa (M), Lớn (L)
+  code       String   // S, M, L
+  extraPrice Int      @default(0) // Giá cộng thêm (VND)
+  isDefault  Boolean  @default(false)
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("size_options")
+}
+
+model Topping {
+  id          String   @id @default(uuid())
+  name        String   // Trân châu hoàng kim, Kem phô mai macchiato, v.v.
+  price       Int      // Đơn giá topping (VND)
+  isAvailable Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("toppings")
+}
+
+model Order {
+  id             String        @id @default(uuid())
+  orderNumber    String        @unique // Mã hiển thị: #BL-2026-XXXX
+  userId         String?
+  user           User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  customerName   String
+  customerPhone  String
+  note           String?
+  status         OrderStatus   @default(PENDING)
+  paymentStatus  PaymentStatus @default(UNPAID)
+  paymentMethod  String        @default("MOCK_WALLET") // MOCK_WALLET, VNPAY, MOMO
+  totalAmount    Int           // Tổng tiền hàng
+  discountAmount Int           @default(0)
+  finalAmount    Int           // Số tiền thực thu
+  idempotencyKey String?       @unique // Đảm bảo xử lý thanh toán Idempotent (Task 10)
+  items          OrderItem[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id          String   @id @default(uuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  productName String
+  sizeName    String
+  unitPrice   Int
+  quantity    Int
+  subtotal    Int
+  toppings    Json?    // Danh sách topping đã chọn: [{ name: string, price: number }]
+  createdAt   DateTime @default(now())
+
+  @@map("order_items")
+}
+
+model Voucher {
+  id             String    @id @default(uuid())
+  code           String    @unique
+  description    String
+  discountPercent Int      // Ví dụ: 15 (%)
+  maxDiscount    Int       // Tối đa VND
+  minOrderAmount Int       @default(0)
+  isActive       Boolean   @default(true)
+  validUntil     DateTime?
+  createdAt      DateTime  @default(now())
+
+  @@map("vouchers")
+}
