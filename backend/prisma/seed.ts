@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Starting BrewLite database seeding...');
 
-  // 1. Clean existing records in reverse order
   await prisma.orderItem.deleteMany();
   await prisma.order.deleteMany();
   await prisma.sizeOption.deleteMany();
@@ -15,7 +14,6 @@ async function main() {
   await prisma.topping.deleteMany();
   await prisma.voucher.deleteMany();
 
-  // 2. Seed Toppings
   const toppingsData = [
     { name: 'Trân châu hoàng kim', price: 8000 },
     { name: 'Kem phô mai Macchiato', price: 12000 },
@@ -30,7 +28,6 @@ async function main() {
   }
   console.log(`✅ Seeded ${toppingsData.length} toppings`);
 
-  // 3. Seed Categories
   const categoriesData = [
     {
       name: 'Cà phê Việt Nam',
@@ -69,9 +66,7 @@ async function main() {
   }
   console.log(`✅ Seeded ${categoriesData.length} categories`);
 
-  // 4. Seed Products with Size Options
   const productsData = [
-    // Cà phê Việt Nam
     {
       name: 'Cà Phê Sữa Đá Sài Gòn',
       slug: 'ca-phe-sua-da-sai-gon',
@@ -105,7 +100,6 @@ async function main() {
       categorySlug: 'ca-phe-viet',
     },
 
-    // Cà phê Pha Máy
     {
       name: 'Americano Đá Tươi Mát',
       slug: 'americano-da-tuoi-mat',
@@ -131,7 +125,6 @@ async function main() {
       categorySlug: 'ca-phe-may',
     },
 
-    // Trà & Trái Cây
     {
       name: 'Trà Đào Cam Sả Tươi',
       slug: 'tra-dao-cam-sa-tuoi',
@@ -157,7 +150,6 @@ async function main() {
       categorySlug: 'tra-trai-cay',
     },
 
-    // Đá Xay
     {
       name: 'Matcha Đá Xay Kem Whipping',
       slug: 'matcha-da-xay-kem-whipping',
@@ -199,7 +191,6 @@ async function main() {
   }
   console.log(`✅ Seeded ${productsData.length} products with sizes (S/M/L)`);
 
-  // 5. Seed Vouchers
   const vouchersData = [
     {
       code: 'BREWLITEFIRST',

@@ -5,9 +5,6 @@ import { PrismaService } from '../prisma/prisma.service';
 export class ProductsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  /**
-   * Lấy danh sách sản phẩm, có thể lọc theo category slug
-   */
   async findAll(categorySlug?: string) {
     const where: any = { isAvailable: true };
 
@@ -32,9 +29,6 @@ export class ProductsService {
     });
   }
 
-  /**
-   * Lấy chi tiết sản phẩm theo ID kèm sizes và danh sách toppings khả dụng
-   */
   async findById(id: string) {
     const product = await this.prisma.product.findUnique({
       where: { id },
@@ -61,9 +55,6 @@ export class ProductsService {
     };
   }
 
-  /**
-   * Lấy danh sách danh mục kèm số lượng sản phẩm
-   */
   async findAllCategories() {
     return this.prisma.category.findMany({
       orderBy: { displayOrder: 'asc' },
@@ -75,9 +66,6 @@ export class ProductsService {
     });
   }
 
-  /**
-   * Lấy danh sách toppings
-   */
   async findAllToppings() {
     return this.prisma.topping.findMany({
       where: { isAvailable: true },

@@ -64,11 +64,11 @@ model Product {
   name        String
   slug        String       @unique
   description String
-  basePrice   Int          // Đơn vị VND (ví dụ: 35000)
+  basePrice   Int
   imageUrl    String
   isAvailable Boolean      @default(true)
   stock       Int          @default(100)
-  version     Int          @default(1) // Cho Optimistic Locking ở Task 10
+  version     Int          @default(1)
   categoryId  String
   category    Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   sizes       SizeOption[]
@@ -81,9 +81,9 @@ model Product {
 
 model SizeOption {
   id         String   @id @default(uuid())
-  name       String   // Nhỏ (S), Vừa (M), Lớn (L)
-  code       String   // S, M, L
-  extraPrice Int      @default(0) // Giá cộng thêm (VND)
+  name       String
+  code       String
+  extraPrice Int      @default(0)
   isDefault  Boolean  @default(false)
   productId  String
   product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
@@ -93,8 +93,8 @@ model SizeOption {
 
 model Topping {
   id          String   @id @default(uuid())
-  name        String   // Trân châu hoàng kim, Kem phô mai macchiato, v.v.
-  price       Int      // Đơn giá topping (VND)
+  name        String
+  price       Int
   isAvailable Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -104,7 +104,7 @@ model Topping {
 
 model Order {
   id             String        @id @default(uuid())
-  orderNumber    String        @unique // Mã hiển thị: #BL-2026-XXXX
+  orderNumber    String        @unique
   userId         String?
   user           User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
   customerName   String
@@ -112,11 +112,11 @@ model Order {
   note           String?
   status         OrderStatus   @default(PENDING)
   paymentStatus  PaymentStatus @default(UNPAID)
-  paymentMethod  String        @default("MOCK_WALLET") // MOCK_WALLET, VNPAY, MOMO
-  totalAmount    Int           // Tổng tiền hàng
+  paymentMethod  String        @default("MOCK_WALLET")
+  totalAmount    Int
   discountAmount Int           @default(0)
-  finalAmount    Int           // Số tiền thực thu
-  idempotencyKey String?       @unique // Đảm bảo xử lý thanh toán Idempotent (Task 10)
+  finalAmount    Int
+  idempotencyKey String?       @unique
   items          OrderItem[]
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
@@ -135,7 +135,7 @@ model OrderItem {
   unitPrice   Int
   quantity    Int
   subtotal    Int
-  toppings    Json?    // Danh sách topping đã chọn: [{ name: string, price: number }]
+  toppings    Json?
   createdAt   DateTime @default(now())
 
   @@map("order_items")
@@ -145,8 +145,8 @@ model Voucher {
   id             String    @id @default(uuid())
   code           String    @unique
   description    String
-  discountPercent Int      // Ví dụ: 15 (%)
-  maxDiscount    Int       // Tối đa VND
+  discountPercent Int
+  maxDiscount    Int
   minOrderAmount Int       @default(0)
   isActive       Boolean   @default(true)
   validUntil     DateTime?
