@@ -1,0 +1,23 @@
+### BrewLite API Tests
+@baseUrl = http://localhost:3001
+
+### 1. Health check / Root
+GET {{baseUrl}}/
+
+### 2. Lấy danh sách tất cả đồ uống
+GET {{baseUrl}}/products
+
+### 3. Lấy danh sách danh mục (kèm số lượng món)
+GET {{baseUrl}}/products/categories
+
+### 4. Lấy danh sách topping khả dụng
+GET {{baseUrl}}/products/toppings
+
+### 5. Lọc sản phẩm theo danh mục (Cà phê truyền thống)
+GET {{baseUrl}}/products?category=ca-phe-truyen-thong
+
+### 6. Lọc sản phẩm theo danh mục (Trà trái cây)
+GET {{baseUrl}}/products?category=tra-trai-cay
+
+### 7. Lấy chi tiết sản phẩm theo ID (Thay id bên dưới bằng id thực tế từ kết quả mục 2)
+# GET {{baseUrl}}/products/<PRODUCT_ID>
