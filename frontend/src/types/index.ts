@@ -37,3 +37,23 @@ export interface Product {
   sizes: ProductSize[];
   availableToppings?: Topping[];
 }
+
+export interface SelectedTopping {
+  id: string;
+  name: string;
+  price: number;
+}
+
+export interface CustomOrderItem {
+  productId: string;
+  productName: string;
+  productImage: string;
+  categoryName?: string;
+  basePrice: number;
+  selectedSize: ProductSize;
+  selectedToppings: SelectedTopping[];
+  quantity: number;
+  note?: string;
+  unitPrice: number;
+  totalPrice: number;
+}

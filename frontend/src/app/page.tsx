@@ -6,29 +6,39 @@ import { CategoryFilter } from '../components/CategoryFilter';
 import { ProductCard } from '../components/ProductCard';
 import { ProductSkeleton } from '../components/ProductSkeleton';
 import { EmptyState } from '../components/EmptyState';
-import { Product, Category } from '../types';
-import { fetchProducts, fetchCategories } from '../lib/api';
-import { Search, X, Sparkles } from 'lucide-react';
+import { ProductDetailModal } from '../components/ProductDetailModal';
+import { Product, Category, Topping, CustomOrderItem } from '../types';
+import { fetchProducts, fetchCategories, fetchToppings, formatCurrency } from '../lib/api';
+import { Search, X, CheckCircle2 } from 'lucide-react';
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [toppings, setToppings] = useState<Topping[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [cartCount, setCartCount] = useState<number>(0);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [cartItems, setCartItems] = useState<CustomOrderItem[]>([]);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Tính tổng số ly trong giỏ hàng
+  const cartCount = useMemo(() => {
+    return cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  }, [cartItems]);
 
   useEffect(() => {
     async function loadInitialData() {
       setIsLoading(true);
       try {
-        const [catsData, prodsData] = await Promise.all([
+        const [catsData, prodsData, topsData] = await Promise.all([
           fetchCategories(),
           fetchProducts(),
+          fetchToppings(),
         ]);
         setCategories(catsData);
         setProducts(prodsData);
+        setToppings(topsData);
       } catch (err) {
         console.error('Lỗi khi tải dữ liệu khởi tạo:', err);
       } finally {
@@ -73,13 +83,36 @@ export default function Home() {
     setSelectedProduct(product);
   };
 
+  const handleAddToCart = (customItem: CustomOrderItem) => {
+    setCartItems((prev) => [...prev, customItem]);
+    setToastMessage(`Đã thêm ${customItem.quantity}x ${customItem.productName} (${customItem.selectedSize.name}) vào giỏ hàng!`);
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 3200);
+  };
+
   return (
     <div className="min-h-screen bg-white text-[#212121] flex flex-col font-sans selection:bg-[#d4e9e2] selection:text-[#006241]">
       {/* 1. Header */}
       <Header
         cartCount={cartCount}
-        onOpenCart={() => alert('🛒 Giỏ hàng sẽ được kết nối ở Task 5!')}
+        onOpenCart={() => {
+          if (cartItems.length === 0) {
+            alert('Giỏ hàng hiện đang trống. Hãy chọn món đồ uống yêu thích nhé!');
+          } else {
+            const total = cartItems.reduce((sum, item) => sum + item.totalPrice, 0);
+            alert(`🛒 Giỏ hàng có ${cartCount} ly nước (Tổng: ${formatCurrency(total)}).\nTính năng Quản lý giỏ hàng chi tiết sẽ ra mắt ở Task 5!`);
+          }
+        }}
       />
+
+      {/* Floating Toast Notification */}
+      {toastMessage && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#006241] text-white px-4 py-2.5 rounded-full shadow-xl flex items-center gap-2 text-xs sm:text-sm font-bold animate-in fade-in slide-in-from-top-4 duration-200">
+          <CheckCircle2 className="w-4 h-4 text-emerald-300" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 lg:px-8 py-3.5 sm:py-8 space-y-4 sm:space-y-6">
         {/* 2. Search and Category Filter Section */}
@@ -167,68 +200,14 @@ export default function Home() {
           )}
         </section>
 
-        {/* 4. Modal Preview (Chuẩn bị cho Task 4) */}
-        {selectedProduct && (
-          <div
-            className="fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-xs flex items-center justify-center p-4"
-            onClick={() => setSelectedProduct(null)}
-          >
-            <div
-              className="bg-white border border-stone-200 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <span className="text-xs font-bold text-[#006241] uppercase tracking-wider">
-                    {selectedProduct.category?.name || 'Đồ uống'}
-                  </span>
-                  <h3 className="text-xl font-bold text-[#1e3932] mt-1">
-                    {selectedProduct.name}
-                  </h3>
-                </div>
-                <button
-                  onClick={() => setSelectedProduct(null)}
-                  className="p-1.5 rounded-full bg-[#f2f0eb] hover:bg-stone-200 text-stone-500 hover:text-[#1e3932] transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              <p className="text-xs sm:text-sm text-[#595959] leading-relaxed">
-                {selectedProduct.description}
-              </p>
-
-              <div className="p-3 rounded-2xl bg-[#d4e9e2]/80 border border-[#006241]/20 text-xs text-[#1e3932] flex items-center gap-2">
-                <Sparkles className="w-4 h-4 flex-shrink-0 text-[#006241]" />
-                <span>
-                  Modal chọn Size (S/M/L) & Topping kèm tính tiền Realtime sẽ được triển khai hoàn chỉnh ở <strong>Task 4</strong>!
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between pt-2">
-                <div>
-                  <span className="text-xs text-[#595959] block">Đơn giá khởi điểm</span>
-                  <span className="text-lg font-black text-[#006241]">
-                    {new Intl.NumberFormat('vi-VN', {
-                      style: 'currency',
-                      currency: 'VND',
-                    }).format(selectedProduct.basePrice)}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCartCount((prev) => prev + 1);
-                    setSelectedProduct(null);
-                  }}
-                  className="px-5 py-2.5 rounded-full bg-[#006241] hover:bg-[#00754a] text-white font-bold text-sm shadow-md shadow-[#006241]/20 transition-all active:scale-95"
-                >
-                  Thêm vào giỏ thử nghiệm
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* 4. Product Customization Modal (Task 4) */}
+        <ProductDetailModal
+          product={selectedProduct}
+          allToppings={toppings}
+          isOpen={!!selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onAddToCart={handleAddToCart}
+        />
       </main>
 
       {/* 5. Footer */}
