@@ -24,39 +24,39 @@
 
 ```mermaid
 flowchart LR
-    Customer(["Khách hàng"]):::actorStyle
-    Member(["Khách thành viên"]):::actorStyle
-    Barista(["Nhân viên Barista"]):::actorStyle
-    Admin(["Quản trị viên"]):::actorStyle
-    PaymentGW["Cổng thanh toán<br/>(MoMo / VNPay)"]:::systemActorStyle
+    Customer([Khách hàng]):::actorStyle
+    Member([Khách thành viên]):::actorStyle
+    Barista([Nhân viên Barista]):::actorStyle
+    Admin([Quản trị viên]):::actorStyle
+    PaymentGW[Cổng thanh toán MoMo / VNPay]:::systemActorStyle
 
     Member --|> Customer
 
     subgraph SystemBoundary [HỆ THỐNG ĐẶT ĐỒ UỐNG BREWLITE]
-        UC_ViewMenu(["UC01: Xem thực đơn & danh mục"]):::ucStyle
-        UC_Search(["UC02: Tìm kiếm đồ uống"]):::ucStyle
-        UC_Customize(["UC03: Tùy biến đồ uống"]):::ucStyle
-        UC_SelectSize(["UC03.1: Chọn kích cỡ Size"]):::subUcStyle
-        UC_AddTopping(["UC03.2: Thêm Topping"]):::subUcStyle
-        UC_AddNote(["UC03.3: Ghi chú Barista"]):::subUcStyle
+        UC_ViewMenu([UC01: Xem thực đơn và danh mục]):::ucStyle
+        UC_Search([UC02: Tìm kiếm đồ uống]):::ucStyle
+        UC_Customize([UC03: Tùy biến đồ uống]):::ucStyle
+        UC_SelectSize([UC03.1: Chọn kích cỡ Size]):::subUcStyle
+        UC_AddTopping([UC03.2: Thêm Topping]):::subUcStyle
+        UC_AddNote([UC03.3: Ghi chú Barista]):::subUcStyle
 
-        UC_Cart(["UC04: Quản lý giỏ hàng"]):::ucStyle
-        UC_Checkout(["UC05: Đặt hàng"]):::ucStyle
-        UC_Voucher(["UC05.1: Áp dụng mã Voucher"]):::subUcStyle
-        UC_Payment(["UC06: Thanh toán trực tuyến"]):::ucStyle
+        UC_Cart([UC04: Quản lý giỏ hàng]):::ucStyle
+        UC_Checkout([UC05: Đặt hàng]):::ucStyle
+        UC_Voucher([UC05.1: Áp dụng mã Voucher]):::subUcStyle
+        UC_Payment([UC06: Thanh toán trực tuyến]):::ucStyle
 
-        UC_Auth(["UC07: Đăng ký / Đăng nhập"]):::ucStyle
-        UC_OrderHistory(["UC08: Xem lịch sử đơn hàng"]):::ucStyle
-        UC_Loyalty(["UC09: Tích lũy điểm thưởng"]):::ucStyle
+        UC_Auth([UC07: Đăng ký và Đăng nhập]):::ucStyle
+        UC_OrderHistory([UC08: Xem lịch sử đơn hàng]):::ucStyle
+        UC_Loyalty([UC09: Tích lũy điểm thưởng]):::ucStyle
 
-        UC_ReceiveOrder(["UC10: Tiếp nhận đơn pha chế"]):::staffUcStyle
-        UC_UpdateStatus(["UC11: Cập nhật trạng thái đơn"]):::staffUcStyle
-        UC_CancelOrder(["UC12: Hủy đơn hàng"]):::staffUcStyle
+        UC_ReceiveOrder([UC10: Tiếp nhận đơn pha chế]):::staffUcStyle
+        UC_UpdateStatus([UC11: Cập nhật trạng thái đơn]):::staffUcStyle
+        UC_CancelOrder([UC12: Hủy đơn hàng]):::staffUcStyle
 
-        UC_ManageProduct(["UC13: Quản lý thực đơn & Topping"]):::adminUcStyle
-        UC_ManageStock(["UC14: Quản lý tồn kho đồ uống"]):::adminUcStyle
-        UC_ManageVoucher(["UC15: Quản lý mã giảm giá"]):::adminUcStyle
-        UC_ViewReport(["UC16: Xem báo cáo thống kê"]):::adminUcStyle
+        UC_ManageProduct([UC13: Quản lý thực đơn và Topping]):::adminUcStyle
+        UC_ManageStock([UC14: Quản lý tồn kho đồ uống]):::adminUcStyle
+        UC_ManageVoucher([UC15: Quản lý mã giảm giá]):::adminUcStyle
+        UC_ViewReport([UC16: Xem báo cáo thống kê]):::adminUcStyle
     end
 
     Customer --> UC_ViewMenu
@@ -69,12 +69,12 @@ flowchart LR
     Member --> UC_OrderHistory
     Member --> UC_Loyalty
 
-    UC_Customize -.->|"<<include>>"| UC_SelectSize
-    UC_AddTopping -.->|"<<extend>>"| UC_Customize
-    UC_AddNote -.->|"<<extend>>"| UC_Customize
+    UC_Customize -.->|include| UC_SelectSize
+    UC_AddTopping -.->|extend| UC_Customize
+    UC_AddNote -.->|extend| UC_Customize
 
-    UC_Checkout -.->|"<<include>>"| UC_Payment
-    UC_Voucher -.->|"<<extend>>"| UC_Checkout
+    UC_Checkout -.->|include| UC_Payment
+    UC_Voucher -.->|extend| UC_Checkout
     UC_Payment --> PaymentGW
 
     Barista --> UC_ReceiveOrder
@@ -102,26 +102,26 @@ Tập trung chi tiết vào luồng trải nghiệm khách hàng từ lúc vào 
 
 ```mermaid
 flowchart LR
-    Customer(["Khách hàng"]):::actorStyle
-    Member(["Khách thành viên"]):::actorStyle
-    PaymentGW["Cổng thanh toán<br/>(MoMo / VNPay)"]:::systemActorStyle
+    Customer([Khách hàng]):::actorStyle
+    Member([Khách thành viên]):::actorStyle
+    PaymentGW[Cổng thanh toán MoMo / VNPay]:::systemActorStyle
 
     Member --|> Customer
 
     subgraph CustomerPortal [PHÂN HỆ ĐẶT HÀNG KHÁCH HÀNG]
-        UC1(["Xem danh mục & Menu"]):::ucStyle
-        UC2(["Tìm kiếm món theo tên"]):::ucStyle
-        UC3(["Tùy biến đồ uống"]):::ucStyle
-        UC3_1(["Chọn kích cỡ S/M/L"]):::subUcStyle
-        UC3_2(["Thêm Topping"]):::subUcStyle
-        UC3_3(["Nhập ghi chú Barista"]):::subUcStyle
+        UC1([Xem danh mục và Menu]):::ucStyle
+        UC2([Tìm kiếm món theo tên]):::ucStyle
+        UC3([Tùy biến đồ uống]):::ucStyle
+        UC3_1([Chọn kích cỡ S/M/L]):::subUcStyle
+        UC3_2([Thêm Topping]):::subUcStyle
+        UC3_3([Nhập ghi chú Barista]):::subUcStyle
 
-        UC4(["Quản lý giỏ hàng"]):::ucStyle
-        UC5(["Đặt hàng & Thanh toán"]):::ucStyle
-        UC5_1(["Áp dụng mã Voucher"]):::subUcStyle
-        UC6(["Thanh toán không tiền mặt"]):::ucStyle
-        UC7(["Tra cứu mã nhận nước"]):::ucStyle
-        UC8(["Xem lịch sử đơn & Điểm"]):::ucStyle
+        UC4([Quản lý giỏ hàng]):::ucStyle
+        UC5([Đặt hàng và Thanh toán]):::ucStyle
+        UC5_1([Áp dụng mã Voucher]):::subUcStyle
+        UC6([Thanh toán không tiền mặt]):::ucStyle
+        UC7([Tra cứu mã nhận nước]):::ucStyle
+        UC8([Xem lịch sử đơn và Điểm]):::ucStyle
     end
 
     Customer --> UC1
@@ -133,12 +133,12 @@ flowchart LR
 
     Member --> UC8
 
-    UC3 -.->|"<<include>>"| UC3_1
-    UC3_2 -.->|"<<extend>>"| UC3
-    UC3_3 -.->|"<<extend>>"| UC3
+    UC3 -.->|include| UC3_1
+    UC3_2 -.->|extend| UC3
+    UC3_3 -.->|extend| UC3
 
-    UC5 -.->|"<<include>>"| UC6
-    UC5_1 -.->|"<<extend>>"| UC5
+    UC5 -.->|include| UC6
+    UC5_1 -.->|extend| UC5
 
     UC6 --> PaymentGW
 
