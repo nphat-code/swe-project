@@ -1,13 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-espresso: #3D2314;
-  --color-brand-terracotta: #C85A32;
-  --color-brand-cream: #F4EDE4;
-  --color-brand-oat: #F9F6F0;
-  --color-surface: #FCFCFD;
-  --color-content-primary: #1F2937;
-  --color-content-muted: #6B7280;
+  --color-starbucks-green: #006241;
+  --color-starbucks-dark: #1e3932;
+  --color-starbucks-hover: #00754a;
+  --color-starbucks-mint: #d4e9e2;
+  --color-starbucks-cream: #f2f0eb;
+  --color-starbucks-oat: #f7f7f7;
+  --color-starbucks-gold: #cba258;
+
+  --color-brand-espresso: #1e3932;
+  --color-brand-terracotta: #006241;
+  --color-brand-cream: #d4e9e2;
+  --color-brand-oat: #f2f0eb;
+
+  --color-surface: #ffffff;
+  --color-content-primary: #212121;
+  --color-content-muted: #595959;
 
   --font-sans: var(--font-be-vietnam-pro), "Be Vietnam Pro", "Plus Jakarta Sans", sans-serif;
 
@@ -16,8 +25,8 @@
 }
 
 :root {
-  --background: #FCFCFD;
-  --foreground: #1F2937;
+  --background: #ffffff;
+  --foreground: #212121;
 }
 
 body {
@@ -25,4 +34,3 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
 }
-
