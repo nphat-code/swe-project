@@ -173,52 +173,98 @@ flowchart LR
 
 ---
 
-## 5. ĐẶC TẢ CHI TIẾT 2 USE CASE TRỌNG TÂM (DETAILED USE CASE SPECIFICATIONS)
+## 5. BẢNG MÔ TẢ ĐẶC TẢ USE CASE CHUẨN 7 Ô (7-FIELD USE CASE SPECIFICATIONS)
 
-### 📄 Đặc tả Use Case UC03: Tùy biến đồ uống
-* **Mã Use Case:** UC03
-* **Tên Use Case:** Tùy biến đồ uống (Customize Drink)
-* **Tác nhân chính:** Khách hàng (Customer)
-* **Mục đích:** Cho phép khách hàng chọn kích cỡ (S/M/L), chọn các loại topping thêm và ghi chú riêng cho Barista trước khi đưa vào giỏ hàng.
-* **Tiền điều kiện (Preconditions):** Khách hàng đang ở trang Menu và đã nhấn chọn một món đồ uống cụ thể.
-* **Hậu điều kiện (Postconditions):** Món đồ uống cùng cấu hình kích cỡ, topping, ghi chú và số lượng được thêm thành công vào giỏ hàng.
-* **Luồng sự kiện chính (Main Success Scenario):**
-  1. Khách hàng nhấn vào thẻ sản phẩm hoặc nút `+` trên giao diện Menu.
-  2. Hệ thống hiển thị Modal chi tiết sản phẩm gồm: Hình ảnh tròn, Tên món, Mô tả, Giá gốc, danh sách Size, danh sách Topping, ô Ghi chú và bộ chọn Số lượng ly.
-  3. Hệ thống tự động chọn sẵn kích cỡ mặc định (Size Nhỏ/Tiêu chuẩn với phụ thu 0đ).
-  4. Khách hàng chọn kích cỡ mong muốn (Nhỏ +0đ, Vừa +6.000đ, Lớn +10.000đ).
-  5. Khách hàng chọn 0 hoặc nhiều topping đi kèm.
-  6. Hệ thống tự động cộng dồn giá: `Đơn giá = Giá gốc + Phụ thu Size + Tổng giá Topping` và hiển thị `Tổng tiền = Đơn giá × Số lượng` ngay trên nút CTA theo thời gian thực (Realtime).
-  7. Khách hàng nhập ghi chú (nếu có) và nhấn nút *"Thêm vào đơn hàng"*.
-  8. Hệ thống thêm món vào Giỏ hàng (State Management), hiển thị thông báo thành công (Toast notification) và tự động đóng modal.
-* **Luồng sự kiện rẽ nhánh / Ngoại lệ (Extensions / Alternative Flows):**
-  * `4a. Sản phẩm hết size hoặc hết hàng`: Hệ thống hiển thị nhãn vô hiệu hóa nút bấm và không cho phép chọn.
-  * `7a. Khách hàng nhấn nút đóng (X) hoặc bấm ra ngoài màn hình`: Hệ thống hủy bỏ toàn bộ lựa chọn vừa thao tác và đóng modal, giữ nguyên trạng thái giỏ hàng trước đó.
+Dưới đây là các bảng đặc tả chi tiết theo định dạng chuẩn 7 thành phần của môn Công nghệ Phần mềm:
+1. **Use Case Name** (Tên Use Case)
+2. **Actor** (Tác nhân)
+3. **Description** (Mô tả)
+4. **Pre-condition** (Tiền điều kiện)
+5. **Normal Flow** (Luồng sự kiện chính)
+6. **Alternative Flow** (Luồng thay thế / Rẽ nhánh)
+7. **Exception** (Luồng ngoại lệ / Xử lý lỗi)
 
 ---
 
-### 📄 Đặc tả Use Case UC05 & UC06: Đặt hàng & Thanh toán trực tuyến
-* **Mã Use Case:** UC05_06
-* **Tên Use Case:** Đặt hàng và Thanh toán không tiền mặt (Checkout & Cashless Payment)
-* **Tác nhân chính:** Khách hàng (Customer), Cổng thanh toán (Mock MoMo / VNPay)
-* **Mục đích:** Xác nhận thông tin giỏ hàng, thông tin khách hàng và thanh toán trực tuyến để tạo đơn hàng hợp lệ trong hệ thống.
-* **Tiền điều kiện (Preconditions):** Giỏ hàng có ít nhất 1 món đồ uống (`cartCount > 0`).
-* **Hậu điều kiện (Postconditions):** 
-  * Đơn hàng được tạo trong CSDL với trạng thái `PAID`.
-  * Số lượng tồn kho (`stock`) của món được trừ an toàn.
-  * Giỏ hàng phía client được dọn sạch.
-  * Khách hàng nhận được Mã đơn hàng (`#1042`) và mã nhận nước tại quầy.
-* **Luồng sự kiện chính (Main Success Scenario):**
-  1. Khách hàng mở Giỏ hàng (Cart Drawer) và nhấn nút *"Tiến hành đặt hàng"*.
-  2. Hệ thống hiển thị tóm tắt đơn hàng, yêu cầu nhập Tên và Số điện thoại nhận đồ uống.
-  3. Khách hàng chọn phương thức thanh toán không dùng tiền mặt (Ví MoMo, ZaloPay, hoặc Thẻ ngân hàng).
-  4. Khách hàng nhấn *"Xác nhận thanh toán"*.
-  5. Hệ thống Frontend gửi request `POST /orders` kèm `Idempotency-Key` lên Backend.
-  6. Backend kiểm tra tồn kho đồng thời (Optimistic Locking), tính lại tổng tiền từ CSDL Server-side, khởi tạo đơn hàng `PENDING`.
-  7. Backend kích hoạt giao dịch với Cổng thanh toán Mock Gateway.
-  8. Cổng thanh toán trừ tiền thành công và phản hồi trạng thái `SUCCESS`.
-  9. Backend cập nhật đơn sang `PAID`, trừ tồn kho, cộng điểm thưởng (nếu là Khách thành viên) và trả về kết quả cho Frontend.
-  10. Frontend dọn sạch giỏ hàng và chuyển hướng sang Màn hình xác nhận thành công hiển thị mã nhận nước.
-* **Luồng ngoại lệ (Alternative / Exception Flows):**
-  * `6a. Sản phẩm bị người khác mua hết trong lúc đặt`: Backend phát hiện tranh chấp tồn kho, hủy giao dịch và trả về thông báo lỗi: *"Sản phẩm đã hết hàng, vui lòng chọn món khác"*.
-  * `8a. Thanh toán thất bại hoặc người dùng hủy giao dịch trên Ví`: Cổng thanh toán trả về `FAILED`. Backend chuyển trạng thái đơn sang `PAYMENT_FAILED`. Giỏ hàng của khách vẫn được giữ nguyên để thử lại hoặc chọn phương thức khác.
+### 📋 BẢNG 1: ĐẶC TẢ USE CASE UC03 — TÙY BIẾN ĐỒ UỐNG
+
+| Trường thông tin | Chi tiết đặc tả |
+| :--- | :--- |
+| **1. Use Case Name** | **UC03: Tùy biến đồ uống (Customize Drink)** |
+| **2. Actor** | Khách hàng (Customer) |
+| **3. Description** | Cho phép khách hàng tùy chỉnh kích cỡ ly (S/M/L), chọn các loại topping thêm và nhập ghi chú riêng cho Barista trước khi đưa đồ uống vào giỏ hàng. |
+| **4. Pre-condition** | Khách hàng đang ở giao diện Menu và đã nhấn chọn một món đồ uống cụ thể (hoặc nhấn nút `+`). |
+| **5. Normal Flow** | **1.** Hệ thống hiển thị Modal chi tiết món gồm: Ảnh tròn đại diện, Tên món, Mô tả, Giá gốc, danh sách Kích cỡ (Size), danh sách Topping, ô Ghi chú và bộ chọn Số lượng ly.<br/>**2.** Hệ thống tự động chọn sẵn kích cỡ mặc định (Size Nhỏ S với phụ thu 0đ).<br/>**3.** Khách hàng chọn kích cỡ mong muốn (Nhỏ S +0đ, Vừa M +6.000đ, Lớn L +10.000đ).<br/>**4.** Khách hàng tích chọn một hoặc nhiều loại Topping (Trân châu hoàng kim, Kem phô mai, Thạch đào,...).<br/>**5.** Hệ thống tính toán và cập nhật giá Realtime: `Đơn giá = Giá gốc + Phụ thu Size + Tổng tiền Topping`.<br/>**6.** Khách hàng chọn số lượng ly mong muốn (mặc định là 1 ly).<br/>**7.** Khách hàng nhấn nút *"Thêm vào đơn hàng • [Tổng tiền]"*.<br/>**8.** Hệ thống thêm món đã cấu hình vào Giỏ hàng, hiển thị thông báo Toast thành công và tự động đóng modal. |
+| **6. Alternative Flow** | **3a. Khách hàng thay đổi lựa chọn Size:** Hệ thống cập nhật lại phụ thu và làm mới tổng đơn giá tức thì.<br/>**4a. Khách hàng bỏ chọn Topping:** Hệ thống trừ tiền topping tương ứng ra khỏi tổng đơn giá.<br/>**6a. Khách hàng nhập thêm ghi chú:** Khách hàng gõ hướng dẫn pha chế vào ô *"Ghi chú cho Barista"* (ví dụ: *Ít đá, 50% đường*), hệ thống lưu ghi chú này kèm theo món.<br/>**8a. Khách hàng bấm nút đóng (X) hoặc bấm ra ngoài màn hình:** Hệ thống hủy bỏ toàn bộ lựa chọn vừa thao tác, đóng modal và giữ nguyên giỏ hàng hiện tại. |
+| **7. Exception** | **E1. Món ăn hoặc kích cỡ đã hết hàng (Out of Stock):** Hệ thống hiển thị thông báo *"Món hiện tạm hết hàng"* hoặc vô hiệu hóa nút bấm của kích cỡ đó, không cho phép khách nhấn nút thêm vào giỏ. |
+
+---
+
+### 📋 BẢNG 2: ĐẶC TẢ USE CASE UC04 — QUẢN LÝ GIỎ HÀNG
+
+| Trường thông tin | Chi tiết đặc tả |
+| :--- | :--- |
+| **1. Use Case Name** | **UC04: Quản lý giỏ hàng (Manage Shopping Cart)** |
+| **2. Actor** | Khách hàng (Customer) |
+| **3. Description** | Cho phép khách hàng xem danh sách các món đã chọn, điều chỉnh số lượng từng ly nước, xóa món hoặc kiểm tra tổng giá trị đơn hàng trước khi tiến hành thanh toán. |
+| **4. Pre-condition** | Khách hàng nhấn vào biểu tượng Giỏ hàng trên thanh Header. |
+| **5. Normal Flow** | **1.** Hệ thống mở khay trượt giỏ hàng (Cart Drawer) hiển thị danh sách các món đã chọn kèm thông tin chi tiết: Tên món, Size, danh sách Topping, Ghi chú, Số lượng và Thành tiền từng dòng.<br/>**2.** Hệ thống hiển thị tổng tiền tạm tính và tổng số lượng ly nước.<br/>**3.** Khách hàng nhấn nút tăng (`+`) hoặc giảm (`-`) để điều chỉnh số lượng của từng món.<br/>**4.** Hệ thống tự động tính lại tổng tiền đơn hàng ngay tức thì.<br/>**5.** Khách hàng nhấn nút *"Tiến hành đặt hàng"* để chuyển sang bước thanh toán. |
+| **6. Alternative Flow** | **3a. Khách hàng giảm số lượng về 0 hoặc nhấn biểu tượng Xóa (Trash):** Hệ thống hiển thị xác nhận và xóa hẳn món đó khỏi danh sách giỏ hàng.<br/>**5a. Khách hàng muốn tiếp tục chọn thêm món:** Khách hàng nhấn nút đóng giỏ hàng hoặc bấm ra vùng mờ để quay lại duyệt menu, trạng thái giỏ hàng vẫn được lưu giữ nguyên vẹn trong `localStorage`. |
+| **7. Exception** | **E1. Giỏ hàng trống rỗng (`cartCount === 0`):** Hệ thống hiển thị màn hình Empty State: *"Giỏ hàng của bạn đang trống"* kèm nút gợi ý *"Khám phá thực đơn ngay"*, đồng thời vô hiệu hóa nút Đặt hàng. |
+
+---
+
+### 📋 BẢNG 3: ĐẶC TẢ USE CASE UC05 — ĐẶT HÀNG
+
+| Trường thông tin | Chi tiết đặc tả |
+| :--- | :--- |
+| **1. Use Case Name** | **UC05: Đặt hàng (Checkout Order)** |
+| **2. Actor** | Khách hàng (Customer) |
+| **3. Description** | Khách hàng xác nhận danh sách đồ uống trong giỏ hàng, điền thông tin người nhận đồ uống (Tên, Số điện thoại) và gửi yêu cầu khởi tạo đơn hàng lên hệ thống. |
+| **4. Pre-condition** | Giỏ hàng có ít nhất 1 sản phẩm (`cartCount > 0`). |
+| **5. Normal Flow** | **1.** Khách hàng nhấn nút *"Tiến hành đặt hàng"* từ giỏ hàng.<br/>**2.** Hệ thống hiển thị form thông tin đặt hàng: Tóm tắt danh sách món, ô nhập Họ tên, ô nhập Số điện thoại nhận nước và lựa chọn phương thức thanh toán không tiền mặt.<br/>**3.** Khách hàng nhập đầy đủ Họ tên và Số điện thoại hợp lệ.<br/>**4.** Khách hàng chọn phương thức thanh toán không tiền mặt (Ví MoMo, ZaloPay hoặc Thẻ ngân hàng).<br/>**5.** Khách hàng nhấn nút *"Xác nhận đặt hàng"*, kích hoạt Use Case **UC06: Thanh toán trực tuyến**. |
+| **6. Alternative Flow** | **3a. Khách hàng đã đăng nhập tài khoản thành viên:** Hệ thống tự động điền sẵn Họ tên và Số điện thoại từ hồ sơ người dùng.<br/>**4a. Khách hàng áp dụng mã khuyến mãi:** Khách hàng nhập mã Voucher (ví dụ: `BREWNEW`), hệ thống xác thực mã và trừ số tiền giảm giá vào tổng đơn trước khi chốt thanh toán. |
+| **7. Exception** | **E1. Khách hàng nhập thiếu thông tin hoặc sai định dạng:** Hệ thống hiển thị thông báo lỗi tại trường nhập liệu tương ứng (ví dụ: *"Số điện thoại không hợp lệ, phải gồm 10 chữ số"*), không cho phép gửi đơn.<br/>**E2. Món trong giỏ bị người khác mua hết trước khi đặt:** Backend phát hiện tồn kho không đủ (Optimistic Locking), báo lỗi *"Món [Tên món] vừa hết hàng, vui lòng cập nhật lại giỏ hàng"*. |
+
+---
+
+### 📋 BẢNG 4: ĐẶC TẢ USE CASE UC06 — THANH TOÁN TRỰC TUYẾN KHÔNG TIỀN MẶT
+
+| Trường thông tin | Chi tiết đặc tả |
+| :--- | :--- |
+| **1. Use Case Name** | **UC06: Thanh toán trực tuyến (Cashless Payment Processing)** |
+| **2. Actor** | Khách hàng (Customer), Cổng thanh toán (Mock MoMo / VNPay Gateway) |
+| **3. Description** | Xử lý giao dịch trừ tiền trực tuyến không dùng tiền mặt, đảm bảo tính lũy thừa (Idempotency - không trừ tiền trùng lặp) và cập nhật trạng thái đơn hàng sang `PAID`. |
+| **4. Pre-condition** | Đơn hàng đã được khởi tạo ở trạng thái `PENDING` và có mã định danh `orderId`. |
+| **5. Normal Flow** | **1.** Hệ thống Client tạo mã định danh duy nhất `Idempotency-Key` và gửi yêu cầu thanh toán `POST /payments` lên Backend.<br/>**2.** Backend kết nối tới Cổng thanh toán (Mock Payment Gateway) để xử lý giao dịch trừ tiền.<br/>**3.** Cổng thanh toán phản hồi kết quả giao dịch thành công (`SUCCESS`).<br/>**4.** Backend áp dụng cỗ máy trạng thái (State Machine) chuyển đơn hàng từ `PENDING` $\rightarrow$ `PAID`.<br/>**5.** Backend thực hiện trừ số lượng tồn kho (`stock`) và cộng điểm thưởng tích lũy (nếu là Khách thành viên).<br/>**6.** Backend phản hồi thông báo thanh toán thành công về Client.<br/>**7.** Client dọn sạch giỏ hàng và chuyển hướng sang Màn hình xác nhận thành công hiển thị Mã đơn hàng (`#1042`) và hướng dẫn nhận đồ uống tại quầy. |
+| **6. Alternative Flow** | **1a. Gửi lặp lại request thanh toán (mạng gián đoạn hoặc bấm nhiều lần):** Nhờ cơ chế `Idempotency-Key`, Backend phát hiện yêu cầu trùng lặp và chỉ xử lý giao dịch duy nhất 1 lần, không trừ tiền hai lần. |
+| **7. Exception** | **E1. Thanh toán thất bại hoặc người dùng hủy giao dịch trên Ví điện tử:** Cổng thanh toán trả về `FAILED`. Backend chuyển trạng thái đơn hàng sang `PAYMENT_FAILED`. Giỏ hàng trên Client được giữ nguyên để khách hàng có thể chọn phương thức khác hoặc bấm *"Thử lại"*.<br/>**E2. Mất kết nối mạng / Cổng thanh toán không phản hồi (Timeout):** Hệ thống thông báo lỗi đường truyền và giữ nguyên trạng thái đơn chờ kiểm tra đối soát. |
+
+---
+
+### 📋 BẢNG 5: ĐẶC TẢ USE CASE UC07 — ĐĂNG KÝ VÀ ĐĂNG NHẬP
+
+| Trường thông tin | Chi tiết đặc tả |
+| :--- | :--- |
+| **1. Use Case Name** | **UC07: Đăng ký và Đăng nhập (User Registration & Authentication)** |
+| **2. Actor** | Khách hàng (Customer) |
+| **3. Description** | Khách hàng tạo tài khoản thành viên mới hoặc đăng nhập vào hệ thống bằng Email và Mật khẩu để nhận JWT Token, kích hoạt quyền tích điểm và xem lịch sử mua hàng. |
+| **4. Pre-condition** | Khách hàng nhấn vào nút Tài khoản trên Header ứng dụng. |
+| **5. Normal Flow** | **1.** Khách hàng chọn tab *"Đăng nhập"* (hoặc *"Đăng ký"*).<br/>**2.** Khách hàng nhập địa chỉ Email và Mật khẩu (tối thiểu 6 ký tự).<br/>**3.** Khách hàng nhấn nút *"Xác nhận"*.<br/>**4.** Backend kiểm tra thông tin hợp lệ (đối chiếu hash mật khẩu bằng `bcrypt`).<br/>**5.** Backend tạo mã `accessToken` (chuỗi JWT có thời hạn) chứa thông tin `userId` và `role`.<br/>**6.** Client nhận và lưu trữ JWT Token, cập nhật giao diện người dùng sang trạng thái đã đăng nhập (hiển thị Tên người dùng và Điểm tích lũy). |
+| **6. Alternative Flow** | **1a. Khách hàng chưa có tài khoản:** Khách hàng chuyển sang tab *"Đăng ký"*, nhập Họ tên, Email, Số điện thoại và Mật khẩu. Backend tạo bản ghi người dùng mới với vai trò mặc định là `CUSTOMER` và số điểm ban đầu là 0. |
+| **7. Exception** | **E1. Đăng ký với Email đã tồn tại trong CSDL:** Backend từ chối và phản hồi lỗi `409 Conflict`: *"Email này đã được sử dụng, vui lòng chọn email khác hoặc đăng nhập"*.<br/>**E2. Đăng nhập sai Mật khẩu hoặc Email không tồn tại:** Backend trả về lỗi `401 Unauthorized`: *"Email hoặc mật khẩu không chính xác"*. |
+
+---
+
+### 📋 BẢNG 6: ĐẶC TẢ USE CASE UC11 — TIẾP NHẬN VÀ CẬP NHẬT TRẠNG THÁI PHA CHẾ
+
+| Trường thông tin | Chi tiết đặc tả |
+| :--- | :--- |
+| **1. Use Case Name** | **UC11: Tiếp nhận và Cập nhật trạng thái pha chế (Barista Order Processing)** |
+| **2. Actor** | Nhân viên quầy (Barista / Staff) |
+| **3. Description** | Nhân viên quầy theo dõi danh sách các đơn hàng đã thanh toán thành công, tiến hành pha chế theo đúng công thức kích cỡ/topping/ghi chú và cập nhật trạng thái đơn hàng theo đúng vòng đời nghiệp vụ. |
+| **4. Pre-condition** | Đơn hàng đã đạt trạng thái `PAID` (đã thanh toán thành công qua cổng thanh toán). |
+| **5. Normal Flow** | **1.** Nhân viên Barista xem màn hình Quầy pha chế, thấy đơn hàng mới xuất hiện ở cột `PAID`.<br/>**2.** Barista kiểm tra chi tiết các món trong đơn (Tên đồ uống, Size S/M/L, các loại Topping và Ghi chú riêng).<br/>**3.** Barista nhấn nút *"Bắt đầu pha chế"*, hệ thống chuyển trạng thái đơn sang `PREPARING`.<br/>**4.** Sau khi hoàn tất đồ uống và đóng gói, Barista nhấn nút *"Sẵn sàng giao"*, hệ thống chuyển trạng thái đơn sang `READY` và hiển thị mã nhận nước lên bảng thông báo.<br/>**5.** Khách hàng đến quầy đối chiếu mã đơn, Barista giao nước và nhấn nút *"Hoàn tất đơn"*, hệ thống chuyển trạng thái đơn sang `COMPLETED`. |
+| **6. Alternative Flow** | **3a. Khách hàng hủy đơn trước khi pha chế:** Nếu khách yêu cầu hủy và được chấp thuận, Barista chọn hủy đơn, hệ thống chuyển sang `CANCELLED` và kích hoạt luồng hoàn tiền. |
+| **7. Exception** | **E1. Chuyển đổi trạng thái sai quy trình (Violation of State Machine):** Nếu Barista cố tình nhảy cóc trạng thái (ví dụ từ `PAID` nhảy thẳng sang `COMPLETED` mà chưa qua `PREPARING`/`READY`), hệ thống kích hoạt hàm kiểm soát `assertTransition` và chặn đứng thao tác, báo lỗi `400 Bad Request`.<br/>**E2. Hết nguyên liệu đột xuất tại quầy:** Barista không thể pha chế, chuyển trạng thái đơn sang `CANCELLED` kèm lý do hết nguyên liệu để hoàn tiền cho khách. |
+
