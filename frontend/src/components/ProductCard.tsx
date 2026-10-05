@@ -46,7 +46,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               </span>
             </div>
           )}
-          <h3 className="font-bold text-sm sm:text-base text-[#1e3932] group-hover:text-[#006241] transition-colors line-clamp-1 mb-0.5 sm:mb-1">
+          <h3 className="font-bold text-sm sm:text-base text-[#1e3932] group-hover:text-[#006241] transition-colors line-clamp-2 sm:h-12 flex items-center sm:justify-center mb-0.5 sm:mb-1">
             {product.name}
           </h3>
           <p className="text-xs text-[#595959] line-clamp-1 sm:line-clamp-2 leading-relaxed sm:h-9 sm:mb-2 sm:px-1">
