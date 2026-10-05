@@ -96,9 +96,14 @@ flowchart LR
 
 ---
 
-## 3. SƠ ĐỒ USE CASE PHÂN HỆ KHÁCH HÀNG (CUSTOMER SUBSYSTEM)
+## 3. CÁC SƠ ĐỒ USE CASE CHI TIẾT THEO PHÂN HỆ (SUBSYSTEM USE CASE DIAGRAMS)
 
-Tập trung chi tiết vào luồng trải nghiệm khách hàng từ lúc vào web đến khi hoàn tất đơn hàng không tiền mặt:
+Để phục vụ báo cáo chuyên sâu và thiết kế kiến trúc phân hệ, toàn bộ hệ thống được chi tiết hóa thành **4 sơ đồ phân hệ**:
+
+---
+
+### 3.1. Phân hệ 1: Khách hàng Đặt món & Thanh toán (Customer Subsystem)
+Tập trung chi tiết vào luồng trải nghiệm khách hàng từ lúc duyệt menu, tùy biến đồ uống đến khi hoàn tất đơn hàng không tiền mặt:
 
 ```mermaid
 flowchart LR
@@ -121,7 +126,6 @@ flowchart LR
         UC5_1([Áp dụng mã Voucher]):::subUcStyle
         UC6([Thanh toán không tiền mặt]):::ucStyle
         UC7([Tra cứu mã nhận nước]):::ucStyle
-        UC8([Xem lịch sử đơn và Điểm]):::ucStyle
     end
 
     Customer --> UC1
@@ -130,8 +134,6 @@ flowchart LR
     Customer --> UC4
     Customer --> UC5
     Customer --> UC7
-
-    Member --> UC8
 
     UC3 -.->|include| UC3_1
     UC3_2 -.->|extend| UC3
@@ -145,6 +147,111 @@ flowchart LR
     classDef actorStyle fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20,font-weight:bold
     classDef systemActorStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c,font-weight:bold
     classDef ucStyle fill:#ffffff,stroke:#006241,stroke-width:2px,color:#1e3932,font-weight:bold
+    classDef subUcStyle fill:#f2f0eb,stroke:#8c827a,stroke-width:1.5px,stroke-dasharray: 4 4,color:#333
+```
+
+---
+
+### 3.2. Phân hệ 2: Tài khoản & Khách hàng thân thiết (Auth & Loyalty Subsystem)
+Đặc tả luồng đăng ký, đăng nhập bảo mật qua JWT Token, quản lý hồ sơ, xem lịch sử đơn hàng và tích lũy điểm thưởng:
+
+```mermaid
+flowchart LR
+    Customer([Khách hàng]):::actorStyle
+    Member([Khách thành viên]):::actorStyle
+
+    Member -.->|Kế thừa| Customer
+
+    subgraph AuthSubsystem [PHÂN HỆ TÀI KHOẢN VÀ THÀNH VIÊN]
+        UC_Register([UC07.1: Đăng ký tài khoản]):::ucStyle
+        UC_Login([UC07.2: Đăng nhập JWT]):::ucStyle
+        UC_JWT([Xác thực Token JWT]):::subUcStyle
+        UC_Profile([UC07.3: Quản lý hồ sơ cá nhân]):::ucStyle
+        UC_History([UC08: Xem lịch sử đơn hàng]):::ucStyle
+        UC_Detail([Xem chi tiết món đã đặt]):::subUcStyle
+        UC_Points([UC09: Tích lũy và tra cứu điểm]):::ucStyle
+    end
+
+    Customer --> UC_Register
+    Customer --> UC_Login
+
+    Member --> UC_Profile
+    Member --> UC_History
+    Member --> UC_Points
+
+    UC_Login -.->|include| UC_JWT
+    UC_History -.->|extend| UC_Detail
+
+    classDef actorStyle fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20,font-weight:bold
+    classDef ucStyle fill:#ffffff,stroke:#006241,stroke-width:2px,color:#1e3932,font-weight:bold
+    classDef subUcStyle fill:#f2f0eb,stroke:#8c827a,stroke-width:1.5px,stroke-dasharray: 4 4,color:#333
+```
+
+---
+
+### 3.3. Phân hệ 3: Vận hành Quầy Barista (Barista Operations Subsystem)
+Đặc tả quy trình tiếp nhận đơn hàng đã thanh toán (`PAID`), chuyển đổi trạng thái pha chế và in phiếu chế biến:
+
+```mermaid
+flowchart LR
+    Barista([Nhân viên Barista]):::staffActorStyle
+
+    subgraph BaristaSubsystem [PHÂN HỆ VẬN HÀNH QUẦY BARISTA]
+        UC_Receive([UC10: Tiếp nhận đơn đã thanh toán]):::staffUcStyle
+        UC_Process([UC11: Cập nhật tiến trình pha chế]):::staffUcStyle
+        UC_StateCheck([Kiểm tra State Machine]):::subUcStyle
+        UC_Preparing([Chuyển trạng thái PREPARING]):::subUcStyle
+        UC_Ready([Chuyển trạng thái READY]):::subUcStyle
+        UC_Complete([Chuyển trạng thái COMPLETED]):::subUcStyle
+        UC_Cancel([UC12: Hủy đơn hết nguyên liệu]):::staffUcStyle
+        UC_Print([UC12.1: In phiếu pha chế]):::subUcStyle
+    end
+
+    Barista --> UC_Receive
+    Barista --> UC_Process
+    Barista --> UC_Cancel
+
+    UC_Process -.->|include| UC_StateCheck
+    UC_Process -.->|include| UC_Preparing
+    UC_Process -.->|include| UC_Ready
+    UC_Process -.->|include| UC_Complete
+    UC_Receive -.->|extend| UC_Print
+
+    classDef staffActorStyle fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0369a1,font-weight:bold
+    classDef staffUcStyle fill:#ffffff,stroke:#0284c7,stroke-width:2px,color:#0369a1,font-weight:bold
+    classDef subUcStyle fill:#f2f0eb,stroke:#8c827a,stroke-width:1.5px,stroke-dasharray: 4 4,color:#333
+```
+
+---
+
+### 3.4. Phân hệ 4: Quản trị hệ thống (Admin Management Subsystem)
+Đặc tả quyền hạn quản trị menu, quản lý tồn kho với khóa lạc quan (Optimistic Locking), quản lý voucher và thống kê doanh thu:
+
+```mermaid
+flowchart LR
+    Admin([Quản trị viên]):::adminActorStyle
+
+    subgraph AdminSubsystem [PHÂN HỆ QUẢN TRỊ HỆ THỐNG ADMIN]
+        UC_MenuManage([UC13: Quản lý thực đơn đồ uống]):::adminUcStyle
+        UC_SizeTopping([Cấu hình Size và Topping]):::subUcStyle
+        UC_StockManage([UC14: Quản lý tồn kho Optimistic Locking]):::adminUcStyle
+        UC_VoucherManage([UC15: Quản lý mã giảm giá Voucher]):::adminUcStyle
+        UC_UserManage([UC15.1: Quản lý tài khoản và phân quyền]):::adminUcStyle
+        UC_Report([UC16: Xem báo cáo thống kê doanh thu]):::adminUcStyle
+        UC_Export([Xuất báo cáo doanh số]):::subUcStyle
+    end
+
+    Admin --> UC_MenuManage
+    Admin --> UC_StockManage
+    Admin --> UC_VoucherManage
+    Admin --> UC_UserManage
+    Admin --> UC_Report
+
+    UC_MenuManage -.->|include| UC_SizeTopping
+    UC_Report -.->|extend| UC_Export
+
+    classDef adminActorStyle fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#92400e,font-weight:bold
+    classDef adminUcStyle fill:#ffffff,stroke:#d97706,stroke-width:2px,color:#92400e,font-weight:bold
     classDef subUcStyle fill:#f2f0eb,stroke:#8c827a,stroke-width:1.5px,stroke-dasharray: 4 4,color:#333
 ```
 
