@@ -74,7 +74,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100 flex flex-col font-sans selection:bg-amber-500 selection:text-stone-950">
+    <div className="min-h-screen bg-surface text-content-primary flex flex-col font-sans selection:bg-brand-cream selection:text-brand-espresso">
       {/* 1. Header */}
       <Header
         cartCount={cartCount}
@@ -82,39 +82,39 @@ export default function Home() {
       />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8">
-        {/* 2. Hero Banner */}
-        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-stone-900 via-stone-900/90 to-amber-950/40 border border-stone-800/80 p-6 sm:p-10 shadow-2xl">
-          <div className="absolute top-0 right-0 -mt-12 -mr-12 w-64 h-64 sm:w-96 sm:h-96 rounded-full bg-amber-600/10 blur-3xl pointer-events-none" />
+        {/* 2. Hero Banner phong cách Warm Coffee Light */}
+        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-oat via-brand-cream/40 to-brand-oat border border-brand-cream/90 p-6 sm:p-10 shadow-sm">
+          <div className="absolute top-0 right-0 -mt-12 -mr-12 w-64 h-64 sm:w-96 sm:h-96 rounded-full bg-brand-terracotta/10 blur-3xl pointer-events-none" />
           
           <div className="relative z-10 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-4">
-              <Flame className="w-3.5 h-3.5 fill-amber-500" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-pill text-xs font-semibold bg-brand-cream text-brand-espresso border border-brand-cream mb-4 shadow-2xs">
+              <Flame className="w-3.5 h-3.5 text-brand-terracotta fill-brand-terracotta" />
               <span>Menu Mùa Thu 2026 — Đặt ngay nhận liền</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight mb-3">
+            <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-brand-espresso leading-tight mb-3">
               Cà phê chuẩn gu, <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-500 to-amber-200">
+              <span className="text-brand-terracotta">
                 thanh toán không chạm.
               </span>
             </h1>
 
-            <p className="text-sm sm:text-base text-stone-400 mb-6 leading-relaxed">
+            <p className="text-sm sm:text-base text-content-muted mb-6 leading-relaxed">
               Trải nghiệm gọi đồ uống tiện lợi cùng BrewLite: Không xếp hàng, tùy chỉnh size & topping theo ý thích, thanh toán tức thì qua ví điện tử.
             </p>
 
             {/* Feature Highlights */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-stone-800/60">
-              <div className="flex items-center gap-2.5 text-xs text-stone-300">
-                <Clock className="w-4 h-4 text-amber-500 flex-shrink-0" />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-brand-cream/90">
+              <div className="flex items-center gap-2.5 text-xs font-medium text-content-muted">
+                <Clock className="w-4 h-4 text-brand-terracotta flex-shrink-0" />
                 <span>Pha chế nhanh 3-5 phút</span>
               </div>
-              <div className="flex items-center gap-2.5 text-xs text-stone-300">
-                <ShieldCheck className="w-4 h-4 text-amber-500 flex-shrink-0" />
+              <div className="flex items-center gap-2.5 text-xs font-medium text-content-muted">
+                <ShieldCheck className="w-4 h-4 text-brand-terracotta flex-shrink-0" />
                 <span>100% Không tiền mặt</span>
               </div>
-              <div className="flex items-center gap-2.5 text-xs text-stone-300">
-                <Sparkles className="w-4 h-4 text-amber-500 flex-shrink-0" />
+              <div className="flex items-center gap-2.5 text-xs font-medium text-content-muted">
+                <Sparkles className="w-4 h-4 text-brand-terracotta flex-shrink-0" />
                 <span>Tích điểm đổi voucher</span>
               </div>
             </div>
@@ -126,18 +126,18 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
             {/* Search Input */}
             <div className="relative flex-1 max-w-md">
-              <Search className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400" />
+              <Search className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-content-muted" />
               <input
                 type="text"
                 placeholder="Tìm cà phê, trà trái cây, đá xay..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-11 pr-10 py-3 rounded-2xl bg-stone-900/80 border border-stone-800 focus:border-amber-500/60 focus:bg-stone-900 text-sm text-stone-200 placeholder-stone-500 outline-none transition-all shadow-inner"
+                className="w-full pl-11 pr-10 py-3 rounded-2xl bg-brand-oat border border-brand-cream/90 focus:border-brand-terracotta focus:bg-white text-sm text-content-primary placeholder:text-content-muted outline-none transition-all shadow-inner"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-200 p-1"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-content-muted hover:text-content-primary p-1"
                   aria-label="Xóa tìm kiếm"
                 >
                   <X className="w-4 h-4" />
@@ -146,9 +146,9 @@ export default function Home() {
             </div>
 
             {/* Quick Status Info */}
-            <div className="flex items-center gap-2 text-xs text-stone-400 self-end sm:self-auto">
+            <div className="flex items-center gap-2 text-xs text-content-muted self-end sm:self-auto font-medium">
               <span>Đang hiển thị:</span>
-              <strong className="text-amber-400">{filteredProducts.length}</strong> món
+              <strong className="text-brand-terracotta text-sm">{filteredProducts.length}</strong> món
             </div>
           </div>
 
@@ -163,13 +163,13 @@ export default function Home() {
 
         {/* 4. Products Grid Section */}
         <section className="space-y-4">
-          <div className="flex items-center justify-between border-b border-stone-800/80 pb-3">
+          <div className="flex items-center justify-between border-b border-brand-cream/90 pb-3">
             <div className="flex items-center gap-2">
-              <h2 className="text-xl sm:text-2xl font-black text-stone-100 tracking-tight">
+              <h2 className="text-xl sm:text-2xl font-black text-brand-espresso tracking-tight">
                 {currentCategoryName}
               </h2>
               {searchQuery && (
-                <span className="text-xs text-stone-400">
+                <span className="text-xs text-content-muted">
                   (kết quả cho &quot;{searchQuery}&quot;)
                 </span>
               )}
@@ -211,36 +211,36 @@ export default function Home() {
         {/* 5. Modal Preview (Chuẩn bị cho Task 4) */}
         {selectedProduct && (
           <div
-            className="fixed inset-0 z-50 bg-stone-950/80 backdrop-blur-sm flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 bg-brand-espresso/40 backdrop-blur-xs flex items-center justify-center p-4"
             onClick={() => setSelectedProduct(null)}
           >
             <div
-              className="bg-stone-900 border border-stone-800 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4"
+              className="bg-white border border-brand-cream rounded-card p-6 max-w-md w-full shadow-2xl space-y-4"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="text-xs font-bold text-amber-500 uppercase tracking-wider">
+                  <span className="text-xs font-bold text-brand-terracotta uppercase tracking-wider">
                     {selectedProduct.category?.name || 'Đồ uống'}
                   </span>
-                  <h3 className="text-xl font-bold text-white mt-1">
+                  <h3 className="text-xl font-bold text-brand-espresso mt-1">
                     {selectedProduct.name}
                   </h3>
                 </div>
                 <button
                   onClick={() => setSelectedProduct(null)}
-                  className="p-1.5 rounded-full bg-stone-800 hover:bg-stone-700 text-stone-400 hover:text-white"
+                  className="p-1.5 rounded-full bg-brand-oat hover:bg-brand-cream text-content-muted hover:text-brand-espresso transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <p className="text-xs sm:text-sm text-stone-400 leading-relaxed">
+              <p className="text-xs sm:text-sm text-content-muted leading-relaxed">
                 {selectedProduct.description}
               </p>
 
-              <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 flex-shrink-0 text-amber-400" />
+              <div className="p-3 rounded-2xl bg-brand-cream/70 border border-brand-cream text-xs text-brand-espresso flex items-center gap-2">
+                <Sparkles className="w-4 h-4 flex-shrink-0 text-brand-terracotta" />
                 <span>
                   Modal chọn Size (S/M/L) & Topping kèm tính tiền Realtime sẽ được triển khai hoàn chỉnh ở <strong>Task 4</strong>!
                 </span>
@@ -248,8 +248,8 @@ export default function Home() {
 
               <div className="flex items-center justify-between pt-2">
                 <div>
-                  <span className="text-xs text-stone-400 block">Đơn giá khởi điểm</span>
-                  <span className="text-lg font-black text-amber-400">
+                  <span className="text-xs text-content-muted block">Đơn giá khởi điểm</span>
+                  <span className="text-lg font-black text-brand-terracotta">
                     {new Intl.NumberFormat('vi-VN', {
                       style: 'currency',
                       currency: 'VND',
@@ -262,7 +262,7 @@ export default function Home() {
                     setCartCount((prev) => prev + 1);
                     setSelectedProduct(null);
                   }}
-                  className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-sm shadow-lg shadow-amber-500/20 transition-all active:scale-95"
+                  className="px-5 py-2.5 rounded-xl bg-brand-terracotta hover:bg-[#b34f2a] text-white font-bold text-sm shadow-md shadow-brand-terracotta/20 transition-all active:scale-95"
                 >
                   Thêm vào giỏ thử nghiệm
                 </button>
@@ -273,8 +273,8 @@ export default function Home() {
       </main>
 
       {/* 6. Footer */}
-      <footer className="border-t border-stone-900 bg-stone-950/60 py-8 mt-12 text-center text-xs text-stone-500 space-y-2">
-        <p className="font-semibold text-stone-400">
+      <footer className="border-t border-brand-cream bg-brand-oat/50 py-8 mt-12 text-center text-xs text-content-muted space-y-2">
+        <p className="font-semibold text-brand-espresso">
           BrewLite — Cashless Coffee Ordering Application
         </p>
         <p>Bài tập lớn môn Công nghệ Phần mềm — ĐH Sài Gòn (Agile Scrum: Sprint 1)</p>

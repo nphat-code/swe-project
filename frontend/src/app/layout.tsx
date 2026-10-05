@@ -21,9 +21,9 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
-      className={`${beVietnamPro.variable} h-full antialiased dark`}
+      className={`${beVietnamPro.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-stone-950 text-stone-100">{children}</body>
+      <body className="min-h-full flex flex-col font-sans bg-surface text-content-primary selection:bg-brand-cream selection:text-brand-espresso">{children}</body>
     </html>
   );
 }
