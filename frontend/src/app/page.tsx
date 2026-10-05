@@ -22,7 +22,6 @@ export default function Home() {
   const [cartItems, setCartItems] = useState<CustomOrderItem[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Tính tổng số ly trong giỏ hàng
   const cartCount = useMemo(() => {
     return cartItems.reduce((sum, item) => sum + item.quantity, 0);
   }, [cartItems]);
@@ -93,7 +92,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white text-[#212121] flex flex-col font-sans selection:bg-[#d4e9e2] selection:text-[#006241]">
-      {/* 1. Header */}
       <Header
         cartCount={cartCount}
         onOpenCart={() => {
@@ -106,7 +104,6 @@ export default function Home() {
         }}
       />
 
-      {/* Floating Toast Notification */}
       {toastMessage && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#006241] text-white px-4 py-2.5 rounded-full shadow-xl flex items-center gap-2 text-xs sm:text-sm font-bold animate-in fade-in slide-in-from-top-4 duration-200">
           <CheckCircle2 className="w-4 h-4 text-emerald-300" />
@@ -115,10 +112,8 @@ export default function Home() {
       )}
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 lg:px-8 py-3.5 sm:py-8 space-y-4 sm:space-y-6">
-        {/* 2. Search and Category Filter Section */}
         <section className="space-y-2.5 sm:space-y-4">
           <div className="flex items-center gap-3">
-            {/* Search Input kiểu Starbucks */}
             <div className="relative flex-1">
               <Search className="w-4 h-4 sm:w-5 sm:h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400" />
               <input
@@ -140,7 +135,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Category Tabs */}
           <CategoryFilter
             categories={categories}
             selectedCategory={selectedCategory}
@@ -149,7 +143,6 @@ export default function Home() {
           />
         </section>
 
-        {/* 3. Products Grid Section */}
         <section className="space-y-3 sm:space-y-4">
           <div className="flex items-center justify-between border-b border-stone-200/80 pb-2 sm:pb-3">
             <div className="flex items-baseline gap-2">
@@ -167,7 +160,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Content state */}
           {isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-6">
               {Array.from({ length: 8 }).map((_, index) => (
@@ -200,7 +192,6 @@ export default function Home() {
           )}
         </section>
 
-        {/* 4. Product Customization Modal (Task 4) */}
         <ProductDetailModal
           product={selectedProduct}
           allToppings={toppings}
@@ -210,7 +201,6 @@ export default function Home() {
         />
       </main>
 
-      {/* 5. Footer */}
       <footer className="border-t border-stone-200/80 bg-[#f2f0eb]/60 py-6 mt-10 text-center text-xs text-[#595959]">
         <p className="font-medium">
           © 2026 BrewLite Coffee Company. All rights reserved.

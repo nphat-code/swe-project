@@ -10,19 +10,19 @@ const config: Config = {
     extend: {
       colors: {
         starbucks: {
-          green: '#006241',       // Starbucks House Green
-          dark: '#1e3932',        // Deep Forest Green
-          hover: '#00754a',       // Accent hover green
-          mint: '#d4e9e2',        // Soft mint cream for pills/badges
-          cream: '#f2f0eb',       // Warm light neutral
-          oat: '#f7f7f7',         // Subtle background
-          gold: '#cba258',        // Warm star gold accent
+          green: '#006241',
+          dark: '#1e3932',
+          hover: '#00754a',
+          mint: '#d4e9e2',
+          cream: '#f2f0eb',
+          oat: '#f7f7f7',
+          gold: '#cba258',
         },
         brand: {
-          espresso: '#1e3932',    // Xanh đậm Starbucks cho tiêu đề
-          terracotta: '#006241',  // Xanh lá House Green cho nút CTA chính
-          cream: '#d4e9e2',       // Mint cream nhẹ
-          oat: '#f2f0eb',         // Nền phụ
+          espresso: '#1e3932',
+          terracotta: '#006241',
+          cream: '#d4e9e2',
+          oat: '#f2f0eb',
         },
         surface: '#ffffff',
         content: {

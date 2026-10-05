@@ -14,7 +14,6 @@ export const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => 
     <header className="sticky top-0 z-50 backdrop-blur-md bg-white/95 border-b border-stone-200/80 transition-all duration-200 shadow-2xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo & Brand kiểu Starbucks */}
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#006241] flex items-center justify-center text-white shadow-md shadow-[#006241]/25 group-hover:scale-105 transition-transform duration-200">
               <Coffee className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
@@ -26,7 +25,6 @@ export const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => 
             </div>
           </Link>
 
-          {/* Right Action: Cart button */}
           <div className="flex items-center gap-3">
             <button
               onClick={onOpenCart}

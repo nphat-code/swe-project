@@ -37,7 +37,6 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   return (
     <div className="w-full overflow-x-auto no-scrollbar py-1">
       <div className="flex items-center gap-2 min-w-max pb-1">
-        {/* Nút 'Tất cả' */}
         <button
           onClick={() => onSelectCategory('all')}
           className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 border ${
@@ -59,7 +58,6 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
           </span>
         </button>
 
-        {/* Danh sách danh mục từ Database */}
         {categories.map((cat) => {
           const isSelected = selectedCategory === cat.slug;
           const count = cat._count?.products ?? 0;

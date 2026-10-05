@@ -7,3 +7,10 @@
 - **Tiêu chuẩn Commit**:
   - Viết commit message theo chuẩn Conventional Commits (ví dụ: `feat: ...`, `fix: ...`, `chore: ...`).
   - Luôn đảm bảo `.gitignore` chặt chẽ, không commit `node_modules`, build artifacts (`.next`, `dist`), hoặc file biến môi trường bí mật `.env`.
+
+## 🚫 Quy tắc viết code
+- **Tuyệt đối không comment trong code**:
+  - Không viết bất kỳ comment giải thích, chú thích, ghi chú nào trong các file mã nguồn (`.ts`, `.tsx`, `.js`, `.css`,...).
+  - Code phải tự tường minh (Self-documenting code) bằng cách đặt tên biến, hàm, kiểu dữ liệu, component rõ nghĩa và chuẩn chỉ.
+  - Không để lại code thừa bị comment (`commented-out code`).
+

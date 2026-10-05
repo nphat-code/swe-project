@@ -22,7 +22,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       onClick={() => onSelectProduct(product)}
       className="group relative flex flex-row sm:flex-col items-center bg-white hover:bg-[#f9f9f9] border border-stone-200/80 hover:border-[#006241]/40 rounded-2xl p-3 sm:p-5 gap-3.5 sm:gap-2 overflow-hidden transition-all duration-300 hover:shadow-lg sm:hover:shadow-xl hover:shadow-stone-900/5 sm:hover:-translate-y-1 cursor-pointer active:scale-[0.99] sm:active:scale-100 h-full justify-between"
     >
-      {/* Starbucks Iconic Circular Image: Ảnh tròn đặc trưng */}
       <div className="relative w-20 h-20 sm:w-32 sm:h-32 rounded-full overflow-hidden flex-shrink-0 bg-[#f2f0eb] shadow-md border-2 sm:border-4 border-white ring-1 ring-stone-200/70 group-hover:ring-[#006241]/30 transition-all duration-300">
         <Image
           src={product.imageUrl}
@@ -35,10 +34,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         />
       </div>
 
-      {/* Product Content */}
       <div className="flex flex-col flex-1 min-w-0 justify-between w-full sm:text-center">
         <div>
-          {/* Category Tag */}
           {product.category && (
             <div className="mb-1">
               <span className="text-[10px] sm:text-[11px] font-bold text-[#006241] bg-[#d4e9e2] px-2 py-0.5 rounded-full inline-block">
@@ -54,7 +51,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </p>
         </div>
 
-        {/* Footer: Price + Add Button (Pixel-perfect bottom alignment) */}
         <div className="flex items-center justify-between sm:justify-center sm:gap-3 mt-2 sm:mt-auto pt-1 sm:pt-2 border-t border-stone-100 sm:border-transparent">
           <div>
             <span className="text-sm sm:text-base font-black text-[#006241]">

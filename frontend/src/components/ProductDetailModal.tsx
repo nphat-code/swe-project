@@ -27,11 +27,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const [note, setNote] = useState<string>('');
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
-  // Khởi tạo kích cỡ mặc định khi mở modal cho sản phẩm
   useEffect(() => {
     if (product) {
       if (product.sizes && product.sizes.length > 0) {
-        // Ưu tiên chọn size có extraPrice === 0 (size Tiêu chuẩn / M) hoặc size đầu tiên
         const defaultSize = product.sizes.find((s) => s.extraPrice === 0) || product.sizes[0];
         setSelectedSize(defaultSize);
       } else {
@@ -44,7 +42,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     }
   }, [product]);
 
-  // Ngăn chặn cuộn trang body khi modal mở
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -56,7 +53,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     };
   }, [isOpen]);
 
-  // Danh sách topping khả dụng (từ product hoặc từ danh sách chung)
   const availableToppings = useMemo(() => {
     if (product?.availableToppings && product.availableToppings.length > 0) {
       return product.availableToppings;
@@ -64,7 +60,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     return allToppings;
   }, [product, allToppings]);
 
-  // Tính toán đơn giá và tổng giá Realtime
   const unitPrice = useMemo(() => {
     if (!product) return 0;
     const sizeExtra = selectedSize?.extraPrice ?? 0;
@@ -133,13 +128,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         className="w-full sm:max-w-lg bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col max-h-[90vh] sm:max-h-[85vh] overflow-hidden transition-all duration-300 transform animate-in slide-in-from-bottom-6"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Mobile Drag Indicator */}
         <div className="w-12 h-1.5 bg-stone-300 rounded-full mx-auto my-2.5 sm:hidden" />
 
-        {/* 1. Header & Close Button */}
         <div className="relative px-5 pt-2 sm:pt-5 pb-3 border-b border-stone-100 flex items-start justify-between">
           <div className="flex items-center gap-3.5 pr-8">
-            {/* Ảnh tròn Starbucks */}
             <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden flex-shrink-0 bg-[#f2f0eb] shadow-md border-2 border-white ring-1 ring-stone-200">
               <Image
                 src={product.imageUrl}
@@ -173,16 +165,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           </button>
         </div>
 
-        {/* 2. Scrollable Options Content */}
         <div className="flex-1 overflow-y-auto p-5 space-y-6 text-sm text-[#212121]">
-          {/* Mô tả món */}
           {product.description && (
             <p className="text-xs sm:text-sm text-[#595959] leading-relaxed bg-[#f9f9f9] p-3 rounded-2xl border border-stone-100">
               {product.description}
             </p>
           )}
 
-          {/* Section: Chọn Kích cỡ (Size) */}
           {product.sizes && product.sizes.length > 0 && (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
@@ -228,7 +217,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             </div>
           )}
 
-          {/* Section: Chọn Topping */}
           {availableToppings && availableToppings.length > 0 && (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
@@ -282,7 +270,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             </div>
           )}
 
-          {/* Section: Ghi chú cho Barista */}
           <div className="space-y-2">
             <h3 className="font-bold text-[#1e3932] text-sm sm:text-base">
               Ghi chú cho Barista
@@ -296,7 +283,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             />
           </div>
 
-          {/* Section: Điều chỉnh số lượng */}
           <div className="flex items-center justify-between pt-2 border-t border-stone-100">
             <span className="font-bold text-[#1e3932] text-sm sm:text-base">Số lượng ly:</span>
             <div className="flex items-center gap-3 bg-[#f2f0eb] px-3 py-1.5 rounded-full">
@@ -322,7 +308,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           </div>
         </div>
 
-        {/* 3. Sticky Bottom Action Bar */}
         <div className="p-4 sm:p-5 bg-white border-t border-stone-100 shadow-lg">
           <button
             type="button"
