@@ -81,19 +81,19 @@ export default function Home() {
         onOpenCart={() => alert('🛒 Giỏ hàng sẽ được kết nối ở Task 5!')}
       />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 lg:px-8 py-3.5 sm:py-8 space-y-4 sm:space-y-6">
         {/* 2. Search and Category Filter Section */}
-        <section className="space-y-4">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+        <section className="space-y-2.5 sm:space-y-4">
+          <div className="flex items-center gap-3">
             {/* Search Input */}
-            <div className="relative flex-1 max-w-md">
-              <Search className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-content-muted" />
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 sm:w-5 sm:h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-content-muted" />
               <input
                 type="text"
                 placeholder="Tìm cà phê, trà trái cây, đá xay..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-11 pr-10 py-3 rounded-2xl bg-brand-oat border border-brand-cream/90 focus:border-brand-terracotta focus:bg-white text-sm text-content-primary placeholder:text-content-muted outline-none transition-all shadow-inner"
+                className="w-full pl-10 sm:pl-11 pr-9 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-brand-oat border border-brand-cream/90 focus:border-brand-terracotta focus:bg-white text-xs sm:text-sm text-content-primary placeholder:text-content-muted outline-none transition-all shadow-inner"
               />
               {searchQuery && (
                 <button
@@ -101,15 +101,9 @@ export default function Home() {
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-content-muted hover:text-content-primary p-1"
                   aria-label="Xóa tìm kiếm"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </button>
               )}
-            </div>
-
-            {/* Quick Status Info */}
-            <div className="flex items-center gap-2 text-xs text-content-muted self-end sm:self-auto font-medium">
-              <span>Đang hiển thị:</span>
-              <strong className="text-brand-terracotta text-sm">{filteredProducts.length}</strong> món
             </div>
           </div>
 
@@ -122,16 +116,19 @@ export default function Home() {
           />
         </section>
 
-        {/* 4. Products Grid Section */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between border-b border-brand-cream/90 pb-3">
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl sm:text-2xl font-black text-brand-espresso tracking-tight">
+        {/* 3. Products Grid Section */}
+        <section className="space-y-3 sm:space-y-4">
+          <div className="flex items-center justify-between border-b border-brand-cream/90 pb-2 sm:pb-3">
+            <div className="flex items-baseline gap-2">
+              <h2 className="text-base sm:text-2xl font-black text-brand-espresso tracking-tight">
                 {currentCategoryName}
               </h2>
+              <span className="text-xs sm:text-sm font-bold text-brand-terracotta bg-brand-cream/80 px-2 py-0.5 rounded-pill">
+                {filteredProducts.length} món
+              </span>
               {searchQuery && (
-                <span className="text-xs text-content-muted">
-                  (kết quả cho &quot;{searchQuery}&quot;)
+                <span className="text-xs text-content-muted truncate max-w-[120px] sm:max-w-none">
+                  (cho &quot;{searchQuery}&quot;)
                 </span>
               )}
             </div>
@@ -139,7 +136,7 @@ export default function Home() {
 
           {/* Content state */}
           {isLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-6">
               {Array.from({ length: 8 }).map((_, index) => (
                 <ProductSkeleton key={index} />
               ))}
@@ -157,7 +154,7 @@ export default function Home() {
               }}
             />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-6">
               {filteredProducts.map((product) => (
                 <ProductCard
                   key={product.id}
