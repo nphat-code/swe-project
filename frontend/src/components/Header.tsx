@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Coffee, ShoppingBag, Sparkles } from 'lucide-react';
+import { Coffee, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 
 interface HeaderProps {
@@ -13,23 +13,15 @@ export const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => 
   return (
     <header className="sticky top-0 z-50 backdrop-blur-md bg-surface/90 border-b border-brand-cream/80 transition-all duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20">
+        <div className="flex items-center justify-between h-16">
           {/* Logo & Brand */}
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-card bg-gradient-to-tr from-brand-espresso to-brand-terracotta flex items-center justify-center text-white shadow-md shadow-brand-terracotta/20 group-hover:scale-105 transition-transform duration-200">
               <Coffee className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xl sm:text-2xl font-black tracking-tight text-brand-espresso group-hover:text-brand-terracotta transition-colors">
-                  Brew<span className="text-brand-terracotta">Lite</span>
-                </span>
-                <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-pill text-[10px] font-semibold bg-brand-cream text-brand-espresso border border-brand-cream/80">
-                  <Sparkles className="w-3 h-3 mr-1 text-brand-terracotta" /> Cashless Coffee
-                </span>
-              </div>
-              <p className="text-xs text-content-muted hidden sm:block">Đặt cà phê tức thì • Không tiền mặt</p>
-            </div>
+            <span className="text-xl sm:text-2xl font-black tracking-tight text-brand-espresso group-hover:text-brand-terracotta transition-colors">
+              Brew<span className="text-brand-terracotta">Lite</span>
+            </span>
           </Link>
 
           {/* Right Action: Cart button */}
