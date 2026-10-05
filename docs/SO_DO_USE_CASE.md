@@ -24,48 +24,41 @@
 
 ```mermaid
 flowchart LR
-    %% Actors
-    Customer(["fa:fa-user Khách hàng"]):::actorStyle
-    Member(["fa:fa-id-card Khách thành viên"]):::actorStyle
-    Barista(["fa:fa-coffee Nhân viên Barista"]):::actorStyle
-    Admin(["fa:fa-user-shield Quản trị viên"]):::actorStyle
-    PaymentGW["fa:fa-credit-card Cổng thanh toán\n(MoMo / VNPay)"]:::systemActorStyle
+    Customer(["Khách hàng"]):::actorStyle
+    Member(["Khách thành viên"]):::actorStyle
+    Barista(["Nhân viên Barista"]):::actorStyle
+    Admin(["Quản trị viên"]):::actorStyle
+    PaymentGW["Cổng thanh toán<br/>(MoMo / VNPay)"]:::systemActorStyle
 
     Member --|> Customer
 
-    subgraph SystemBoundary [" HỆ THỐNG ĐẶT ĐỒ UỐNG BREWLITE "]
-        %% Nhóm 1: Menu & Tùy biến
+    subgraph SystemBoundary [HỆ THỐNG ĐẶT ĐỒ UỐNG BREWLITE]
         UC_ViewMenu(["UC01: Xem thực đơn & danh mục"]):::ucStyle
         UC_Search(["UC02: Tìm kiếm đồ uống"]):::ucStyle
         UC_Customize(["UC03: Tùy biến đồ uống"]):::ucStyle
-        UC_SelectSize(["UC03.1: Chọn kích cỡ (Size)"]):::subUcStyle
+        UC_SelectSize(["UC03.1: Chọn kích cỡ Size"]):::subUcStyle
         UC_AddTopping(["UC03.2: Thêm Topping"]):::subUcStyle
         UC_AddNote(["UC03.3: Ghi chú Barista"]):::subUcStyle
 
-        %% Nhóm 2: Giỏ hàng & Đơn hàng
         UC_Cart(["UC04: Quản lý giỏ hàng"]):::ucStyle
         UC_Checkout(["UC05: Đặt hàng"]):::ucStyle
         UC_Voucher(["UC05.1: Áp dụng mã Voucher"]):::subUcStyle
         UC_Payment(["UC06: Thanh toán trực tuyến"]):::ucStyle
 
-        %% Nhóm 3: Tài khoản & Khách hàng
         UC_Auth(["UC07: Đăng ký / Đăng nhập"]):::ucStyle
         UC_OrderHistory(["UC08: Xem lịch sử đơn hàng"]):::ucStyle
         UC_Loyalty(["UC09: Tích lũy điểm thưởng"]):::ucStyle
 
-        %% Nhóm 4: Nghiệp vụ Barista
         UC_ReceiveOrder(["UC10: Tiếp nhận đơn pha chế"]):::staffUcStyle
         UC_UpdateStatus(["UC11: Cập nhật trạng thái đơn"]):::staffUcStyle
         UC_CancelOrder(["UC12: Hủy đơn hàng"]):::staffUcStyle
 
-        %% Nhóm 5: Quản trị Admin
         UC_ManageProduct(["UC13: Quản lý thực đơn & Topping"]):::adminUcStyle
         UC_ManageStock(["UC14: Quản lý tồn kho đồ uống"]):::adminUcStyle
         UC_ManageVoucher(["UC15: Quản lý mã giảm giá"]):::adminUcStyle
         UC_ViewReport(["UC16: Xem báo cáo thống kê"]):::adminUcStyle
     end
 
-    %% Customer Connections
     Customer --> UC_ViewMenu
     Customer --> UC_Search
     Customer --> UC_Customize
@@ -73,31 +66,26 @@ flowchart LR
     Customer --> UC_Checkout
     Customer --> UC_Auth
 
-    %% Member Connections
     Member --> UC_OrderHistory
     Member --> UC_Loyalty
 
-    %% Relationships
-    UC_Customize -.->|&lt;&lt;include&gt;&gt;| UC_SelectSize
-    UC_AddTopping -.->|&lt;&lt;extend&gt;&gt;| UC_Customize
-    UC_AddNote -.->|&lt;&lt;extend&gt;&gt;| UC_Customize
+    UC_Customize -.->|"<<include>>"| UC_SelectSize
+    UC_AddTopping -.->|"<<extend>>"| UC_Customize
+    UC_AddNote -.->|"<<extend>>"| UC_Customize
 
-    UC_Checkout -.->|&lt;&lt;include&gt;&gt;| UC_Payment
-    UC_Voucher -.->|&lt;&lt;extend&gt;&gt;| UC_Checkout
+    UC_Checkout -.->|"<<include>>"| UC_Payment
+    UC_Voucher -.->|"<<extend>>"| UC_Checkout
     UC_Payment --> PaymentGW
 
-    %% Staff Connections
     Barista --> UC_ReceiveOrder
     Barista --> UC_UpdateStatus
     Barista --> UC_CancelOrder
 
-    %% Admin Connections
     Admin --> UC_ManageProduct
     Admin --> UC_ManageStock
     Admin --> UC_ManageVoucher
     Admin --> UC_ViewReport
 
-    %% Styling
     classDef actorStyle fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20,font-weight:bold
     classDef systemActorStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c,font-weight:bold
     classDef ucStyle fill:#ffffff,stroke:#006241,stroke-width:2px,color:#1e3932,font-weight:bold
@@ -114,26 +102,26 @@ Tập trung chi tiết vào luồng trải nghiệm khách hàng từ lúc vào 
 
 ```mermaid
 flowchart LR
-    Customer(["fa:fa-user Khách hàng"])
-    Member(["fa:fa-star Khách thành viên"])
-    PaymentGW["fa:fa-mobile Cổng thanh toán\n(MoMo / VNPay)"]
+    Customer(["Khách hàng"]):::actorStyle
+    Member(["Khách thành viên"]):::actorStyle
+    PaymentGW["Cổng thanh toán<br/>(MoMo / VNPay)"]:::systemActorStyle
 
     Member --|> Customer
 
-    subgraph CustomerPortal [" PHÂN HỆ ĐẶT HÀNG KHÁCH HÀNG "]
-        UC1(["Xem danh mục & Menu"])
-        UC2(["Tìm kiếm món theo tên"])
-        UC3(["Tùy biến đồ uống"])
-        UC3_1(["Chọn kích cỡ (S/M/L)"])
-        UC3_2(["Thêm Topping"])
-        UC3_3(["Nhập ghi chú cho Barista"])
+    subgraph CustomerPortal [PHÂN HỆ ĐẶT HÀNG KHÁCH HÀNG]
+        UC1(["Xem danh mục & Menu"]):::ucStyle
+        UC2(["Tìm kiếm món theo tên"]):::ucStyle
+        UC3(["Tùy biến đồ uống"]):::ucStyle
+        UC3_1(["Chọn kích cỡ S/M/L"]):::subUcStyle
+        UC3_2(["Thêm Topping"]):::subUcStyle
+        UC3_3(["Nhập ghi chú Barista"]):::subUcStyle
 
-        UC4(["Quản lý giỏ hàng\n(Thêm, sửa số lượng, xóa)"])
-        UC5(["Đặt hàng & Thanh toán"])
-        UC5_1(["Áp dụng mã Voucher"])
-        UC6(["Thanh toán không tiền mặt"])
-        UC7(["Tra cứu mã nhận nước (Order ID)"])
-        UC8(["Xem lịch sử đơn & Điểm tích lũy"])
+        UC4(["Quản lý giỏ hàng"]):::ucStyle
+        UC5(["Đặt hàng & Thanh toán"]):::ucStyle
+        UC5_1(["Áp dụng mã Voucher"]):::subUcStyle
+        UC6(["Thanh toán không tiền mặt"]):::ucStyle
+        UC7(["Tra cứu mã nhận nước"]):::ucStyle
+        UC8(["Xem lịch sử đơn & Điểm"]):::ucStyle
     end
 
     Customer --> UC1
@@ -145,14 +133,19 @@ flowchart LR
 
     Member --> UC8
 
-    UC3 -.->|&lt;&lt;include&gt;&gt;| UC3_1
-    UC3_2 -.->|&lt;&lt;extend&gt;&gt;| UC3_3
-    UC3_2 -.->|&lt;&lt;extend&gt;&gt;| UC3
+    UC3 -.->|"<<include>>"| UC3_1
+    UC3_2 -.->|"<<extend>>"| UC3
+    UC3_3 -.->|"<<extend>>"| UC3
 
-    UC5 -.->|&lt;&lt;include&gt;&gt;| UC6
-    UC5_1 -.->|&lt;&lt;extend&gt;&gt;| UC5
+    UC5 -.->|"<<include>>"| UC6
+    UC5_1 -.->|"<<extend>>"| UC5
 
     UC6 --> PaymentGW
+
+    classDef actorStyle fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20,font-weight:bold
+    classDef systemActorStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c,font-weight:bold
+    classDef ucStyle fill:#ffffff,stroke:#006241,stroke-width:2px,color:#1e3932,font-weight:bold
+    classDef subUcStyle fill:#f2f0eb,stroke:#8c827a,stroke-width:1.5px,stroke-dasharray: 4 4,color:#333
 ```
 
 ---
