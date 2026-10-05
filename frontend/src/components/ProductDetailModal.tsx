@@ -130,24 +130,24 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
       >
         <div className="w-12 h-1.5 bg-stone-300 rounded-full mx-auto my-2.5 sm:hidden" />
 
-        <div className="relative px-5 pt-2 sm:pt-5 pb-3 border-b border-stone-100 flex items-start justify-between">
-          <div className="flex items-center gap-3.5 pr-8">
-            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden flex-shrink-0 bg-[#f2f0eb] shadow-md border-2 border-white ring-1 ring-stone-200">
+        <div className="relative px-4 sm:px-5 pt-2.5 sm:pt-5 pb-3 border-b border-stone-100 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <div className="relative w-14 h-14 sm:w-18 sm:h-18 rounded-full overflow-hidden flex-shrink-0 bg-[#f2f0eb] shadow-md border-2 border-white ring-1 ring-stone-200">
               <Image
                 src={product.imageUrl}
                 alt={product.name}
                 fill
-                sizes="80px"
+                sizes="72px"
                 className="object-cover"
               />
             </div>
-            <div>
+            <div className="flex-1 min-w-0">
               {product.category && (
                 <span className="text-[10px] font-bold text-[#006241] bg-[#d4e9e2] px-2 py-0.5 rounded-full inline-block mb-1">
                   {product.category.name}
                 </span>
               )}
-              <h2 className="text-base sm:text-lg font-black text-[#1e3932] leading-tight line-clamp-2">
+              <h2 className="text-sm sm:text-base font-black text-[#1e3932] leading-snug line-clamp-2">
                 {product.name}
               </h2>
               <span className="text-xs sm:text-sm font-bold text-[#006241] mt-0.5 block">
@@ -158,22 +158,22 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full bg-[#f2f0eb] hover:bg-stone-200 text-stone-500 hover:text-[#1e3932] transition-colors"
+            className="p-1.5 rounded-full bg-[#f2f0eb] hover:bg-stone-200 text-stone-500 hover:text-[#1e3932] transition-colors flex-shrink-0"
             aria-label="Đóng"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-5 space-y-6 text-sm text-[#212121]">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 sm:space-y-6 text-sm text-[#212121]">
           {product.description && (
-            <p className="text-xs sm:text-sm text-[#595959] leading-relaxed bg-[#f9f9f9] p-3 rounded-2xl border border-stone-100">
+            <p className="text-xs sm:text-sm text-[#595959] leading-relaxed bg-[#f9f9f9] p-2.5 sm:p-3 rounded-xl sm:rounded-2xl border border-stone-100">
               {product.description}
             </p>
           )}
 
           {product.sizes && product.sizes.length > 0 && (
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               <div className="flex items-center justify-between">
                 <h3 className="font-bold text-[#1e3932] text-sm sm:text-base flex items-center gap-1.5">
                   <span>Chọn kích cỡ</span>
@@ -183,31 +183,34 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 </h3>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              <div className="grid grid-cols-3 gap-2">
                 {product.sizes.map((size) => {
                   const isSelected = selectedSize?.id === size.id;
+                  const displayCode = size.code || size.sizeCode || size.name.charAt(0);
                   return (
                     <button
                       key={size.id}
                       type="button"
                       onClick={() => setSelectedSize(size)}
-                      className={`flex flex-col items-center justify-center p-3 rounded-2xl border text-center transition-all duration-150 ${
+                      className={`flex flex-col items-center justify-center py-2.5 px-1.5 sm:p-3 rounded-2xl border text-center transition-all duration-150 ${
                         isSelected
                           ? 'border-2 border-[#006241] bg-[#d4e9e2]/30 shadow-xs'
                           : 'border-stone-200 hover:border-stone-300 bg-white hover:bg-stone-50'
                       }`}
                     >
                       <span
-                        className={`w-7 h-7 rounded-full flex items-center justify-center font-black text-xs mb-1 ${
+                        className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center font-black text-[11px] sm:text-xs mb-1 ${
                           isSelected
                             ? 'bg-[#006241] text-white'
                             : 'bg-[#f2f0eb] text-[#1e3932]'
                         }`}
                       >
-                        {size.sizeCode}
+                        {displayCode}
                       </span>
-                      <span className="font-bold text-xs text-[#1e3932]">{size.name}</span>
-                      <span className="text-[11px] font-semibold text-[#006241] mt-0.5">
+                      <span className="font-bold text-[11px] sm:text-xs text-[#1e3932] truncate max-w-full">
+                        {size.name}
+                      </span>
+                      <span className="text-[10px] sm:text-[11px] font-semibold text-[#006241] mt-0.5">
                         {size.extraPrice === 0 ? '+ 0 ₫' : `+ ${formatCurrency(size.extraPrice)}`}
                       </span>
                     </button>
