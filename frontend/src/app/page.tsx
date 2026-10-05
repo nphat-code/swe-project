@@ -231,11 +231,10 @@ export default function Home() {
       </main>
 
       {/* 5. Footer */}
-      <footer className="border-t border-stone-200 bg-[#f2f0eb]/50 py-8 mt-12 text-center text-xs text-[#595959] space-y-2">
-        <p className="font-bold text-[#1e3932]">
-          BrewLite — Cashless Coffee Ordering Application
+      <footer className="border-t border-stone-200/80 bg-[#f2f0eb]/60 py-6 mt-10 text-center text-xs text-[#595959]">
+        <p className="font-medium">
+          © 2026 BrewLite Coffee Company. All rights reserved.
         </p>
-        <p>Bài tập lớn môn Công nghệ Phần mềm — ĐH Sài Gòn (Agile Scrum: Sprint 1)</p>
       </footer>
     </div>
   );
