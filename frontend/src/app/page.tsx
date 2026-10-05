@@ -8,7 +8,7 @@ import { ProductSkeleton } from '../components/ProductSkeleton';
 import { EmptyState } from '../components/EmptyState';
 import { Product, Category } from '../types';
 import { fetchProducts, fetchCategories } from '../lib/api';
-import { Search, X, Sparkles, Clock, ShieldCheck, Flame } from 'lucide-react';
+import { Search, X, Sparkles } from 'lucide-react';
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -81,47 +81,8 @@ export default function Home() {
         onOpenCart={() => alert('🛒 Giỏ hàng sẽ được kết nối ở Task 5!')}
       />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8">
-        {/* 2. Hero Banner phong cách Warm Coffee Light */}
-        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-oat via-brand-cream/40 to-brand-oat border border-brand-cream/90 p-6 sm:p-10 shadow-sm">
-          <div className="absolute top-0 right-0 -mt-12 -mr-12 w-64 h-64 sm:w-96 sm:h-96 rounded-full bg-brand-terracotta/10 blur-3xl pointer-events-none" />
-          
-          <div className="relative z-10 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-pill text-xs font-semibold bg-brand-cream text-brand-espresso border border-brand-cream mb-4 shadow-2xs">
-              <Flame className="w-3.5 h-3.5 text-brand-terracotta fill-brand-terracotta" />
-              <span>Menu Mùa Thu 2026 — Đặt ngay nhận liền</span>
-            </div>
-
-            <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-brand-espresso leading-tight mb-3">
-              Cà phê chuẩn gu, <br />
-              <span className="text-brand-terracotta">
-                thanh toán không chạm.
-              </span>
-            </h1>
-
-            <p className="text-sm sm:text-base text-content-muted mb-6 leading-relaxed">
-              Trải nghiệm gọi đồ uống tiện lợi cùng BrewLite: Không xếp hàng, tùy chỉnh size & topping theo ý thích, thanh toán tức thì qua ví điện tử.
-            </p>
-
-            {/* Feature Highlights */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-brand-cream/90">
-              <div className="flex items-center gap-2.5 text-xs font-medium text-content-muted">
-                <Clock className="w-4 h-4 text-brand-terracotta flex-shrink-0" />
-                <span>Pha chế nhanh 3-5 phút</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-xs font-medium text-content-muted">
-                <ShieldCheck className="w-4 h-4 text-brand-terracotta flex-shrink-0" />
-                <span>100% Không tiền mặt</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-xs font-medium text-content-muted">
-                <Sparkles className="w-4 h-4 text-brand-terracotta flex-shrink-0" />
-                <span>Tích điểm đổi voucher</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 3. Search and Category Filter Section */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+        {/* 2. Search and Category Filter Section */}
         <section className="space-y-4">
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
             {/* Search Input */}
