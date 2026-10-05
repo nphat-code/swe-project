@@ -1,0 +1,74 @@
+@startuml
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam roundCorner 8
+
+skinparam activity {
+    BackgroundColor #FFFFFF
+    BorderColor #1E40AF
+    FontColor #0F172A
+    BorderThickness 1.5
+}
+
+skinparam diamond {
+    BackgroundColor #F8FAFC
+    BorderColor #2563EB
+    FontColor #1E293B
+}
+
+skinparam arrow {
+    Color #334155
+    FontColor #1E293B
+    FontSize 11
+}
+
+skinparam startColor #16A34A
+skinparam stopColor #DC2626
+
+title SƠ ĐỒ ACTIVITY - QUY TRÌNH XỬ LÝ ĐƠN HÀNG (ORDER PROCESSING)
+
+start
+
+:Receive order;
+note right: Sự kiện kích hoạt: Order Placed
+
+fork
+    :Validate Order;
+fork again
+    :Validate Payment Information;
+end fork
+
+if (Đánh giá kết quả kiểm tra?) then (Invalid order details)
+    :Reject Order;
+    stop
+else (Valid order details)
+    :Process Payment;
+    
+    switch (Phương thức thanh toán?)
+    case (Thẻ tín dụng)
+        :Process credit card payment;
+    case (PayPal)
+        :Process PayPal payment;
+    case (Chuyển khoản ngân hàng)
+        :Process bank transfer payment;
+    endswitch
+    
+    if (Đánh giá trạng thái xử lý thanh toán\n(Processing Payment)?) then (Payment Failed)
+        :Reject Order;
+        stop
+    else (Payment Done)
+        :Fulfill Order;
+        :Shipping Order;
+        
+        if (Đánh giá kết quả giao hàng?) then (Shipping failed)
+            :Reject Order;
+            stop
+        else (Ship Success)
+            :Complete order;
+            stop
+        endif
+    endif
+endif
+
+@enduml
