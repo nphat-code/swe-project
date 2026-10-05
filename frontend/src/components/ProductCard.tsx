@@ -9,16 +9,18 @@ import { formatCurrency } from '../lib/api';
 interface ProductCardProps {
   product: Product;
   onSelectProduct: (product: Product) => void;
+  priority?: boolean;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   onSelectProduct,
+  priority = false,
 }) => {
   return (
     <div
       onClick={() => onSelectProduct(product)}
-      className="group relative flex flex-row sm:flex-col items-center bg-white hover:bg-[#f9f9f9] border border-stone-200/80 hover:border-[#006241]/40 rounded-2xl p-3 sm:p-5 gap-3.5 sm:gap-2 overflow-hidden transition-all duration-300 hover:shadow-lg sm:hover:shadow-xl hover:shadow-stone-900/5 sm:hover:-translate-y-1 cursor-pointer active:scale-[0.99] sm:active:scale-100"
+      className="group relative flex flex-row sm:flex-col items-center bg-white hover:bg-[#f9f9f9] border border-stone-200/80 hover:border-[#006241]/40 rounded-2xl p-3 sm:p-5 gap-3.5 sm:gap-2 overflow-hidden transition-all duration-300 hover:shadow-lg sm:hover:shadow-xl hover:shadow-stone-900/5 sm:hover:-translate-y-1 cursor-pointer active:scale-[0.99] sm:active:scale-100 h-full justify-between"
     >
       {/* Starbucks Iconic Circular Image: Ảnh tròn đặc trưng */}
       <div className="relative w-20 h-20 sm:w-32 sm:h-32 rounded-full overflow-hidden flex-shrink-0 bg-[#f2f0eb] shadow-md border-2 sm:border-4 border-white ring-1 ring-stone-200/70 group-hover:ring-[#006241]/30 transition-all duration-300">
@@ -28,7 +30,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           fill
           sizes="(max-width: 640px) 80px, 128px"
           className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
-          loading="lazy"
+          priority={priority}
+          loading={priority ? undefined : 'lazy'}
         />
       </div>
 
@@ -46,13 +49,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <h3 className="font-bold text-sm sm:text-base text-[#1e3932] group-hover:text-[#006241] transition-colors line-clamp-1 mb-0.5 sm:mb-1">
             {product.name}
           </h3>
-          <p className="text-xs text-[#595959] line-clamp-1 sm:line-clamp-2 leading-relaxed sm:mb-3 sm:px-1">
+          <p className="text-xs text-[#595959] line-clamp-1 sm:line-clamp-2 leading-relaxed sm:h-9 sm:mb-2 sm:px-1">
             {product.description}
           </p>
         </div>
 
-        {/* Footer: Price + Add Button */}
-        <div className="flex items-center justify-between sm:justify-center sm:gap-3 mt-2 sm:mt-auto pt-1 sm:pt-2">
+        {/* Footer: Price + Add Button (Pixel-perfect bottom alignment) */}
+        <div className="flex items-center justify-between sm:justify-center sm:gap-3 mt-2 sm:mt-auto pt-1 sm:pt-2 border-t border-stone-100 sm:border-transparent">
           <div>
             <span className="text-sm sm:text-base font-black text-[#006241]">
               {formatCurrency(product.basePrice)}
