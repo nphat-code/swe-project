@@ -147,7 +147,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   {product.category.name}
                 </span>
               )}
-              <h2 className="text-sm sm:text-base font-black text-[#1e3932] leading-snug line-clamp-2">
+              <h2 className="text-sm sm:text-base font-black text-[#1e3932] leading-snug line-clamp-2 text-balance">
                 {product.name}
               </h2>
               <span className="text-xs sm:text-sm font-bold text-[#006241] mt-0.5 block">
@@ -165,7 +165,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 sm:space-y-6 text-sm text-[#212121]">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 sm:space-y-6 text-sm text-[#212121] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           {product.description && (
             <p className="text-xs sm:text-sm text-[#595959] leading-relaxed bg-[#f9f9f9] p-2.5 sm:p-3 rounded-xl sm:rounded-2xl border border-stone-100">
               {product.description}
@@ -311,7 +311,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           </div>
         </div>
 
-        <div className="p-4 sm:p-5 bg-white border-t border-stone-100 shadow-lg">
+        <div className="p-4 pb-6 sm:p-5 bg-white border-t border-stone-100 shadow-lg">
           <button
             type="button"
             onClick={handleConfirmAddToCart}
