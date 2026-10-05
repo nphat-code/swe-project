@@ -30,7 +30,7 @@ flowchart LR
     Admin([Quản trị viên]):::actorStyle
     PaymentGW[Cổng thanh toán MoMo / VNPay]:::systemActorStyle
 
-    Member --|> Customer
+    Member -.->|Kế thừa| Customer
 
     subgraph SystemBoundary [HỆ THỐNG ĐẶT ĐỒ UỐNG BREWLITE]
         UC_ViewMenu([UC01: Xem thực đơn và danh mục]):::ucStyle
@@ -106,7 +106,7 @@ flowchart LR
     Member([Khách thành viên]):::actorStyle
     PaymentGW[Cổng thanh toán MoMo / VNPay]:::systemActorStyle
 
-    Member --|> Customer
+    Member -.->|Kế thừa| Customer
 
     subgraph CustomerPortal [PHÂN HỆ ĐẶT HÀNG KHÁCH HÀNG]
         UC1([Xem danh mục và Menu]):::ucStyle
