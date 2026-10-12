@@ -1,6 +1,7 @@
 yeu cau:
 - chi viet user story
-- ve so do usecase (DONE: xem docs/SO_DO_USE_CASE.md - đã bổ sung đầy đủ bảng 7 ô mô tả chuẩn CNPM)
+
+- ve so do usecase (DONE: xem docs/SO_DO_USE_CASE.md - đã bổ sung đầy đủ bảng 7 ô mô tả chuẩn CNPM), chỉ cần mô tả 1 usecase cốt lõi (đặt hàng, thanh toán)
 + usecase name
 + actor
 + description
@@ -15,3 +16,12 @@ yeu cau:
 + fork
 + join
 + sprint plan
+
+- khuyen khich AWS or Azure
+
+- sequence diagram
+
+- so do class (dua vao sequence diagram), co mo t
++ ten class
++ ten thuoc tinh
++ ten phuong thuc
