@@ -2,6 +2,24 @@ import { Product, Category, Topping } from '../types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
+async function fetchWithRetry(input: string, init?: RequestInit, maxRetries = 2): Promise<Response> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch(input, init);
+      if (response.ok || attempt === maxRetries || response.status < 500) {
+        return response;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+    } catch (error) {
+      if (attempt === maxRetries) {
+        throw error;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+    }
+  }
+  return fetch(input, init);
+}
+
 export async function fetchProducts(categorySlug?: string): Promise<Product[]> {
   try {
     const url = new URL(`${API_BASE_URL}/products`);
@@ -9,7 +27,7 @@ export async function fetchProducts(categorySlug?: string): Promise<Product[]> {
       url.searchParams.append('category', categorySlug);
     }
 
-    const res = await fetch(url.toString(), {
+    const res = await fetchWithRetry(url.toString(), {
       cache: 'no-store',
     });
 
@@ -26,7 +44,7 @@ export async function fetchProducts(categorySlug?: string): Promise<Product[]> {
 
 export async function fetchCategories(): Promise<Category[]> {
   try {
-    const res = await fetch(`${API_BASE_URL}/products/categories`, {
+    const res = await fetchWithRetry(`${API_BASE_URL}/products/categories`, {
       cache: 'no-store',
     });
 
@@ -43,7 +61,7 @@ export async function fetchCategories(): Promise<Category[]> {
 
 export async function fetchToppings(): Promise<Topping[]> {
   try {
-    const res = await fetch(`${API_BASE_URL}/products/toppings`, {
+    const res = await fetchWithRetry(`${API_BASE_URL}/products/toppings`, {
       cache: 'no-store',
     });
 
@@ -60,7 +78,7 @@ export async function fetchToppings(): Promise<Topping[]> {
 
 export async function fetchProductById(id: string): Promise<Product | null> {
   try {
-    const res = await fetch(`${API_BASE_URL}/products/${id}`, {
+    const res = await fetchWithRetry(`${API_BASE_URL}/products/${id}`, {
       cache: 'no-store',
     });
 
