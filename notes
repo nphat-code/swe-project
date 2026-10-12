@@ -1,4 +1,5 @@
 yeu cau:
+- chi viet user story
 - ve so do usecase (DONE: xem docs/SO_DO_USE_CASE.md - đã bổ sung đầy đủ bảng 7 ô mô tả chuẩn CNPM)
 + usecase name
 + actor
@@ -13,3 +14,4 @@ yeu cau:
 + quan he
 + fork
 + join
++ sprint plan
