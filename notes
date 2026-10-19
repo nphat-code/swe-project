@@ -1,5 +1,5 @@
 yeu cau:
-- chi viet user story
+- THAY THE user story bang cac so do UML (Use Case, Activity, Sequence, Class); khong viet user story dai dong, chi giu bang ma FR tinh gon de truy vet
 
 - ve so do usecase (DONE: xem docs/SO_DO_USE_CASE.md - đã bổ sung đầy đủ bảng 7 ô mô tả chuẩn CNPM), chỉ cần mô tả 1 usecase cốt lõi (đặt hàng, thanh toán)
 + usecase name

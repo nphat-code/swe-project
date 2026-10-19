@@ -30,7 +30,7 @@
 | :---: | :--- | :---: | :---: | :---: | :--- |
 | 1 | Tối ưu tên món tối đa 2 dòng trên mobile, ngắt dòng ngữ nghĩa | UI/UX | Cao | 🟢 Đã xong | Đã thêm text-balance, commit 38a878b |
 | 2 | Tuyệt đối không viết comment trong mã nguồn | Coding Rule | Cao | 🟢 Đã xong | Đã cập nhật AGENTS.md, commit 4b938b8 |
-| 3 |  |  |  |  |  |
+| 3 | Thay thế tài liệu User Story dài dòng bằng các sơ đồ UML (Use Case, Activity, Sequence, Class). Chỉ giữ bảng mã FR để phục vụ truy vết | Requirements & Modeling | Cao | 🟢 Đã áp dụng | Tập trung hoàn thiện trọn bộ sơ đồ UML thay vì viết User Story văn bản |
 | 4 |  |  |  |  |  |
 
 ---

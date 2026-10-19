@@ -9,7 +9,7 @@ Dự án **BrewLite** (Hệ thống đặt đồ uống không dùng tiền mặ
 > 2. **Làm xong phần nào push phần đó lên ngay lập tức:** Hoàn thành bất kỳ task/module nào, kiểm tra chạy tốt, tạo commit chuẩn Conventional Commits và thực thi `git push origin <branch>` ngay lập tức.
 > 3. **Tuyệt đối không comment trong code:** Code tự tường minh (Self-documenting), không có chú thích trong mã nguồn (`.ts`, `.tsx`, `.js`, `.css`), không để lại code thừa bị comment.
 > 4. **Các lưu ý cập nhật từ Giảng viên & notes:**
->    - Yêu cầu chức năng: viết theo định dạng **User Story** chuẩn (`As a... I want to... So that...`).
+>    - **Thay thế User Story bằng Sơ đồ UML:** Giảng viên yêu cầu không viết tài liệu User Story văn bản dài dòng mà thay thế bằng các sơ đồ UML trực quan (Use Case, Activity, Sequence, Class). Chỉ giữ bảng danh mục mã FR/NFR tinh gọn để phục vụ Ma trận truy vết.
 >    - Sơ đồ Use Case: Đặc tả 1 use case cốt lõi duy nhất (**Đặt và thanh toán đơn hàng**) theo **bảng chuẩn CNPM 7 ô** (Use Case Name, Actor, Description, Pre-condition, Normal Flow, Exception, Alternative Flow).
 >    - Sơ đồ Activity: Điều kiện trên nhánh rẽ **không dùng Yes/No**, phải ghi **hành động/trạng thái cụ thể**; thể hiện đầy đủ quan hệ, **Fork**, **Join**, và các nhánh xử lý hết hàng, chưa đăng nhập, thanh toán thất bại.
 >    - Sơ đồ Sequence: Thể hiện đầy đủ các Lifeline (`Customer -> Next.js UI -> NestJS API -> Database -> Payment Service`), JWT validation, transaction tạo đơn & cập nhật tồn kho, Idempotency-Key, rẽ nhánh Alt thành công/thất bại.
@@ -46,16 +46,14 @@ Dự án **BrewLite** (Hệ thống đặt đồ uống không dùng tiền mặ
     - Bảng giả định, ràng buộc kỹ thuật/nghiệp vụ và rủi ro ban đầu kèm giải pháp giảm thiểu.
   - *Hành động Git:* Commit `docs(req): add context and scope specification with stakeholder matrix` & `git push`.
 
-- [ ] **Task 1.2: Yêu cầu chức năng (User Stories) & Phi chức năng (SRS rút gọn)**
-  - **Tạo phẩm:** `docs/requirements/srs-user-stories.md`
+- [ ] **Task 1.2: Bảng Danh mục Yêu cầu (FR & NFR Matrix) phục vụ Truy vết & Sơ đồ**
+  - **Tạo phẩm:** `docs/requirements/system-requirements-matrix.md`
   - **Nội dung:**
-    - Yêu cầu chức năng: Viết theo định dạng **User Stories** chuẩn (`As a <role>, I want <action>, So that <benefit>`) có mã định danh `FR-01` đến `FR-12`.
-    - Phân nhóm yêu cầu chức năng tối thiểu: Menu, Chi tiết sản phẩm & tùy biến, Giỏ hàng, Xác thực JWT, Đặt đơn hàng, Thanh toán không tiền mặt, Quản lý trạng thái đơn hàng, Lịch sử đơn hàng, Khuyến mãi & Tích điểm.
-    - Yêu cầu phi chức năng có mã `NFR-01` đến `NFR-08`: Hiệu năng (Response time < 500ms, PWA load < 2s), Bảo mật (Bcrypt hash, JWT token, Idempotency header), Tính khả dụng (Mobile-first, responsive, zero comment trong code), Khả năng triển khai (Dockerized, CI/CD tự động).
-    - Phân loại mức độ ưu tiên theo chuẩn MoSCoW (Must have, Should have, Could have, Won't have).
-    - Bộ tiêu chí chấp nhận (Acceptance Criteria - AC) có thể kiểm chứng được theo cú pháp `Given - When - Then`.
-    - Sơ đồ Use Case tổng quát toàn hệ thống (Mermaid / PlantUML).
-  - *Hành động Git:* Commit `docs(req): add simplified SRS with user stories, NFRs and MoSCoW prioritization` & `git push`.
+    - Thay vì viết User Story văn bản dài dòng (theo chỉ đạo mới của Giảng viên), lập bảng danh mục yêu cầu chức năng có mã định danh `FR-01` đến `FR-10` và yêu cầu phi chức năng `NFR-01` đến `NFR-08`.
+    - Phân loại mức độ ưu tiên theo chuẩn MoSCoW (Must, Should, Could, Won't).
+    - Ánh xạ trực tiếp từng mã `FR` sang các Sơ đồ UML phụ trách (Use Case, Activity, Sequence, Class) và tiêu chí chấp nhận tóm tắt để làm đầu vào cho Ma trận truy vết (`traceability-matrix.md`).
+    - Sơ đồ Use Case tổng quát toàn hệ thống (`docs/diagrams/use-case/use-case-system.puml`).
+  - *Hành động Git:* Commit `docs(req): add system requirements matrix mapped to uml diagrams and MoSCoW prioritization` & `git push`.
 
 - [ ] **Task 1.3: Đặc tả Use Case trọng tâm (Đặt và thanh toán đơn hàng)**
   - **Tạo phẩm:** `docs/requirements/core-use-case-spec.md`
@@ -271,7 +269,7 @@ Tệp bắt buộc: `docs/traceability-matrix.md` liên kết chặt chẽ từn
   - Cung cấp quyền truy cập (Invite collaborator) cho Giảng viên hướng dẫn.
 - [ ] **2. Tài liệu Yêu cầu (Task 1):**
   - `docs/requirements/context-and-scope.md` (Stakeholder, In-scope, Out-of-scope, Giả định, Ràng buộc).
-  - `docs/requirements/srs-user-stories.md` (SRS rút gọn, User Stories, NFRs, MoSCoW, AC).
+  - `docs/requirements/system-requirements-matrix.md` (Bảng mã FR/NFR, MoSCoW, ánh xạ Sơ đồ UML).
   - `docs/requirements/core-use-case-spec.md` (Sơ đồ và bảng chuẩn 7 ô cho Use Case Đặt và thanh toán).
 - [ ] **3. Sơ đồ Mô hình hóa (Task 2):**
   - `docs/diagrams/activity/activity-flow.puml` & `.svg` (Swimlane, Fork/Join, Guard cụ thể).
