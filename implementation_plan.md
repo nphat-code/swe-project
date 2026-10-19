@@ -78,7 +78,7 @@ Dự án **BrewLite** (Hệ thống đặt đồ uống không dùng tiền mặ
 ### 🎨 Task 2: Mô hình hóa hệ thống (2.0 Điểm)
 
 - [ ] **Task 2.1: Sơ đồ Hoạt động (Activity Diagram)**
-  - **Tạo phẩm:** `docs/diagrams/activity-flow.puml` và ảnh xuất `docs/diagrams/activity-flow.svg`
+  - **Tạo phẩm:** `docs/diagrams/activity/activity-flow.puml` và ảnh xuất `docs/diagrams/activity/activity-flow.svg`
   - **Nội dung:**
     - Thể hiện trọn vẹn luồng End-to-End: Duyệt Menu -> Tùy biến món -> Giỏ hàng -> Đặt đơn -> Thanh toán -> Nhận đồ uống.
     - Điểm bắt đầu (Initial node) và điểm kết thúc (Activity final node).
@@ -89,7 +89,7 @@ Dự án **BrewLite** (Hệ thống đặt đồ uống không dùng tiền mặ
   - *Hành động Git:* Commit `docs(diagrams): add end-to-end activity diagram with swimlanes, fork-join and explicit guards` & `git push`.
 
 - [ ] **Task 2.2: Sơ đồ Tuần tự (Sequence Diagram)**
-  - **Tạo phẩm:** `docs/diagrams/sequence-checkout.puml` và ảnh xuất `docs/diagrams/sequence-checkout.svg`
+  - **Tạo phẩm:** `docs/diagrams/sequence/sequence-checkout.puml` và ảnh xuất `docs/diagrams/sequence/sequence-checkout.svg`
   - **Nội dung:**
     - Đặc tả cho Use Case trọng tâm ở Task 1.3.
     - 5 Lifeline tối thiểu theo đúng yêu cầu đề bài:
@@ -103,7 +103,7 @@ Dự án **BrewLite** (Hệ thống đặt đồ uống không dùng tiền mặ
   - *Hành động Git:* Commit `docs(diagrams): add core checkout sequence diagram with transaction, idempotency and alt fragments` & `git push`.
 
 - [ ] **Task 2.3: Sơ đồ Lớp (Class Diagram mức Domain)**
-  - **Tạo phẩm:** `docs/diagrams/class-domain.puml` và ảnh xuất `docs/diagrams/class-domain.svg` kèm mô tả chi tiết trong `docs/diagrams/class-description.md`
+  - **Tạo phẩm:** `docs/diagrams/class/class-domain.puml` và ảnh xuất `docs/diagrams/class/class-domain.svg` kèm mô tả chi tiết trong `docs/diagrams/class/class-description.md`
   - **Nội dung:**
     - Xây dựng dựa trên các đối tượng tham gia trong Sequence Diagram.
     - Tối thiểu 7 lớp cốt lõi: `User`, `Product`, `Order`, `OrderItem`, `Payment`, `Promotion`, `LoyaltyTransaction`.
@@ -139,7 +139,7 @@ Dự án **BrewLite** (Hệ thống đặt đồ uống không dùng tiền mặ
   - *Hành động Git:* Commit `docs(arch): add architecture overview and architectural decision records` & `git push`.
 
 - [ ] **Task 3.2: Sơ đồ Triển khai (Deployment Diagram)**
-  - **Tạo phẩm:** `docs/deployment.md`, `docs/diagrams/deployment-diagram.puml` và ảnh xuất `.svg`
+  - **Tạo phẩm:** `docs/deployment.md`, `docs/diagrams/deployment/deployment-diagram.puml` và ảnh xuất `.svg`
   - **Nội dung:**
     - Sơ đồ UML Deployment Diagram cho môi trường Production thực tế (khuyến khích kiến trúc AWS hoặc Azure):
       - User Client Device: Web Browser / Mobile PWA.
@@ -274,13 +274,13 @@ Tệp bắt buộc: `docs/traceability-matrix.md` liên kết chặt chẽ từn
   - `docs/requirements/srs-user-stories.md` (SRS rút gọn, User Stories, NFRs, MoSCoW, AC).
   - `docs/requirements/core-use-case-spec.md` (Sơ đồ và bảng chuẩn 7 ô cho Use Case Đặt và thanh toán).
 - [ ] **3. Sơ đồ Mô hình hóa (Task 2):**
-  - `docs/diagrams/activity-flow.puml` & `.svg` (Swimlane, Fork/Join, Guard cụ thể).
-  - `docs/diagrams/sequence-checkout.puml` & `.svg` (5 lifeline, Transaction, Idempotency, Alt).
-  - `docs/diagrams/class-domain.puml` & `.svg` + `docs/diagrams/class-description.md` (7 lớp domain, tên class/thuộc tính/phương thức).
+  - `docs/diagrams/activity/activity-flow.puml` & `.svg` (Swimlane, Fork/Join, Guard cụ thể).
+  - `docs/diagrams/sequence/sequence-checkout.puml` & `.svg` (5 lifeline, Transaction, Idempotency, Alt).
+  - `docs/diagrams/class/class-domain.puml` & `.svg` + `docs/diagrams/class/class-description.md` (7 lớp domain, tên class/thuộc tính/phương thức).
 - [ ] **4. Thiết kế Kiến trúc & Hạ tầng (Task 3):**
   - `docs/architecture/architecture-description.md` (Kiến trúc phân lớp, C4, trade-offs).
   - Thư mục `docs/architecture/adr/` (5 bản ghi quyết định kiến trúc).
-  - `docs/deployment.md` & `docs/diagrams/deployment-diagram.puml` & `.svg` (Kiến trúc Cloud AWS/Azure).
+  - `docs/deployment.md` & `docs/diagrams/deployment/deployment-diagram.puml` & `.svg` (Kiến trúc Cloud AWS/Azure).
 - [ ] **5. Ma trận Truy vết:**
   - `docs/traceability-matrix.md` liên kết từ Yêu cầu -> Sơ đồ -> API/Code -> Test Case.
 - [ ] **6. Mã nguồn & Kiểm thử (Task 4 & 5):**
