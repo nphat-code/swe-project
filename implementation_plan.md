@@ -46,7 +46,7 @@ Dự án **BrewLite** (Hệ thống đặt đồ uống không dùng tiền mặ
     - Bảng giả định, ràng buộc kỹ thuật/nghiệp vụ và rủi ro ban đầu kèm giải pháp giảm thiểu.
   - *Hành động Git:* Commit `docs(req): add context and scope specification with stakeholder matrix` & `git push`.
 
-- [ ] **Task 1.2: Bảng Danh mục Yêu cầu (FR & NFR Matrix) phục vụ Truy vết & Sơ đồ**
+- [x] **Task 1.2: Bảng Danh mục Yêu cầu (FR & NFR Matrix) phục vụ Truy vết & Sơ đồ**
   - **Tạo phẩm:** `docs/requirements/system-requirements-matrix.md`
   - **Nội dung:**
     - Thay vì viết User Story văn bản dài dòng (theo chỉ đạo mới của Giảng viên), lập bảng danh mục yêu cầu chức năng có mã định danh `FR-01` đến `FR-10` và yêu cầu phi chức năng `NFR-01` đến `NFR-08`.
