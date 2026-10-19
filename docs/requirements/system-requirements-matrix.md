@@ -19,44 +19,44 @@ Sơ đồ Use Case tổng quát thể hiện toàn bộ các chức năng của 
 
 ```mermaid
 flowchart LR
-    Customer([Khách hàng]):::actorStyle
-    Member([Khách thành viên]):::actorStyle
-    Barista([Nhân viên Barista]):::actorStyle
-    Admin([Quản trị viên]):::actorStyle
-    PaymentGW[Cổng thanh toán MoMo / VNPay]:::systemActorStyle
+    Customer[Khách hàng]
+    Member[Khách thành viên]
+    Barista[Nhân viên Barista]
+    Admin[Quản trị viên]
+    PaymentGW[Cổng thanh toán MoMo / VNPay]
 
     Member -.->|Kế thừa| Customer
 
     subgraph SystemBoundary [HỆ THỐNG ĐẶT ĐỒ UỐNG BREWLITE]
         subgraph SubMenu [1. Duyệt thực đơn & Tùy biến]
-            UC01([UC01: Xem menu & danh mục]):::ucStyle
-            UC02([UC02: Tìm kiếm đồ uống]):::ucStyle
-            UC03([UC03: Tùy biến Size & Topping]):::ucStyle
+            UC01([UC01: Xem menu & danh mục])
+            UC02([UC02: Tìm kiếm đồ uống])
+            UC03([UC03: Tùy biến Size & Topping])
         end
 
         subgraph SubOrder [2. Giỏ hàng & Đơn hàng]
-            UC04([UC04: Quản lý giỏ hàng]):::ucStyle
-            UC05([UC05: Đặt hàng - Checkout]):::ucStyle
-            UC06([UC06: Thanh toán không tiền mặt]):::ucStyle
+            UC04([UC04: Quản lý giỏ hàng])
+            UC05([UC05: Đặt hàng - Checkout])
+            UC06([UC06: Thanh toán không tiền mặt])
         end
 
         subgraph SubAuth [3. Tài khoản & Thành viên]
-            UC07([UC07: Đăng ký / Đăng nhập JWT]):::ucStyle
-            UC08([UC08: Xem lịch sử đơn hàng]):::ucStyle
-            UC09([UC09: Tích lũy điểm thưởng]):::ucStyle
+            UC07([UC07: Đăng ký / Đăng nhập JWT])
+            UC08([UC08: Xem lịch sử đơn hàng])
+            UC09([UC09: Tích lũy điểm thưởng])
         end
 
         subgraph SubBarista [4. Vận hành Quầy Barista]
-            UC10([UC10: Tiếp nhận đơn pha chế]):::staffUcStyle
-            UC11([UC11: Cập nhật trạng thái đơn]):::staffUcStyle
-            UC12([UC12: Hủy đơn hết nguyên liệu]):::staffUcStyle
+            UC10([UC10: Tiếp nhận đơn pha chế])
+            UC11([UC11: Cập nhật trạng thái đơn])
+            UC12([UC12: Hủy đơn hết nguyên liệu])
         end
 
         subgraph SubAdmin [5. Quản trị hệ thống]
-            UC13([UC13: Quản lý menu & Topping]):::adminUcStyle
-            UC14([UC14: Quản lý tồn kho đồ uống]):::adminUcStyle
-            UC15([UC15: Quản lý mã Voucher]):::adminUcStyle
-            UC16([UC16: Xem báo cáo doanh thu]):::adminUcStyle
+            UC13([UC13: Quản lý menu & Topping])
+            UC14([UC14: Quản lý tồn kho đồ uống])
+            UC15([UC15: Quản lý mã Voucher])
+            UC16([UC16: Xem báo cáo doanh thu])
         end
     end
 
@@ -81,12 +81,6 @@ flowchart LR
     Admin --> UC14
     Admin --> UC15
     Admin --> UC16
-
-    classDef actorStyle fill:#f5f5f5,stroke:#333333,stroke-width:1.5px,color:#000000,font-weight:bold
-    classDef systemActorStyle fill:#f5f5f5,stroke:#333333,stroke-width:1.5px,color:#000000,font-weight:bold
-    classDef ucStyle fill:#ffffff,stroke:#333333,stroke-width:1.5px,color:#000000
-    classDef staffUcStyle fill:#ffffff,stroke:#333333,stroke-width:1.5px,color:#000000
-    classDef adminUcStyle fill:#ffffff,stroke:#333333,stroke-width:1.5px,color:#000000
 ```
 
 ---
