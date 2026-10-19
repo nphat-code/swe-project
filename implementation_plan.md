@@ -36,7 +36,7 @@ Dự án **BrewLite** (Hệ thống đặt đồ uống không dùng tiền mặ
 
 ### 📝 Task 1: Khai thác và đặc tả yêu cầu (2.0 Điểm)
 
-- [ ] **Task 1.1: Bối cảnh, Stakeholder và Phạm vi**
+- [x] **Task 1.1: Bối cảnh, Stakeholder và Phạm vi**
   - **Tạo phẩm:** `docs/requirements/context-and-scope.md`
   - **Nội dung:**
     - Vấn đề nghiệp vụ cần giải quyết (giảm thời gian xếp hàng giờ cao điểm, loại bỏ sai sót gọi món bằng miệng, thanh toán không dùng tiền mặt).
