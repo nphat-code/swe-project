@@ -82,11 +82,11 @@ flowchart LR
     Admin --> UC15
     Admin --> UC16
 
-    classDef actorStyle fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20,font-weight:bold
-    classDef systemActorStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c,font-weight:bold
-    classDef ucStyle fill:#ffffff,stroke:#006241,stroke-width:2px,color:#1e3932,font-weight:bold
-    classDef staffUcStyle fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0369a1,font-weight:bold
-    classDef adminUcStyle fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#92400e,font-weight:bold
+    classDef actorStyle fill:#f5f5f5,stroke:#333333,stroke-width:1.5px,color:#000000,font-weight:bold
+    classDef systemActorStyle fill:#f5f5f5,stroke:#333333,stroke-width:1.5px,color:#000000,font-weight:bold
+    classDef ucStyle fill:#ffffff,stroke:#333333,stroke-width:1.5px,color:#000000
+    classDef staffUcStyle fill:#ffffff,stroke:#333333,stroke-width:1.5px,color:#000000
+    classDef adminUcStyle fill:#ffffff,stroke:#333333,stroke-width:1.5px,color:#000000
 ```
 
 ---

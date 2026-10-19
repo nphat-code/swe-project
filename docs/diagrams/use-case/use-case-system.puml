@@ -1,43 +1,10 @@
 @startuml
 left to right direction
-skinparam packageStyle rectangle
+skinparam monochrome true
 skinparam shadowing false
 skinparam defaultFontName "Arial"
-skinparam roundcorner 15
-
-skinparam usecase {
-    BackgroundColor #ffffff
-    BorderColor #006241
-    BorderThickness 1.5
-    FontColor #1e3932
-    FontSize 13
-}
-
-skinparam actor {
-    BackgroundColor #e8f5e9
-    BorderColor #2e7d32
-    FontColor #1b5e20
-    FontSize 13
-    FontWeight bold
-}
-
-skinparam rectangle {
-    BackgroundColor #fcfbf9
-    BorderColor #006241
-    BorderThickness 2
-    FontColor #006241
-    FontSize 15
-    FontWeight bold
-}
-
-skinparam package {
-    BackgroundColor #ffffff
-    BorderColor #8c827a
-    BorderThickness 1
-    FontColor #595959
-    FontSize 12
-    FontWeight bold
-}
+skinparam defaultFontSize 12
+skinparam packageStyle rectangle
 
 actor "Khách hàng" as Customer
 actor "Khách thành viên" as Member
