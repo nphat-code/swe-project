@@ -149,4 +149,8 @@ $$\text{Yêu cầu (FR-xx)} \iff \text{Sơ đồ UML (Use Case / Activity / Sequ
 Toàn bộ ma trận truy vết chi tiết 4 chiều sẽ được lưu trữ chính thức tại [`docs/traceability-matrix.md`](file:///c:/Study/HK1Nam3/CNPM/Project/docs/traceability-matrix.md).
 
 ---
-*Bản tài liệu này là căn cứ kỹ thuật chính thức cho Task 1.2 của Dự án BrewLite.*
+* **Tài liệu bàn giao Task 1:**
+  * 📋 **Task 1.1:** [Bối cảnh, Stakeholder & Phạm vi](context-and-scope.md)
+  * 📋 **Task 1.2:** [Danh mục yêu cầu FR/NFR & Sơ đồ Use Case tổng quát](system-requirements-matrix.md)
+  * 📋 **Task 1.3:** [Đặc tả Use Case trọng tâm: Đặt & Thanh toán không tiền mặt](core-use-case-specification.md)
+

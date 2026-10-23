@@ -1,0 +1,67 @@
+@startuml use-case-checkout
+title SƠ ĐỒ USE CASE TRỌNG TÂM: ĐẶT VÀ THANH TOÁN ĐƠN HÀNG (BREWLITE)
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+
+skinparam actor {
+  BackgroundColor #E8F5E9
+  BorderColor #2E7D32
+}
+
+skinparam usecase {
+  BackgroundColor #FFFFFF
+  BorderColor #006241
+  ArrowColor #006241
+}
+
+actor "Khách hàng\n(Customer)" as Customer
+actor "Khách thành viên\n(Member)" as Member
+actor "Cổng thanh toán\n(MoMo / VNPay / Thẻ)" as PaymentGW
+
+Member -up-|> Customer
+
+rectangle "Phân Hệ Đặt Hàng & Thanh Toán (Order & Payment Boundary)" {
+  usecase "UC04: Quản lý giỏ hàng" as UC_Cart
+  usecase "UC05: Đặt hàng\n(Checkout)" as UC_Checkout
+  usecase "UC05.1: Áp dụng mã Voucher" as UC_Voucher
+  usecase "UC06: Thanh toán không tiền mặt" as UC_Payment
+  usecase "UC06.1: Chọn phương thức\n(Ví MoMo / VNPay / Thẻ)" as UC_SelectMethod
+  usecase "UC06.2: Xác thực Idempotent\n& Trừ tiền giao dịch" as UC_Idempotent
+  usecase "UC06.3: Cập nhật cỗ máy trạng thái\n(PENDING -> PAID)" as UC_StateMachine
+  usecase "UC08: Nhận mã đồ uống\n& Xem trạng thái đơn" as UC_Receipt
+  usecase "UC09: Tích lũy điểm thưởng" as UC_Loyalty
+}
+
+Customer --> UC_Cart
+Customer --> UC_Checkout
+Customer --> UC_Receipt
+
+UC_Checkout ..> UC_Cart : <<precedes>>
+UC_Checkout ..> UC_Payment : <<include>>
+UC_Voucher ..> UC_Checkout : <<extend>>
+
+UC_Payment ..> UC_SelectMethod : <<include>>
+UC_Payment ..> UC_Idempotent : <<include>>
+UC_Payment ..> UC_StateMachine : <<include>>
+
+UC_Idempotent --> PaymentGW : Kết nối xử lý trừ tiền
+UC_StateMachine ..> UC_Receipt : Kích hoạt hiển thị
+
+Member --> UC_Loyalty
+UC_Payment ..> UC_Loyalty : <<extend>>\n(Khi khách là Member)
+
+note right of UC_Idempotent
+  Ngăn chặn trừ tiền trùng lặp
+  bằng Idempotency-Key
+end note
+
+note right of UC_StateMachine
+  assertTransition:
+  PENDING -> PAID
+  Trừ tồn kho bằng
+  Optimistic Locking
+end note
+@enduml

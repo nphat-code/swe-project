@@ -1,0 +1,37 @@
+flowchart LR
+    Customer([Khách hàng]):::actorStyle
+    Member([Khách thành viên]):::actorStyle
+    PaymentGW[Cổng thanh toán MoMo / VNPay]:::systemActorStyle
+
+    Member -.->|Kế thừa| Customer
+
+    subgraph CoreBoundary [PHẠM VI USE CASE TRỌNG TÂM: ĐẶT & THANH TOÁN ĐƠN HÀNG]
+        UC_Cart([UC04: Quản lý giỏ hàng]):::ucStyle
+        UC_Checkout([UC05: Đặt hàng - Checkout]):::coreStyle
+        UC_Voucher([UC05.1: Áp dụng mã Voucher]):::subUcStyle
+        UC_Payment([UC06: Thanh toán không tiền mặt]):::coreStyle
+        UC_Idempotent([UC06.1: Xử lý Idempotent & Trừ tiền]):::subUcStyle
+        UC_State([UC06.2: Cập nhật State Machine PENDING sang PAID]):::subUcStyle
+        UC_Receipt([UC08: Nhận mã đồ uống & Xem đơn]):::ucStyle
+        UC_Loyalty([UC09: Tích lũy điểm thưởng]):::ucStyle
+    end
+
+    Customer --> UC_Cart
+    Customer --> UC_Checkout
+    Customer --> UC_Receipt
+    Member --> UC_Loyalty
+
+    UC_Checkout -.->|include| UC_Payment
+    UC_Voucher -.->|extend| UC_Checkout
+    UC_Payment -.->|include| UC_Idempotent
+    UC_Payment -.->|include| UC_State
+    UC_Payment -.->|extend - Khi là Member| UC_Loyalty
+    UC_State -.->|Kích hoạt| UC_Receipt
+
+    UC_Idempotent <--> PaymentGW
+
+    classDef actorStyle fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20,font-weight:bold
+    classDef systemActorStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c,font-weight:bold
+    classDef coreStyle fill:#dcfce7,stroke:#16a34a,stroke-width:2.5px,color:#14532d,font-weight:bold
+    classDef ucStyle fill:#ffffff,stroke:#006241,stroke-width:2px,color:#1e3932,font-weight:bold
+    classDef subUcStyle fill:#f8fafc,stroke:#64748b,stroke-width:1.5px,stroke-dasharray: 4 4,color:#334155
