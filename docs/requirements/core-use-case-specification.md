@@ -43,6 +43,7 @@ flowchart LR
 
     Customer --> UC05
     Member --> UC08
+    Member --> UC09
 
     UC05 -.->|include| UC05_2
     UC05 -.->|include| UC06
@@ -53,8 +54,6 @@ flowchart LR
     UC06 -.->|include| UC06_1
     UC06 -.->|include| UC06_2
     UC06_3 -.->|extend| UC06
-    UC06 -.->|include| UC08
-    UC06 -.->|extend| UC09
 
     UC06_2 <--> PaymentGW
 ```
