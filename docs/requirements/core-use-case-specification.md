@@ -19,36 +19,32 @@ Use case **"Đặt hàng và Thanh toán không tiền mặt"** là mạch máu 
 
 ```mermaid
 flowchart LR
-    Customer([Khách hàng]):::actorStyle
-    Member([Khách thành viên]):::actorStyle
-    PaymentGW[Cổng thanh toán MoMo / VNPay]:::systemActorStyle
+    Customer[Khách hàng]
+    Member[Khách thành viên]
+    PaymentGW[Cổng thanh toán MoMo / VNPay]
 
     Member -.->|Kế thừa| Customer
 
     subgraph CoreBoundary [PHẠM VI USE CASE TRỌNG TÂM: ĐẶT & THANH TOÁN ĐƠN HÀNG]
-        UC_Cart([UC04: Quản lý giỏ hàng]):::ucStyle
-        UC_Checkout([UC05: Đặt hàng - Checkout]):::coreStyle
-        UC_Voucher([UC05.1: Áp dụng mã Voucher]):::subUcStyle
-        UC_Payment([UC06: Thanh toán không tiền mặt]):::coreStyle
-        UC_Idempotent([UC06.1: Xử lý Idempotent & Trừ tiền]):::subUcStyle
-        UC_State([UC06.2: Cập nhật State Machine PENDING sang PAID]):::subUcStyle
-        UC_Receipt([UC08: Nhận mã đồ uống & Xem đơn]):::ucStyle
-        UC_Loyalty([UC09: Tích lũy điểm thưởng]):::ucStyle
+        UC04([UC04: Quản lý giỏ hàng]):::ucStyle
+        UC05([UC05: Đặt hàng - Checkout]):::coreStyle
+        UC05_1([UC05.1: Áp dụng mã Voucher]):::subUcStyle
+        UC06([UC06: Thanh toán trực tuyến]):::coreStyle
+        UC08([UC08: Xem lịch sử đơn hàng]):::ucStyle
+        UC09([UC09: Tích lũy điểm thưởng]):::ucStyle
     end
 
-    Customer --> UC_Cart
-    Customer --> UC_Checkout
-    Customer --> UC_Receipt
-    Member --> UC_Loyalty
+    Customer --> UC04
+    Customer --> UC05
+    Customer --> UC06
 
-    UC_Checkout -.->|include| UC_Payment
-    UC_Voucher -.->|extend| UC_Checkout
-    UC_Payment -.->|include| UC_Idempotent
-    UC_Payment -.->|include| UC_State
-    UC_Payment -.->|extend - Khi là Member| UC_Loyalty
-    UC_State -.->|Kích hoạt| UC_Receipt
+    Member --> UC08
+    Member --> UC09
 
-    UC_Idempotent <--> PaymentGW
+    UC05 -.->|include| UC06
+    UC05_1 -.->|extend| UC05
+
+    UC06 <--> PaymentGW
 
     classDef actorStyle fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20,font-weight:bold
     classDef systemActorStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c,font-weight:bold
@@ -63,8 +59,8 @@ flowchart LR
 
 | Thuộc tính | Chi tiết đặc tả kỹ thuật |
 | :--- | :--- |
-| **Tên Use Case** | **UC-CORE: Đặt Hàng & Thanh Toán Trực Tuyến Không Dùng Tiền Mặt (Cashless Order & Checkout)** |
-| **Mã định danh** | `UC05` (`UC05.1`) + `UC06` (`UC06.1`, `UC06.2`) |
+| **Tên Use Case** | **UC-CORE: Đặt Hàng & Thanh Toán Trực Tuyến (Cashless Order & Checkout)** |
+| **Mã định danh** | `UC05: Đặt hàng - Checkout` & `UC06: Thanh toán trực tuyến` (kèm `UC05.1: Áp dụng mã Voucher`) |
 | **Tác nhân chính (Primary Actor)** | **Khách hàng (Customer)** / **Khách thành viên (Member)** |
 | **Tác nhân hỗ trợ (Supporting Actor)** | **Cổng thanh toán điện tử (Mock Payment Gateway)** (MoMo, VNPay, Thẻ ngân hàng) |
 | **Sự kiện kích hoạt (Trigger)** | Khách hàng nhấn nút **"Tiến hành đặt hàng"** từ Giỏ hàng (Cart Drawer) hoặc nút **"Thanh toán ngay"** trên màn hình Checkout. |
