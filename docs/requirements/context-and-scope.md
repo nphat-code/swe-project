@@ -116,35 +116,36 @@ flowchart LR
     end
 ```
 
-### 3.1. Phạm vi trong MVP (In-Scope — Nghiệm thu Assignment 2)
-1. **Phân hệ Khách hàng (Customer Portal - Web App / Mobile-First):**
-   * Xem danh mục đồ uống dạng Tabs (Cà phê, Trà, Đá xay, Bánh ngọt).
-   * Lọc và tìm kiếm đồ uống theo thời gian thực.
-   * Modal chi tiết sản phẩm: chọn kích cỡ ly (S: +0đ, M: +5.000đ, L: +10.000đ) và danh sách topping (Trân châu trắng, Kem cheese, Sương sáo,...), cập nhật tổng giá realtime.
-   * Quản lý giỏ hàng: thêm/bớt/xóa món, tự động gộp món có cùng cấu hình size/topping, lưu giỏ hàng vào `localStorage` của trình duyệt.
-   * Đăng ký và đăng nhập tài khoản thành viên bảo mật bằng JWT và mật khẩu băm `bcrypt`.
-   * Khởi tạo đơn hàng trực tuyến (`POST /orders`) với tính toán lại giá từ CSDL (Server-side price verification) chống gian lận.
-   * Thanh toán trực tuyến không dùng tiền mặt (Mock Payment Gateway) kèm mã `Idempotency-Key` chống trừ tiền lặp.
-   * Màn hình thông báo đặt hàng thành công hiển thị mã nhận nước điện tử (ví dụ: `#1042`) và hướng dẫn đến quầy nhận món sau 5–7 phút.
-   * Tra cứu lịch sử các đơn hàng đã đặt của tài khoản cá nhân (`GET /orders/me`).
-2. **Nghiệp vụ Backend chuyên sâu (Backend Core Architecture):**
-   * Cỗ máy trạng thái đơn hàng (Order State Machine) kiểm soát chu trình sống của đơn (`PENDING` $\rightarrow$ `PAID` $\rightarrow$ `PREPARING` $\rightarrow$ `READY` $\rightarrow$ `COMPLETED`).
-   * Kiểm soát tranh chấp tồn kho đồng thời (Concurrency Control) bằng kỹ thuật Khóa lạc quan (Optimistic Locking) với trường `version`.
-   * Tự động tích lũy điểm thưởng thành viên (`loyaltyPoints`) khi đơn chuyển sang `PAID`.
-3. **Kiểm thử, Đóng gói & Triển khai (DevOps & Delivery):**
-   * Đóng gói toàn bộ hệ thống bằng `docker-compose.yml` (Frontend Next.js, Backend NestJS, Database PostgreSQL).
-   * Endpoint giám sát sức khỏe `GET /health` kiểm tra kết nối API và CSDL.
-   * Triển khai hoàn chỉnh trên môi trường Cloud thực tế (Vercel/Render/Neon) với giao thức HTTPS an toàn.
+### 3.1. Bảng phạm vi trong MVP (In-Scope Table — Nghiệm thu Assignment 2)
 
-### 3.2. Phạm vi mở rộng tương lai (Future Scope — Phase 2)
-* Màn hình chuyên dụng cho Barista tại quầy (Kitchen Display System - KDS) đồng bộ đơn thời gian thực thông qua kết nối WebSocket/SSE.
-* Tích hợp trực tiếp với cổng thanh toán thực tế thông qua MoMo Open API hoặc VietQR Dynamic.
-* Ứng dụng di động cài đặt trực tiếp (Native Mobile App) sử dụng React Native hoặc Flutter kèm tính năng Push Notification thông báo khi nước đã sẵn sàng.
+Hệ thống hiện thực đầy đủ **luồng nghiệp vụ tối thiểu (Core Business Flow)** xuyên suốt:
+$$\text{Xem menu} \longrightarrow \text{Chọn tùy chọn (Size/Topping)} \longrightarrow \text{Giỏ hàng} \longrightarrow \text{Đặt đơn} \longrightarrow \text{Thanh toán} \longrightarrow \text{Theo dõi đơn}$$
 
-### 3.3. Các nội dung không thực hiện (Out-of-Scope)
-* **Giao hàng tận nhà (Delivery Logistics):** Hệ thống không bao gồm quản lý tài xế, tính phí ship hoặc lộ trình vận chuyển. BrewLite hoàn toàn tập trung vào mô hình khách đặt trước và tự lấy tại quầy (Takeaway / In-store Pickup).
-* **Thanh toán tiền mặt:** Hệ thống định vị là giải pháp không tiền mặt (Cashless), do đó không có luồng thu tiền mặt hay thối tiền tại quầy.
-* **Hệ thống kế toán - tiền lương doanh nghiệp (ERP):** Không bao gồm quản lý tài sản cố định, bảng lương nhân viên, khấu hao nguyên vật liệu chi tiết.
+| STT | Phân hệ / Thành phần | Tính năng trong MVP (In-Scope) | Luồng nghiệp vụ liên quan | Tiêu chí nghiệm thu MVP (Acceptance Criteria) |
+| :---: | :--- | :--- | :---: | :--- |
+| **1** | **Frontend Web** (Next.js Mobile-first / PWA) | - Duyệt danh mục đồ uống dạng Tabs (Cà phê, Trà, Đá xay, Bánh ngọt).<br/>- Modal tùy biến món: chọn Size (S/M/L) và Topping, tính giá realtime.<br/>- Giỏ hàng client (Zustand + `localStorage`), tăng/giảm số lượng, xóa món.<br/>- Đăng ký / Đăng nhập tài khoản thành viên bảo mật.<br/>- Màn hình xác nhận đơn hiển thị mã nhận nước `#1042`.<br/>- Tra cứu lịch sử đơn hàng cá nhân (`GET /orders/me`). | `Xem menu`<br/>`Chọn tùy chọn`<br/>`Giỏ hàng`<br/>`Theo dõi đơn` | - Giao diện responsive tối ưu trên điện thoại di động.<br/>- Đầy đủ 3 trạng thái UX: Loading skeleton, Empty state, Error state có nút Retry.<br/>- Hiển thị đúng đơn vị tiền tệ VND (`35.000đ`).<br/>- Lưu trữ giỏ hàng bền vững qua reload. |
+| **2** | **Backend API** (NestJS Modular REST API) | - `GET /products`: Danh sách đồ uống có lọc danh mục.<br/>- `GET /products/:id`: Chi tiết đồ uống kèm options.<br/>- `POST /auth/register` & `POST /auth/login`: Xác thực JWT.<br/>- `POST /orders`: Tạo đơn hàng mới, trạng thái `PENDING`.<br/>- `POST /payments`: Xử lý giao dịch thanh toán đơn hàng.<br/>- `GET /orders/me`: Lấy lịch sử đơn hàng của người dùng. | `Xem menu`<br/>`Đặt đơn`<br/>`Thanh toán`<br/>`Theo dõi đơn` | - Cấu trúc phân tầng rõ ràng (Controller, Service, DTO, Entity).<br/>- Validation đầu vào chặt chẽ qua `ValidationPipe`.<br/>- Server-side price calculation: tự tính lại 100% tiền từ CSDL, không tin giá client gửi lên.<br/>- Endpoint giám sát sức khỏe `GET /health` trả về `200 OK`. |
+| **3** | **Cơ sở dữ liệu** (PostgreSQL + Prisma ORM) | - Thiết kế quan hệ chuẩn hóa cho 7 thực thể cốt lõi: `User`, `Product`, `Order`, `OrderItem`, `Payment`, `Promotion`, `LoyaltyTransaction`.<br/>- Cơ chế Migration tự động và file seed dữ liệu mẫu phong phú. | Toàn bộ luồng nghiệp vụ | - CSDL có thể tái tạo hoàn chỉnh chỉ bằng một lệnh migration & seed.<br/>- Dữ liệu tham chiếu có tính toàn vẹn khóa ngoại (Foreign Keys). |
+| **4** | **Nghiệp vụ chuyên sâu** (Core Engine) | - **Order State Machine:** Kiểm soát chu trình sống đơn hàng (`PENDING` $\rightarrow$ `PAID` $\rightarrow$ `PREPARING` $\rightarrow$ `READY` $\rightarrow$ `COMPLETED`).<br/>- **Optimistic Locking:** Kiểm soát đồng thời tồn kho với trường `version` trong bảng `Product`.<br/>- **Idempotent Payment:** Chống trừ tiền trùng lặp bằng `Idempotency-Key` UUIDv4 trong header.<br/>- **Loyalty Program:** Tự động tích lũy điểm thưởng thành viên khi đơn hàng chuyển sang `PAID`. | `Đặt đơn`<br/>`Thanh toán`<br/>`Theo dõi đơn` | - Không cho phép nhảy cóc trạng thái đơn hàng (ném lỗi `400 Bad Request`).<br/>- Không bao giờ xảy ra bán âm tồn kho khi nhiều request tranh chấp cùng lúc.<br/>- Nhận request trùng `Idempotency-Key` trả về ngay kết quả đã lưu mà không trừ tiền lần 2. |
+| **5** | **Hạ tầng & Đóng gói** (DevOps & Delivery) | - File `docker-compose.yml` khởi chạy trọn vẹn cả 3 service (Frontend, Backend, PostgreSQL) ở môi trường local.<br/>- Pipeline CI/CD tự động trên GitHub Actions.<br/>- Triển khai chạy thực tế trên Cloud (Vercel/Render/Neon) với giao thức HTTPS an toàn. | Toàn bộ hệ thống | - Người dùng bên ngoài có thể truy cập hệ thống qua URL Internet an toàn HTTPS.<br/>- Database không public trực tiếp cổng ra ngoài.<br/>- Bí mật/Secrets được quản lý an toàn, không lộ file `.env`. |
+
+### 3.2. Bảng phạm vi mở rộng trong tương lai (Future Scope Table — Giai đoạn 2)
+
+| STT | Tính năng mở rộng | Mô tả chi tiết | Mục tiêu nâng cao |
+| :---: | :--- | :--- | :--- |
+| **1** | **Màn hình KDS Quầy Bar (Kitchen Display System)** | Ứng dụng web hiển thị chuyên dụng cho Barista tại quầy pha chế, đồng bộ đơn hàng theo thời gian thực (Realtime) thông qua giao thức WebSocket hoặc Server-Sent Events (SSE). | Tự động hóa hoàn toàn quy trình nhận đơn của nhân viên quầy, hiển thị thông báo âm thanh khi có đơn mới thanh toán thành công. |
+| **2** | **Cổng thanh toán thực tế (Live Payment Integration)** | Tích hợp trực tiếp với API của MoMo Open Platform, ZaloPay Merchant hoặc VietQR Dynamic sinh mã QR kèm số tiền và nội dung chuyển khoản tự động. | Cho phép giao dịch dòng tiền thực tế của ngân hàng thay cho dịch vụ Mock Payment. |
+| **3** | **Ứng dụng Native Mobile App** | Xây dựng ứng dụng di động đa nền tảng bằng React Native hoặc Flutter phát hành lên Google Play và Apple App Store. | Hỗ trợ tính năng thông báo đẩy (Push Notification) khi đồ uống đã pha chế xong sẵn sàng nhận món. |
+| **4** | **Phân tích hành vi & Khuyến mãi nâng cao (AI Recommendation)** | Gợi ý món uống kèm thông minh (Cross-selling/Up-selling) dựa trên lịch sử đặt món của khách hàng và phân tích xu hướng bán chạy theo khung giờ. | Tăng giá trị trung bình trên mỗi đơn hàng (Average Order Value - AOV) cho cửa hàng. |
+
+### 3.3. Bảng nội dung không thực hiện (Out-of-Scope Table)
+
+| STT | Nội dung loại trừ (Out-of-Scope) | Lý do loại trừ trong khuôn khổ đề tài BrewLite |
+| :---: | :--- | :--- |
+| **1** | **Giao hàng tận nhà (Delivery Logistics)** | BrewLite định vị cốt lõi là giải pháp **Click & Collect (Đặt trước - Tự đến lấy tại quầy)** nhằm giải quyết dứt điểm vấn đề xếp hàng giờ cao điểm tại quán. Hệ thống không bao gồm quản lý tài xế, tính phí giao hàng (ship fee), bản đồ lộ trình vận chuyển hay theo dõi GPS shipper. |
+| **2** | **Thu / Thối tiền mặt tại quầy** | Đề tài tập trung 100% vào mô hình **Cashless (Không dùng tiền mặt)** để xóa bỏ thời gian chết kiểm đếm tiền thối (45-90s/khách) và rủi ro thất thoát doanh thu. Mọi giao dịch bắt buộc thực hiện qua phương thức thanh toán điện tử. |
+| **3** | **Kế toán doanh nghiệp & Tính lương (Enterprise ERP)** | Dự án tập trung vào trải nghiệm đặt hàng của khách hàng và xử lý nghiệp vụ đơn tại cửa hàng. Các phân hệ phức tạp như tính lương nhân viên, hạch toán khấu hao tài sản cố định, xuất hóa đơn đỏ GTGT cho cơ quan thuế thuộc về hệ thống ERP doanh nghiệp riêng biệt. |
+| **4** | **Đặt giữ bàn trước (Table Reservation)** | Mô hình vận hành của quán là phục vụ đồ uống mang đi (Takeaway) và ngồi uống tự do tại chỗ; không cung cấp tính năng đặt sơ đồ bàn trước theo khung giờ. |
 
 ---
 
@@ -167,6 +168,7 @@ flowchart LR
 | **CST-04** | Quy định viết mã nguồn | **Tuyệt đối không viết bất kỳ comment giải thích nào trong các file mã nguồn** (`.ts`, `.tsx`, `.js`, `.css`). Code phải tự tường minh (Self-documenting code). |
 | **CST-05** | Quy chuẩn Git & Bàn giao | Làm xong task nào phải commit chuẩn Conventional Commits và thực thi `git push` lên repository ngay lập tức. |
 | **CST-06** | Môi trường triển khai | Cung cấp file cấu hình `docker-compose.yml` để chạy cục bộ và triển khai ít nhất 1 phiên bản chạy thực tế trên Cloud hỗ trợ giao thức HTTPS. |
+| **CST-07** | Quy tắc thực hiện tuần tự | Năm task lớn của Assignment 2 phải hoàn thành đúng thứ tự (Task 1 $\rightarrow$ Task 2 $\rightarrow$ Task 3 $\rightarrow$ Task 4 $\rightarrow$ Task 5). Task sau chỉ được nghiệm thu khi tạo phẩm bắt buộc của task trước đã có đầy đủ trên kho GitHub. |
 
 ---
 
@@ -179,6 +181,7 @@ flowchart LR
 | **RSK-03** | **Gian lận đơn giá từ Client (Price Tampering)**<br/>Người dùng cố tình sửa giá tiền trong payload gửi lên API. | `Nghiêm trọng` | `Thấp` | **Server-side Calculation:** Backend hoàn toàn không tin tưởng đơn giá hay tổng tiền từ client gửi lên. API chỉ nhận `productId`, `sizeOptionId` và `toppingIds`, sau đó tự truy vấn CSDL để tính toán lại 100% tổng tiền hợp lệ. |
 | **RSK-04** | **Database Cold-Start Timeout**<br/>Cơ sở dữ liệu miễn phí trên Cloud rơi vào trạng thái ngủ đông (Sleep mode). | `Trung bình` | `Cao` | Client cài đặt cơ chế tự động thử lại (Retry logic) với thuật toán Exponential Backoff khi gặp mã lỗi 500/503. Backend cấu hình Connection Pooling tối ưu qua Prisma Direct URL. |
 | **RSK-05** | **Nhảy cóc trạng thái đơn (Invalid State Transition)**<br/>Đơn hàng chưa thanh toán bị chuyển nhầm sang pha chế hoặc hoàn tất. | `Cao` | `Trung bình` | Xây dựng cỗ máy trạng thái hữu hạn (Order State Machine) được đóng gói trong hàm `assertTransition`. Mọi hành động chuyển trạng thái vi phạm đồ thị hợp lệ sẽ bị ném lỗi `400 Bad Request` ngay lập tức. |
+| **RSK-06** | **Mất điểm truy vết do thiếu tạo phẩm tuần tự (Traceability Dependency Risk)**<br/>Đề bài quy định task sau không được tính điểm truy vết nếu thiếu tạo phẩm task trước. | `Cao` | `Thấp` | Duy trì file [docs/traceability-matrix.md](file:///c:/Study/HK1Nam3/CNPM/Project/docs/traceability-matrix.md) liên kết 5 cột liên tục qua từng task, kiểm tra chéo theo checklist 9.1 trước khi bắt đầu task kế tiếp. |
 
 ---
 
