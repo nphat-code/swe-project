@@ -23,7 +23,7 @@
 ## 2. SƠ ĐỒ USE CASE TỔNG QUAN (OVERALL USE CASE DIAGRAM)
 
 > 🖼️ **Hình ảnh sơ đồ trực quan (Rendered Diagram):** [`docs/diagrams/use-case/use-case-system.png`](diagrams/use-case/use-case-system.png)  
-> 📄 **Mã nguồn mô hình:** [`PlantUML`](diagrams/use-case/use-case-system.puml) | [`Mermaid`](diagrams/use-case/use-case-system.mmd)
+> 📊 **Mã nguồn Mermaid:** [`docs/diagrams/use-case/use-case-system.mmd`](diagrams/use-case/use-case-system.mmd)
 
 ```mermaid
 flowchart LR

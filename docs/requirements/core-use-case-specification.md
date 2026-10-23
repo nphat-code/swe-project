@@ -15,7 +15,6 @@
 
 Use case **"Đặt hàng và Thanh toán không tiền mặt"** là mạch máu nghiệp vụ cốt lõi nhất của BrewLite, giải quyết bài toán: *Khách hàng không phải xếp hàng chờ thanh toán tiền mặt tại quầy, mà có thể hoàn tất chọn món, áp voucher, thanh toán qua Ví điện tử và nhận mã lấy nước trong vài chạm.*
 
-* **Mã nguồn PlantUML:** [`docs/diagrams/use-case/use-case-checkout.puml`](../diagrams/use-case/use-case-checkout.puml)
 * **Mã nguồn Mermaid:** [`docs/diagrams/use-case/use-case-checkout.mmd`](../diagrams/use-case/use-case-checkout.mmd)
 
 ```mermaid
