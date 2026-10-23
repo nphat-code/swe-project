@@ -15,7 +15,9 @@
 
 Sơ đồ Use Case tổng quát thể hiện toàn bộ các chức năng của hệ thống BrewLite, phân định ranh giới giữa 5 phân hệ và mối quan hệ với 5 nhóm tác nhân (Khách hàng, Khách thành viên, Barista, Admin, Cổng thanh toán).
 
-* **Mã nguồn PlantUML chuẩn:** [`docs/diagrams/use-case/use-case-system.puml`](file:///c:/Study/HK1Nam3/CNPM/Project/docs/diagrams/use-case/use-case-system.puml)
+* **Hình ảnh sơ đồ trực quan:** [`docs/diagrams/use-case/use-case-system.png`](../diagrams/use-case/use-case-system.png)
+* **Mã nguồn PlantUML chuẩn:** [`docs/diagrams/use-case/use-case-system.puml`](../diagrams/use-case/use-case-system.puml)
+* **Mã nguồn Mermaid:** [`docs/diagrams/use-case/use-case-system.mmd`](../diagrams/use-case/use-case-system.mmd)
 
 ```mermaid
 flowchart LR
