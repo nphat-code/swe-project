@@ -1,69 +1,81 @@
 # ☕ BrewLite — Cashless Coffee Ordering System
+## Đề tài Bài tập lớn môn Công nghệ Phần mềm (Software Engineering) — ĐH Sài Gòn
+### Assignment 2: Requirements to Deployment (VER 1.0) — Thang điểm 10.0
 
-> **Bài tập lớn môn Công nghệ Phần mềm (Software Engineering) - ĐH Sài Gòn**
-> **Mô hình quy trình:** Agile Scrum (3 Sprints - 10 Tasks)
-> **Product Vision:** *"BrewLite giúp khách hàng đặt và thanh toán đồ uống không dùng tiền mặt chỉ trong vài chạm, giảm thời gian xếp hàng và nhận đơn nhanh tại quầy."*
-
----
-
-## 📚 Tài liệu & Đặc Tả Dự Án
-* 📋 **[Bản Đặc Tả Yêu Cầu Phần Mềm (SRS)](docs/DAC_TA_YEU_CAU_PHAN_MEM.md)**: Đặc tả chi tiết 10 Task Backlog, Tiêu chí chấp nhận (Acceptance Criteria), Đặc tả CSDL, API Contracts, và 4 Quy tắc nghiệp vụ cốt lõi (State Machine, Idempotent, Concurrency, Loyalty).
-* 📑 **[Tài liệu Báo cáo & Trình bày Sản phẩm](docs/TAI_LIEU_TRINH_BAY_SAN_PHAM.md)**: Tổng quan bối cảnh, Stakeholders, Chân dung người dùng, 10 User Stories, Kiến trúc, Cỗ máy trạng thái (State Machine), Kịch bản Demo 10 phút, Sprint Retrospective.
-* 📖 **[Sổ tay Kiến thức Công nghệ Phần mềm](docs/KIENTHUC_CNPM.md)**: Khái niệm cốt lõi Monorepo, Dependency Injection, DTO, ValidationPipe, CORS, Docker, Agile Scrum.
+> **Mô hình quy trình:** Chuỗi quy trình phát triển 5 Tasks tuần tự (Khai thác yêu cầu $\rightarrow$ Mô hình hóa $\rightarrow$ Kiến trúc $\rightarrow$ Sprint 1 $\rightarrow$ Sprint 2 & CI/CD Delivery)  
+> **Product Vision:** *"BrewLite giúp khách hàng đặt và thanh toán đồ uống không dùng tiền mặt chỉ trong vài chạm, giảm thời gian xếp hàng và nhận đơn nhanh tại quầy."*  
+> **Kho mã nguồn:** [nphat-code/swe-project](https://github.com/nphat-code/swe-project)
 
 ---
 
-## 🏗️ Kiến trúc & Công nghệ
+## 📚 Hồ Sơ Tài Liệu Dự Án (Assignment 2 Deliverables)
 
-* **Frontend:** [Next.js](https://nextjs.org/) (React 19, TypeScript, TailwindCSS v4, App Router, Lucide Icons, Zustand / React Query)
-* **Backend:** [NestJS](https://nestjs.com/) (TypeScript, REST API, `class-validator`, Passport JWT, State Machine, Optimistic Locking)
-* **Cơ sở dữ liệu:** PostgreSQL + Prisma ORM
-* **Thanh toán:** Mock Payment Gateway (Mô phỏng Ví điện tử / Thẻ ngân hàng)
-* **DevOps:** Docker Compose, Git Conventional Commits
+* 📜 **[Bản Chuyển Hóa Yêu Cầu Assignment 2 (Chính thức)](docs/YEU_CAU_ASSIGNMENT_2.md):** Văn bản hóa toàn diện 9 mục từ file đề bài `Assignment2-BrewLite.pdf`, thang điểm chi tiết (5 Task x 2.0đ) và checklist 9.1 nộp bài.
+* 📋 **[Kế Hoạch Triển Khai Master Plan (Theo dõi tiến độ)](implementation_plan.md):** Kế hoạch chi tiết từng bước, tiêu chí chấp nhận và trạng thái nghiệm thu của từng Task.
+* 📑 **Tài liệu Task 1 — Khai thác & Đặc tả Yêu cầu (2.0đ):**
+  * 📋 [Task 1.1: Bối cảnh, Stakeholder & Phạm vi](docs/requirements/context-and-scope.md)
+  * 📋 [Task 1.2: Danh mục yêu cầu FR/NFR & Sơ đồ Use Case tổng quát](docs/requirements/system-requirements-matrix.md)
+  * 📋 [Task 1.3: Đặc tả Use Case trọng tâm (Đặt hàng & Thanh toán)](docs/requirements/core-use-case-specification.md)
+* 📊 **Tài liệu Task 2 — Mô hình hóa Hệ thống (2.0đ):**
+  * 🔄 [Sơ đồ Hoạt động (Activity Diagram)](docs/diagrams/activity/activity-flow.puml) *(Swimlane, Fork/Join, Không Yes/No)*
+  * ⏱️ Sơ đồ Tuần tự (Sequence Diagram) — `docs/diagrams/sequence/sequence-checkout.puml`
+  * 🏛️ Sơ đồ Lớp Domain (Class Diagram) — `docs/diagrams/class/class-domain.puml`
+* 🏗️ **Tài liệu Task 3 — Thiết kế Kiến trúc (2.0đ):**
+  * 🏛️ [Tài liệu Kiến trúc C4 / Phân lớp](docs/architecture/architecture-description.md) & Các bản ghi ADR (`docs/architecture/adr/`)
+  * ☁️ [Sơ đồ Triển khai Production (Deployment Diagram)](docs/deployment.md)
+* 🔗 **Mục 8 — Ma trận Truy vết Bắt buộc:**
+  * 📊 [Ma trận Truy vết Yêu cầu (Traceability Matrix)](docs/traceability-matrix.md)
 
 ---
 
-## 📁 Cấu trúc thư mục Monorepo
+## 🏗️ Kiến trúc & Công nghệ Lựa chọn
+
+* **Frontend:** [Next.js](https://nextjs.org/) (React 19, TypeScript, TailwindCSS v4, App Router, Mobile-First / PWA, Zustand)
+* **Backend:** [NestJS](https://nestjs.com/) (TypeScript, REST API, Modular Architecture, `class-validator`, Passport JWT)
+* **Cơ sở dữ liệu:** PostgreSQL (Neon Serverless PG) + Prisma ORM
+* **Nghiệp vụ cốt lõi:** Order State Machine (`assertTransition`), Idempotent Payment, Optimistic Locking (`version`), Loyalty Points
+* **Thanh toán:** Mock Payment Gateway (Mô phỏng Ví MoMo / VNPay / Thẻ ngân hàng)
+* **DevOps & CI/CD:** Docker Compose, GitHub Actions (`ci.yml`, `cd.yml`), Vercel / Render Cloud Deployment
+
+---
+
+## 📁 Cấu trúc Thư mục Monorepo
 
 ```plaintext
 swe-project/
 ├── .agents/                 # Quy chuẩn Agent & Rules
-├── .vscode/                 # Cấu hình IDE (Markdown preview)
+├── .github/workflows/       # Pipeline CI/CD tự động (Task 4.4, Task 5.3)
 ├── backend/                 # NestJS REST API Server
-│   ├── src/
-│   │   ├── app.controller.ts
-│   │   ├── app.module.ts
-│   │   ├── app.service.ts
-│   │   └── main.ts
-│   ├── nest-cli.json
-│   ├── package.json
-│   └── tsconfig.json
-├── frontend/                # Next.js App Router Web App
-│   ├── src/
-│   │   └── app/
-│   │       ├── layout.tsx
-│   │       └── page.tsx
-│   ├── package.json
-│   └── tailwind.config.ts
+│   ├── prisma/              # Prisma Schema & Seed script
+│   └── src/                 # Controllers, Services, DTOs, Guards
+├── frontend/                # Next.js App Router Web App (Mobile-first)
+│   └── src/                 # Components, Pages, Stores (Zustand)
+├── docs/                    # Hồ sơ tài liệu kỹ thuật bắt buộc
+│   ├── requirements/        # Task 1: Bối cảnh, FR/NFR, Use Case spec
+│   ├── diagrams/            # Task 2: Activity, Sequence, Class, Use Case
+│   ├── architecture/        # Task 3: Kiến trúc C4, ADRs
+│   ├── traceability-matrix.md # Mục 8: Ma trận truy vết
+│   ├── deployment.md        # Task 3.2 & Task 5.4: Sơ đồ triển khai Cloud
+│   └── YEU_CAU_ASSIGNMENT_2.md # Đặc tả yêu cầu chuyển hóa từ PDF
+├── tests/                   # Bộ kiểm thử tự động (Unit, Integration, E2E)
+├── docker-compose.yml       # Docker Compose cho PostgreSQL & local services
 ├── .env.example             # Biến môi trường mẫu
-├── .gitignore               # Loại trừ node_modules, build artifacts, env
-├── AGENTS.md                # Quy định làm việc của dự án
-├── docker-compose.yml       # Docker Compose cho PostgreSQL
-├── package.json             # Root monorepo npm scripts
+├── AGENTS.md                # Quy định dự án (Git push ngay, Zero comment)
+├── implementation_plan.md   # Master Implementation Plan
 └── README.md                # Tài liệu hướng dẫn dự án
 ```
 
 ---
 
-## 🚀 Hướng dẫn cài đặt & Khởi chạy
+## 🚀 Hướng dẫn Cài đặt & Khởi chạy
 
 ### 1. Yêu cầu hệ thống
 * Node.js >= 20.x (khuyên dùng Node 22 LTS)
 * npm >= 10.x
-* Docker & Docker Compose (cho PostgreSQL)
+* Docker & Docker Compose
 
 ### 2. Cài đặt biến môi trường
-Sao chép file `.env.example` thành file `.env` ở thư mục gốc hoặc trong từng thư mục `backend/` và `frontend/`:
+Sao chép file `.env.example` thành file `.env` ở thư mục gốc:
 ```bash
 cp .env.example .env
 ```
@@ -77,47 +89,40 @@ npm --prefix backend install
 npm --prefix frontend install
 ```
 
-### 4. Khởi động cơ sở dữ liệu (PostgreSQL)
+### 4. Khởi động cơ sở dữ liệu
 ```bash
 docker compose up -d postgres
 ```
 
 ### 5. Chạy ứng dụng chế độ phát triển (Development)
 
-**Chạy Backend (NestJS):**
+**Chạy Backend (NestJS API - http://localhost:3001):**
 ```bash
 npm run dev:backend
-# API hoạt động tại: http://localhost:3001
-# Endpoint test: http://localhost:3001
 ```
 
-**Chạy Frontend (Next.js):**
+**Chạy Frontend (Next.js Web - http://localhost:3000):**
 ```bash
 npm run dev:frontend
-# Web hoạt động tại: http://localhost:3000
 ```
 
 ---
 
-## 📋 Lộ trình 10 Task Backlog (Scrum)
+## 📊 Lộ Trình 5 Task Assignment 2 (Thang điểm 10.0)
 
-| Task | Tên tác vụ | Sprint | Điểm | Trạng thái |
+| Task | Tên tác vụ | Phân bổ | Điểm | Trạng thái |
 | :---: | :--- | :---: | :---: | :---: |
-| **1** | Khởi tạo dự án và cấu trúc Monorepo (Next.js + NestJS) | Sprint 1 | 1 | ⏳ Đang làm |
-| **2** | API danh sách sản phẩm (`GET /products`) + Prisma ORM | Sprint 1 | 1 | ⏱️ Chờ |
-| **3** | Giao diện trang Menu đồ uống (Frontend) | Sprint 1 | 1 | ⏱️ Chờ |
-| **4** | Chi tiết sản phẩm & tùy chọn Size, Topping | Sprint 1 | 1 | ⏱️ Chờ |
-| **5** | Giỏ hàng (Cart) & State Management | Sprint 2 | 1 | ⏱️ Chờ |
-| **6** | API tạo đơn hàng (`POST /orders`) | Sprint 2 | 1 | ⏱️ Chờ |
-| **7** | Đăng ký & Đăng nhập người dùng (JWT Auth) | Sprint 2 | 1 | ⏱️ Chờ |
-| **8** | Tích hợp thanh toán không tiền mặt (Mock Payment) | Sprint 3 | 1 | ⏱️ Chờ |
-| **9** | Xác nhận đơn, lịch sử (`GET /orders/me`) & Dockerize | Sprint 3 | 1 | ⏱️ Chờ |
-| **10**| Nghiệp vụ backend (State Machine, Idempotent, Concurrency, Loyalty) + Test | Sprint 3 | 1 | ⏱️ Chờ |
+| **Task 1** | **Khai thác và đặc tả yêu cầu** (Context, FR/NFR, Core Use Case Spec) | Tuần 1 | **2.0** | 🟢 **Đã xong** |
+| **Task 2** | **Mô hình hóa hệ thống** (Activity, Sequence, Class Diagram) | Tuần 2 | **2.0** | 🟡 **Đang làm** |
+| **Task 3** | **Thiết kế kiến trúc** (C4/Layered, ADRs, Deployment Diagram) | Tuần 3 | **2.0** | ⏳ Chờ Task 2 |
+| **Task 4** | **Triển khai Sprint 1** (MVP Menu đồ uống, Seed DB, CI Pipeline) | Sprint 1 | **2.0** | ⏳ Chờ Task 3 |
+| **Task 5** | **Triển khai Sprint 2, CI/CD & Delivery** (End-to-End, Tests, CD, Cloud Production) | Sprint 2 | **2.0** | ⏳ Chờ Task 4 |
 
 ---
 
-## ✅ Definition of Done (DoD)
+## ✅ Định Nghĩa Hoàn Thành (Definition of Done - DoD)
 - [x] Code biên dịch thành công, không có lỗi TypeScript / Linter.
-- [x] Có commit chuẩn Conventional Commits và đẩy ngay lên remote Git.
-- [x] API có validation đầu vào và xử lý lỗi chặt chẽ.
-- [x] Đầy đủ tài liệu hướng dẫn khởi chạy.
+- [x] **Tuyệt đối không có comment giải thích trong mã nguồn** (Tuân thủ [AGENTS.md](AGENTS.md)).
+- [x] Có commit chuẩn Conventional Commits và đẩy ngay lên remote Git (`git push origin main`).
+- [x] API có validation DTO và xử lý lỗi chặt chẽ.
+- [x] Tạo phẩm hoàn thành đầy đủ theo đúng thứ tự tuần tự của đề bài.
