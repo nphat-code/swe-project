@@ -5,29 +5,38 @@ flowchart LR
 
     Member -.->|Kế thừa| Customer
 
-    subgraph CoreBoundary [PHẠM VI USE CASE TRỌNG TÂM: ĐẶT & THANH TOÁN ĐƠN HÀNG]
-        UC04([UC04: Quản lý giỏ hàng]):::ucStyle
-        UC05([UC05: Đặt hàng - Checkout]):::coreStyle
-        UC05_1([UC05.1: Áp dụng mã Voucher]):::subUcStyle
-        UC06([UC06: Thanh toán trực tuyến]):::coreStyle
-        UC08([UC08: Xem lịch sử đơn hàng]):::ucStyle
-        UC09([UC09: Tích lũy điểm thưởng]):::ucStyle
+    subgraph CoreBoundary [HỆ THỐNG BREWLITE - PHÂN HỆ ĐẶT HÀNG & THANH TOÁN]
+        UC05([UC05: Đặt hàng - Checkout])
+        UC05_1([UC05.1: Áp dụng mã Voucher])
+        UC05_2([UC05.2: Nhập thông tin nhận nước])
+        UC05_3([UC05.3: Đổi điểm thưởng giảm giá])
+        UC05_4([UC05.4: Hủy đơn hàng])
+
+        UC06([UC06: Thanh toán trực tuyến])
+        UC06_1([UC06.1: Chọn phương thức Ví / Thẻ])
+        UC06_2([UC06.2: Xác thực thanh toán qua Cổng])
+        UC06_3([UC06.3: Xử lý thanh toán thất bại])
+
+        UC08([UC08: Xem lịch sử đơn hàng])
+        UC09([UC09: Tích lũy điểm thưởng])
     end
 
-    Customer --> UC04
     Customer --> UC05
-    Customer --> UC06
-
+    Customer --> UC05_4
+    Member --> UC05_3
     Member --> UC08
     Member --> UC09
 
+    UC05 -.->|include| UC05_2
     UC05 -.->|include| UC06
     UC05_1 -.->|extend| UC05
+    UC05_3 -.->|extend| UC05
+    UC05_4 -.->|extend| UC05
 
-    UC06 <--> PaymentGW
+    UC06 -.->|include| UC06_1
+    UC06 -.->|include| UC06_2
+    UC06_3 -.->|extend| UC06
+    UC06 -.->|include| UC08
+    UC06 -.->|extend| UC09
 
-    classDef actorStyle fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20,font-weight:bold
-    classDef systemActorStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c,font-weight:bold
-    classDef coreStyle fill:#dcfce7,stroke:#16a34a,stroke-width:2.5px,color:#14532d,font-weight:bold
-    classDef ucStyle fill:#ffffff,stroke:#006241,stroke-width:2px,color:#1e3932,font-weight:bold
-    classDef subUcStyle fill:#f8fafc,stroke:#64748b,stroke-width:1.5px,stroke-dasharray: 4 4,color:#334155
+    UC06_2 <--> PaymentGW
