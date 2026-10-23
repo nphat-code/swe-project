@@ -29,35 +29,39 @@ flowchart LR
     Member -.->|Kế thừa| Customer
 
     subgraph SystemBoundary [HỆ THỐNG ĐẶT ĐỒ UỐNG BREWLITE]
-        subgraph SubMenu [1. Duyệt thực đơn & Tùy biến]
-            UC01([UC01: Xem menu & danh mục])
+        subgraph P1 [1. Duyệt thực đơn & Tùy biến]
+            UC01([UC01: Xem thực đơn & danh mục])
             UC02([UC02: Tìm kiếm đồ uống])
-            UC03([UC03: Tùy biến Size & Topping])
+            UC03([UC03: Tùy biến đồ uống])
+            UC03_1([UC03.1: Chọn kích cỡ Size])
+            UC03_2([UC03.2: Thêm Topping])
+            UC03_3([UC03.3: Ghi chú cho Barista])
         end
 
-        subgraph SubOrder [2. Giỏ hàng & Đơn hàng]
+        subgraph P2 [2. Giỏ hàng & Đơn hàng]
             UC04([UC04: Quản lý giỏ hàng])
             UC05([UC05: Đặt hàng - Checkout])
-            UC06([UC06: Thanh toán không tiền mặt])
+            UC05_1([UC05.1: Áp dụng mã Voucher])
+            UC06([UC06: Thanh toán trực tuyến])
         end
 
-        subgraph SubAuth [3. Tài khoản & Thành viên]
-            UC07([UC07: Đăng ký / Đăng nhập JWT])
+        subgraph P3 [3. Tài khoản & Thành viên]
+            UC07([UC07: Đăng ký / Đăng nhập])
             UC08([UC08: Xem lịch sử đơn hàng])
             UC09([UC09: Tích lũy điểm thưởng])
         end
 
-        subgraph SubBarista [4. Vận hành Quầy Barista]
+        subgraph P4 [4. Vận hành Quầy Barista]
             UC10([UC10: Tiếp nhận đơn pha chế])
             UC11([UC11: Cập nhật trạng thái đơn])
-            UC12([UC12: Hủy đơn hết nguyên liệu])
+            UC12([UC12: Hủy đơn hàng])
         end
 
-        subgraph SubAdmin [5. Quản trị hệ thống]
-            UC13([UC13: Quản lý menu & Topping])
+        subgraph P5 [5. Quản trị hệ thống Admin]
+            UC13([UC13: Quản lý thực đơn & Topping])
             UC14([UC14: Quản lý tồn kho đồ uống])
-            UC15([UC15: Quản lý mã Voucher])
-            UC16([UC16: Xem báo cáo doanh thu])
+            UC15([UC15: Quản lý mã giảm giá])
+            UC16([UC16: Xem báo cáo thống kê])
         end
     end
 
@@ -66,13 +70,18 @@ flowchart LR
     Customer --> UC03
     Customer --> UC04
     Customer --> UC05
-    Customer --> UC06
     Customer --> UC07
 
     Member --> UC08
     Member --> UC09
 
-    UC06 <--> PaymentGW
+    UC03 -.->|include| UC03_1
+    UC03_2 -.->|extend| UC03
+    UC03_3 -.->|extend| UC03
+
+    UC05 -.->|include| UC06
+    UC05_1 -.->|extend| UC05
+    UC06 --- PaymentGW
 
     Barista --> UC10
     Barista --> UC11

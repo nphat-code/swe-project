@@ -27,74 +27,77 @@
 
 ```mermaid
 flowchart LR
-    Customer([Khách hàng]):::actorStyle
-    Member([Khách thành viên]):::actorStyle
-    Barista([Nhân viên Barista]):::actorStyle
-    Admin([Quản trị viên]):::actorStyle
-    PaymentGW[Cổng thanh toán MoMo / VNPay]:::systemActorStyle
+    Customer[Khách hàng]
+    Member[Khách thành viên]
+    Barista[Nhân viên Barista]
+    Admin[Quản trị viên]
+    PaymentGW[Cổng thanh toán MoMo / VNPay]
 
     Member -.->|Kế thừa| Customer
 
     subgraph SystemBoundary [HỆ THỐNG ĐẶT ĐỒ UỐNG BREWLITE]
-        UC_ViewMenu([UC01: Xem thực đơn và danh mục]):::ucStyle
-        UC_Search([UC02: Tìm kiếm đồ uống]):::ucStyle
-        UC_Customize([UC03: Tùy biến đồ uống]):::ucStyle
-        UC_SelectSize([UC03.1: Chọn kích cỡ Size]):::subUcStyle
-        UC_AddTopping([UC03.2: Thêm Topping]):::subUcStyle
-        UC_AddNote([UC03.3: Ghi chú Barista]):::subUcStyle
+        subgraph P1 [1. Duyệt thực đơn & Tùy biến]
+            UC01([UC01: Xem thực đơn & danh mục])
+            UC02([UC02: Tìm kiếm đồ uống])
+            UC03([UC03: Tùy biến đồ uống])
+            UC03_1([UC03.1: Chọn kích cỡ Size])
+            UC03_2([UC03.2: Thêm Topping])
+            UC03_3([UC03.3: Ghi chú cho Barista])
+        end
 
-        UC_Cart([UC04: Quản lý giỏ hàng]):::ucStyle
-        UC_Checkout([UC05: Đặt hàng]):::ucStyle
-        UC_Voucher([UC05.1: Áp dụng mã Voucher]):::subUcStyle
-        UC_Payment([UC06: Thanh toán trực tuyến]):::ucStyle
+        subgraph P2 [2. Giỏ hàng & Đơn hàng]
+            UC04([UC04: Quản lý giỏ hàng])
+            UC05([UC05: Đặt hàng - Checkout])
+            UC05_1([UC05.1: Áp dụng mã Voucher])
+            UC06([UC06: Thanh toán trực tuyến])
+        end
 
-        UC_Auth([UC07: Đăng ký và Đăng nhập]):::ucStyle
-        UC_OrderHistory([UC08: Xem lịch sử đơn hàng]):::ucStyle
-        UC_Loyalty([UC09: Tích lũy điểm thưởng]):::ucStyle
+        subgraph P3 [3. Tài khoản & Thành viên]
+            UC07([UC07: Đăng ký / Đăng nhập])
+            UC08([UC08: Xem lịch sử đơn hàng])
+            UC09([UC09: Tích lũy điểm thưởng])
+        end
 
-        UC_ReceiveOrder([UC10: Tiếp nhận đơn pha chế]):::staffUcStyle
-        UC_UpdateStatus([UC11: Cập nhật trạng thái đơn]):::staffUcStyle
-        UC_CancelOrder([UC12: Hủy đơn hàng]):::staffUcStyle
+        subgraph P4 [4. Vận hành Quầy Barista]
+            UC10([UC10: Tiếp nhận đơn pha chế])
+            UC11([UC11: Cập nhật trạng thái đơn])
+            UC12([UC12: Hủy đơn hàng])
+        end
 
-        UC_ManageProduct([UC13: Quản lý thực đơn và Topping]):::adminUcStyle
-        UC_ManageStock([UC14: Quản lý tồn kho đồ uống]):::adminUcStyle
-        UC_ManageVoucher([UC15: Quản lý mã giảm giá]):::adminUcStyle
-        UC_ViewReport([UC16: Xem báo cáo thống kê]):::adminUcStyle
+        subgraph P5 [5. Quản trị hệ thống Admin]
+            UC13([UC13: Quản lý thực đơn & Topping])
+            UC14([UC14: Quản lý tồn kho đồ uống])
+            UC15([UC15: Quản lý mã giảm giá])
+            UC16([UC16: Xem báo cáo thống kê])
+        end
     end
 
-    Customer --> UC_ViewMenu
-    Customer --> UC_Search
-    Customer --> UC_Customize
-    Customer --> UC_Cart
-    Customer --> UC_Checkout
-    Customer --> UC_Auth
+    Customer --> UC01
+    Customer --> UC02
+    Customer --> UC03
+    Customer --> UC04
+    Customer --> UC05
+    Customer --> UC07
 
-    Member --> UC_OrderHistory
-    Member --> UC_Loyalty
+    Member --> UC08
+    Member --> UC09
 
-    UC_Customize -.->|include| UC_SelectSize
-    UC_AddTopping -.->|extend| UC_Customize
-    UC_AddNote -.->|extend| UC_Customize
+    UC03 -.->|include| UC03_1
+    UC03_2 -.->|extend| UC03
+    UC03_3 -.->|extend| UC03
 
-    UC_Checkout -.->|include| UC_Payment
-    UC_Voucher -.->|extend| UC_Checkout
-    UC_Payment --> PaymentGW
+    UC05 -.->|include| UC06
+    UC05_1 -.->|extend| UC05
+    UC06 --- PaymentGW
 
-    Barista --> UC_ReceiveOrder
-    Barista --> UC_UpdateStatus
-    Barista --> UC_CancelOrder
+    Barista --> UC10
+    Barista --> UC11
+    Barista --> UC12
 
-    Admin --> UC_ManageProduct
-    Admin --> UC_ManageStock
-    Admin --> UC_ManageVoucher
-    Admin --> UC_ViewReport
-
-    classDef actorStyle fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20,font-weight:bold
-    classDef systemActorStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c,font-weight:bold
-    classDef ucStyle fill:#ffffff,stroke:#006241,stroke-width:2px,color:#1e3932,font-weight:bold
-    classDef subUcStyle fill:#f2f0eb,stroke:#8c827a,stroke-width:1.5px,stroke-dasharray: 4 4,color:#333
-    classDef staffUcStyle fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0369a1,font-weight:bold
-    classDef adminUcStyle fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#92400e,font-weight:bold
+    Admin --> UC13
+    Admin --> UC14
+    Admin --> UC15
+    Admin --> UC16
 ```
 
 ---
