@@ -25,37 +25,20 @@ flowchart LR
 
     Member -.->|Kế thừa| Customer
 
-    subgraph CoreBoundary [HỆ THỐNG BREWLITE - PHÂN HỆ ĐẶT HÀNG & THANH TOÁN]
+    subgraph CheckoutBoundary [PHẠM VI TRỌNG TÂM: ĐẶT HÀNG & THANH TOÁN (BREWLITE)]
+        UC04([UC04: Quản lý giỏ hàng])
         UC05([UC05: Đặt hàng - Checkout])
         UC05_1([UC05.1: Áp dụng mã Voucher])
-        UC05_2([UC05.2: Nhập thông tin nhận nước])
-        UC05_3([UC05.3: Đổi điểm thưởng giảm giá])
-        UC05_4([UC05.4: Hủy đơn hàng])
-
         UC06([UC06: Thanh toán trực tuyến])
-        UC06_1([UC06.1: Chọn phương thức Ví / Thẻ])
-        UC06_2([UC06.2: Xác thực thanh toán qua Cổng])
-        UC06_3([UC06.3: Xử lý thanh toán thất bại])
-
-        UC08([UC08: Xem lịch sử đơn hàng])
-        UC09([UC09: Tích lũy điểm thưởng])
     end
 
+    Customer --> UC04
     Customer --> UC05
-    Member --> UC08
-    Member --> UC09
 
-    UC05 -.->|include| UC05_2
     UC05 -.->|include| UC06
     UC05_1 -.->|extend| UC05
-    UC05_3 -.->|extend| UC05
-    UC05_4 -.->|extend| UC05
 
-    UC06 -.->|include| UC06_1
-    UC06 -.->|include| UC06_2
-    UC06_3 -.->|extend| UC06
-
-    UC06_2 <--> PaymentGW
+    UC06 --- PaymentGW
 ```
 
 ---
