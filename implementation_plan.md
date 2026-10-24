@@ -4,7 +4,7 @@
 
 > **Môn học:** Công nghệ Phần mềm (Software Engineering) — ĐH Sài Gòn  
 > **Dự án:** BrewLite — Hệ thống đặt đồ uống không dùng tiền mặt (Cashless Coffee Ordering System)  
-> **Căn cứ pháp lý & kỹ thuật:** [Yêu cầu Assignment 2 (Bản chuyển hóa Markdown)](docs/YEU_CAU_ASSIGNMENT_2.md) | [File PDF gốc](Assignment2-BrewLite.pdf)  
+> **Căn cứ pháp lý & kỹ thuật:** [Yêu cầu Đề Bài Gốc Assignment 2 (Single Source of Truth)](docs/DE_BAI_ASSIGNMENT_2_GOC.md)  
 > **Trạng thái tổng thể:** 🟢 **Task 1: ĐÃ HOÀN THÀNH (2.0/2.0 Điểm)** | 🟡 **Task 2: ĐANG THỰC HIỆN (0.0/2.0 Điểm)**
 
 ---
@@ -212,13 +212,14 @@
 
 ---
 
-## 🧹 BẢNG RÀ SOÁT TỒN DƯ TỪ ASSIGNMENT 1 & PHƯƠNG ÁN XỬ LÝ
-
-| Thành phần tồn dư từ Assignment 1 | Vấn đề / Khác biệt với Assignment 2 | Phương án xử lý / Chuẩn hóa |
+## 🧹 BẢNG RÀ SOÁT TỒN DƯ TỪ ASSIGNMENT 1 & KẾT QUẢ XỬ LÝ
+ 
+| Thành phần tồn dư từ Assignment 1 | Vấn đề / Khác biệt với Assignment 2 | Kết quả xử lý đã thực hiện |
 | :--- | :--- | :--- |
-| **Mô hình "10 Tasks - 3 Sprints" trong README.md** | Assignment 2 quy định chặt chẽ **5 Task lớn (mỗi task 2 điểm)** và **2 Sprints**. Việc để bảng 10 task cũ gây sai lệch với cấu trúc chấm điểm. | Cập nhật lại `README.md` theo cấu trúc 5 Task của Assignment 2; chuyển 10 task cũ thành các Backlog Items thuộc Sprint 1 và Sprint 2. |
-| **Tài liệu cũ: `docs/DAC_TA_YEU_CAU_PHAN_MEM.md`** | Là tài liệu SRS kiểu cũ dạng nguyên khối (monolith), chứa các phần mô tả 10 task bị trùng lặp với `docs/requirements/`. | Giữ lại làm tài liệu tham khảo chi tiết, nhưng các tài liệu nghiệm thu chính của Task 1 là bộ 3 file trong `docs/requirements/`. |
-| **Tài liệu cũ: `docs/TAI_LIEU_TRINH_BAY_SAN_PHAM.md`** | Chứa danh sách User Story văn bản dài dòng. Giảng viên đã có chỉ đạo: *Thay thế User Story bằng các sơ đồ UML, chỉ giữ bảng mã FR tinh gọn.* | Cập nhật tài liệu thuyết trình để tập trung vào Sơ đồ kiến trúc, Sơ đồ UML và Kịch bản Demo thực tế, loại bỏ các đoạn User Story văn bản rườm rà. |
-| **Tài liệu cũ: `docs/SO_DO_USE_CASE.md`** | Chứa 6 bảng đặc tả 7 ô cho 6 Use Case khác nhau, trong khi Task 1.3 chỉ yêu cầu đặc tả 1 Use Case trọng tâm (Đặt & Thanh toán). | Lưu giữ tài liệu này làm tài liệu tham khảo sâu rộng; tài liệu nộp chính thức cho Task 1.3 là [`docs/requirements/core-use-case-specification.md`](docs/requirements/core-use-case-specification.md). |
+| **Mô hình "10 Tasks - 3 Sprints" trong README.md** | Assignment 2 quy định chặt chẽ **5 Task lớn (mỗi task 2 điểm)** và **2 Sprints**. Việc để bảng 10 task cũ gây sai lệch với cấu trúc chấm điểm. | Đã cập nhật lại `README.md` bám sát 5 Task lớn; chuyển 10 task cũ thành các Backlog Items thuộc Sprint 1 và Sprint 2. |
+| **Tài liệu cũ: `docs/DAC_TA_YEU_CAU_PHAN_MEM.md`** | Là tài liệu SRS kiểu cũ dạng nguyên khối (monolith), chứa các phần mô tả 10 task và User Stories văn bản dài dòng. | **Đã xóa bỏ hoàn toàn khỏi repository**; toàn bộ hồ sơ nghiệm thu chính thức của Task 1 đã chuẩn hóa tại `docs/requirements/`. |
+| **Tài liệu cũ: `docs/TAI_LIEU_TRINH_BAY_SAN_PHAM.md`** | Chứa danh sách User Story văn bản và bảng Product Backlog 3 Sprint cũ. | **Đã xóa bỏ hoàn toàn khỏi repository** để tránh sai lệch cấu trúc 2 Sprint của Assignment 2. |
+| **Tài liệu cũ: `docs/SO_DO_USE_CASE.md`** | Chứa 6 bảng đặc tả 7 ô cho 6 Use Case khác nhau, gây phân tán phạm vi. | **Đã xóa bỏ hoàn toàn khỏi repository**; tập trung duy nhất vào Use Case trọng tâm tại [`docs/requirements/core-use-case-specification.md`](docs/requirements/core-use-case-specification.md). |
+| **Tài liệu trùng lặp: `docs/YEU_CAU_ASSIGNMENT_2.md`** | Trùng lặp chức năng sau khi đã tạo tệp nguyên văn [docs/DE_BAI_ASSIGNMENT_2_GOC.md](docs/DE_BAI_ASSIGNMENT_2_GOC.md). | **Đã xóa bỏ hoàn toàn khỏi repository**; xác lập `docs/DE_BAI_ASSIGNMENT_2_GOC.md` là Single Source of Truth. |
 | **Cấu trúc thư mục thiếu các folder bắt buộc** | Chưa có `docs/architecture/adr/`, `docs/diagrams/sequence/`, `docs/diagrams/class/`, `docs/diagrams/deployment/`, `.github/workflows/`, `tests/`. | Khởi tạo đầy đủ cấu trúc khung thư mục theo đúng Mục 9 của Assignment 2. |
 | **Sơ đồ PlantUML cũ của Use Case** | Từng có file `use-case-system.puml` và `use-case-checkout.puml` gây phân mảnh với mã Mermaid. | Đã dọn dẹp sạch sẽ, chuẩn hóa 100% Use Case sang mã Mermaid và ảnh Draw.io theo yêu cầu của bạn. |

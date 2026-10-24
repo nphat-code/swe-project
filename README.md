@@ -10,7 +10,7 @@
 
 ## 📚 Hồ Sơ Tài Liệu Dự Án (Assignment 2 Deliverables)
 
-* 📜 **[Bản Chuyển Hóa Yêu Cầu Assignment 2 (Chính thức)](docs/YEU_CAU_ASSIGNMENT_2.md):** Văn bản hóa toàn diện 9 mục từ file đề bài `Assignment2-BrewLite.pdf`, thang điểm chi tiết (5 Task x 2.0đ) và checklist 9.1 nộp bài.
+* 📜 **[Đặc Tả Đề Bài Gốc Assignment 2 (Single Source of Truth)](docs/DE_BAI_ASSIGNMENT_2_GOC.md):** Toàn văn nội dung gốc 9 mục của Assignment 2, tiêu chuẩn kỹ thuật, thang điểm chi tiết (5 Task x 2.0đ) và checklist 9.1 nộp bài.
 * 📋 **[Kế Hoạch Triển Khai Master Plan (Theo dõi tiến độ)](implementation_plan.md):** Kế hoạch chi tiết từng bước, tiêu chí chấp nhận và trạng thái nghiệm thu của từng Task.
 * 📑 **Tài liệu Task 1 — Khai thác & Đặc tả Yêu cầu (2.0đ):**
   * 📋 [Task 1.1: Bối cảnh, Stakeholder & Phạm vi](docs/requirements/context-and-scope.md)
@@ -56,7 +56,7 @@ swe-project/
 │   ├── architecture/        # Task 3: Kiến trúc C4, ADRs
 │   ├── traceability-matrix.md # Mục 8: Ma trận truy vết
 │   ├── deployment.md        # Task 3.2 & Task 5.4: Sơ đồ triển khai Cloud
-│   └── YEU_CAU_ASSIGNMENT_2.md # Đặc tả yêu cầu chuyển hóa từ PDF
+│   └── DE_BAI_ASSIGNMENT_2_GOC.md # Văn bản đề bài gốc Assignment 2
 ├── tests/                   # Bộ kiểm thử tự động (Unit, Integration, E2E)
 ├── docker-compose.yml       # Docker Compose cho PostgreSQL & local services
 ├── .env.example             # Biến môi trường mẫu
