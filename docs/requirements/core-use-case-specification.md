@@ -23,7 +23,7 @@ flowchart LR
     Member[Khách thành viên]
     PaymentGW[Cổng thanh toán MoMo / VNPay]
 
-    Member --|> Customer
+    Member -.->|Kế thừa| Customer
 
     subgraph CheckoutBoundary [PHẠM VI TRỌNG TÂM: ĐẶT HÀNG & THANH TOÁN (BREWLITE)]
         UC04([UC04: Quản lý giỏ hàng])
@@ -35,8 +35,8 @@ flowchart LR
     Customer --- UC04
     Customer --- UC05
 
-    UC05 -.->|«include»| UC06
-    UC05_1 -.->|«extend»| UC05
+    UC05 -.->|include| UC06
+    UC05_1 -.->|extend| UC05
 
     UC06 --- PaymentGW
 ```

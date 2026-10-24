@@ -1,0 +1,81 @@
+@startuml use-case-system
+title SƠ ĐỒ USE CASE TỔNG QUÁT: HỆ THỐNG ĐẶT ĐỒ UỐNG BREWLITE
+left to right direction
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 12
+skinparam packageStyle rectangle
+
+actor "Khách hàng\n(Customer)" as Customer
+actor "Khách thành viên\n(Member)" as Member
+actor "Nhân viên Barista\n(Staff)" as Barista
+actor "Quản trị viên\n(Admin)" as Admin
+actor "Cổng thanh toán\n(MoMo / VNPay)" as PaymentGW
+
+Member --|> Customer
+
+rectangle "HỆ THỐNG ĐẶT ĐỒ UỐNG BREWLITE" {
+    package "1. Duyệt thực đơn & Tùy biến" {
+        usecase "UC01: Xem thực đơn & danh mục" as UC1
+        usecase "UC02: Tìm kiếm đồ uống" as UC2
+        usecase "UC03: Tùy biến đồ uống" as UC3
+        usecase "UC03.1: Chọn kích cỡ (Size)" as UC3_1
+        usecase "UC03.2: Thêm Topping" as UC3_2
+        usecase "UC03.3: Ghi chú cho Barista" as UC3_3
+    }
+
+    package "2. Giỏ hàng & Đơn hàng" {
+        usecase "UC04: Quản lý giỏ hàng" as UC4
+        usecase "UC05: Đặt hàng (Checkout)" as UC5
+        usecase "UC05.1: Áp dụng mã Voucher" as UC5_1
+        usecase "UC06: Thanh toán trực tuyến" as UC6
+    }
+
+    package "3. Tài khoản & Thành viên" {
+        usecase "UC07: Đăng ký / Đăng nhập" as UC7
+        usecase "UC08: Xem lịch sử & trạng thái đơn" as UC8
+        usecase "UC09: Tích lũy điểm thưởng" as UC9
+    }
+
+    package "4. Vận hành Quầy Barista" {
+        usecase "UC10: Tiếp nhận đơn pha chế" as UC10
+        usecase "UC11: Cập nhật trạng thái đơn" as UC11
+        usecase "UC12: Hủy đơn hàng" as UC12
+    }
+
+    package "5. Quản trị hệ thống Admin" {
+        usecase "UC13: Quản lý thực đơn & Topping" as UC13
+        usecase "UC14: Quản lý tồn kho đồ uống" as UC14
+        usecase "UC15: Quản lý mã giảm giá" as UC15
+        usecase "UC16: Xem báo cáo thống kê" as UC16
+    }
+}
+
+Customer -- UC1
+Customer -- UC2
+Customer -- UC3
+Customer -- UC4
+Customer -- UC5
+Customer -- UC7
+
+Member -- UC8
+Member -- UC9
+
+UC3 ..> UC3_1 : <<include>>
+UC3_2 ..> UC3 : <<extend>>
+UC3_3 ..> UC3 : <<extend>>
+
+UC5 ..> UC6 : <<include>>
+UC5_1 ..> UC5 : <<extend>>
+UC6 -- PaymentGW
+
+Barista -- UC10
+Barista -- UC11
+Barista -- UC12
+
+Admin -- UC13
+Admin -- UC14
+Admin -- UC15
+Admin -- UC16
+@enduml

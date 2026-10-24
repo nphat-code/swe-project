@@ -5,7 +5,7 @@ flowchart LR
     Admin[Quản trị viên]
     PaymentGW[Cổng thanh toán MoMo / VNPay]
 
-    Member --|> Customer
+    Member -.->|Kế thừa| Customer
 
     subgraph SystemBoundary [HỆ THỐNG ĐẶT ĐỒ UỐNG BREWLITE]
         subgraph P1 [1. Duyệt thực đơn & Tùy biến]
@@ -54,12 +54,12 @@ flowchart LR
     Member --- UC08
     Member --- UC09
 
-    UC03 -.->|«include»| UC03_1
-    UC03_2 -.->|«extend»| UC03
-    UC03_3 -.->|«extend»| UC03
+    UC03 -.->|include| UC03_1
+    UC03_2 -.->|extend| UC03
+    UC03_3 -.->|extend| UC03
 
-    UC05 -.->|«include»| UC06
-    UC05_1 -.->|«extend»| UC05
+    UC05 -.->|include| UC06
+    UC05_1 -.->|extend| UC05
     UC06 --- PaymentGW
 
     Barista --- UC10
