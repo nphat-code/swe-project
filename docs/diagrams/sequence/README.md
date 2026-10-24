@@ -55,7 +55,7 @@ sequenceDiagram
     API->>+DB: BEGIN Transaction: Query stock & version
     DB-->>-API: Danh sách sản phẩm (stock, version)
 
-    alt Hết hàng hoặc Xung đột đồng thời (stock < qty OR version mismatch)
+    alt Hết hàng hoặc Xung đột version (stock < qty OR version mismatch)
         API->>+DB: ROLLBACK Transaction
         DB-->>-API: Transaction aborted
         API-->>UI: 409 Conflict (Món đã hết hàng hoặc thay đổi giá)
@@ -65,31 +65,30 @@ sequenceDiagram
         API->>DB: COMMIT Transaction
         DB-->>-API: Order created (orderId)
         API-->>UI: 201 Created (orderId, totalAmount)
+    end
 
-        UI->>UI: Sinh UUID Idempotency-Key
-        UI->>API: POST /payments (orderId, method, Idempotency-Key, Bearer JWT)
-        API->>+DB: SELECT * FROM Payment WHERE idempotencyKey = ?
-        DB-->>-API: Kết quả tra cứu khóa
+    UI->>UI: Sinh UUID Idempotency-Key
+    UI->>API: POST /payments (orderId, method, Idempotency-Key, Bearer JWT)
+    API->>+DB: SELECT * FROM Payment WHERE idempotencyKey = ?
+    DB-->>-API: Tra cứu khóa Idempotent
 
-        alt Khóa Idempotent đã tồn tại (Duplicate request)
-            API-->>UI: 200 OK (Trả về kết quả thanh toán đã lưu trong cache/DB)
-        else Khóa Idempotent mới (Xử lý trừ tiền giao dịch)
-            API->>Payment: Chuyển tiếp yêu cầu trừ tiền (orderId, amount, method)
-            alt Thanh toán thất bại (Thiếu số dư / Sai OTP / Khách hủy)
-                Payment-->>API: 400 Failed (errorCode: PAYMENT_DECLINED)
-                API->>+DB: UPDATE Order SET status = PAYMENT_FAILED WHERE id = orderId
-                DB-->>-API: OK
-                API-->>UI: 400 Bad Request (Thanh toán thất bại)
-                UI-->>Customer: Cảnh báo lỗi thanh toán & Giữ nguyên giỏ hàng để thử lại
-            else Thanh toán thành công
-                Payment-->>API: 200 OK (transactionId: TXN_98765, status: SUCCESS)
-                API->>+DB: Transaction: UPDATE Order PAID, INSERT Payment, ADD Loyalty
-                DB-->>-API: Transaction hoàn tất
-                API-->>UI: 200 OK (orderId, status: PAID, pointsEarned)
-                UI->>UI: Xóa sạch giỏ hàng (Zustand Store & LocalStorage)
-                UI-->>Customer: Màn hình thành công: Mã lấy nước (orderId), Hẹn 5-7 phút
-            end
-        end
+    alt Khóa Idempotent đã tồn tại (Duplicate request)
+        API-->>UI: 200 OK (Trả về kết quả thanh toán đã lưu trong cache/DB)
+    else Khóa mới - Thanh toán thất bại (Thiếu số dư / Sai OTP / Khách hủy)
+        API->>Payment: Chuyển tiếp yêu cầu trừ tiền (orderId, amount, method)
+        Payment-->>API: 400 Failed (errorCode: PAYMENT_DECLINED)
+        API->>+DB: UPDATE Order SET status = PAYMENT_FAILED WHERE id = orderId
+        DB-->>-API: OK
+        API-->>UI: 400 Bad Request (Thanh toán thất bại)
+        UI-->>Customer: Cảnh báo lỗi thanh toán & Giữ nguyên giỏ hàng để thử lại
+    else Khóa mới - Thanh toán thành công (Happy path)
+        API->>Payment: Chuyển tiếp yêu cầu trừ tiền (orderId, amount, method)
+        Payment-->>API: 200 OK (transactionId: TXN_98765, status: SUCCESS)
+        API->>+DB: Transaction: UPDATE Order PAID, INSERT Payment, ADD Loyalty
+        DB-->>-API: Transaction hoàn tất
+        API-->>UI: 200 OK (orderId, status: PAID, pointsEarned)
+        UI->>UI: Xóa sạch giỏ hàng (Zustand Store & LocalStorage)
+        UI-->>Customer: Màn hình thành công: Mã lấy nước (orderId), Hẹn 5-7 phút
     end
 ```
 
