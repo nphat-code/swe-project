@@ -113,6 +113,27 @@ Mỗi yêu cầu chức năng được chuẩn hóa mã định danh `FR-xx`, ph
 | **FR-10** | **Mã nhận nước & Lịch sử đơn hàng** | Khách hàng<br/>*(Customer / Member)* | **Must** | - Màn hình Order Success hiển thị mã nhận nước to rõ (`#1042`) kèm hướng dẫn nhận nước tại quầy sau 5–7 phút.<br/>- Trang Lịch sử đơn hàng (`GET /orders/me`) hiển thị danh sách các đơn đã đặt, thời gian, tổng tiền và trạng thái hiện tại. | - Use Case: `UC08`<br/>- Activity: `activity-flow.puml`<br/>- Class: `Order` | - API: `GET /orders/me`<br/>- UI: `OrderSuccessModal.tsx`, `app/orders/page.tsx` |
 | **FR-11** | **Áp dụng mã Voucher giảm giá** | Khuyến mãi<br/>*(Customer)* | **Should** | - Khách hàng nhập mã Voucher (ví dụ: `BREWNEW20`).<br/>- Kiểm tra điều kiện đơn hàng tối thiểu và hạn sử dụng.<br/>- Trừ tiền chiết khấu tự động vào `discountAmount` của đơn hàng. | - Use Case: `UC05.1`<br/>- Class: `Voucher`, `Promotion` | - API: `POST /vouchers/apply`<br/>- Backend: `VoucherService` |
 | **FR-12** | **Quầy tiếp nhận pha chế Barista** | Vận hành<br/>*(Barista)* | **Could** | - Màn hình danh sách đơn theo cột trạng thái (`PAID`, `PREPARING`, `READY`).<br/>- Nút bấm chuyển trạng thái pha chế nhanh phục vụ quầy Barista. | - Use Case: `UC10`, `UC11`<br/>- Activity: `activity-flow.puml` | - UI: `app/barista/page.tsx` *(Phạm vi mở rộng)* |
+| **FR-W01** | **Giao hàng tận nhà (Delivery Logistics)** | Giao vận | **Won't** | - Hệ thống không điều phối tài xế giao hàng, không tính phí ship, không theo dõi lộ trình shipper trên bản đồ. Toàn bộ đơn hàng là hình thức khách tự đến lấy tại quầy (Takeaway). | - Ngoài phạm vi MVP (Out-of-Scope) | - Loại trừ khỏi phiên bản v1.0 |
+| **FR-W02** | **Thu / Thối tiền mặt tại quầy** | Thu ngân | **Won't** | - Hệ thống không hỗ trợ giao dịch tiền giấy/tiền xu, không in hóa đơn đối soát tiền mặt. Mọi đơn hàng bắt buộc hoàn tất thanh toán trực tuyến không tiền mặt. | - Ngoài phạm vi MVP (Out-of-Scope) | - Loại trừ khỏi phiên bản v1.0 |
+
+### 2.1. Bảng đối chiếu độ phủ 12 nhóm yêu cầu tối thiểu theo đề bài gốc
+
+Theo Mục 3.2 của tệp đề bài gốc [`docs/DE_BAI_ASSIGNMENT_2_GOC.md`](../DE_BAI_ASSIGNMENT_2_GOC.md), tài liệu SRS bắt buộc phải bao quát tối thiểu 12 nhóm yêu cầu:
+
+| STT | Nhóm yêu cầu tối thiểu (Đề bài) | Phân loại | Mã định danh phụ trách | Trạng thái đáp ứng |
+| :---: | :--- | :---: | :---: | :---: |
+| **1** | **Menu** | Chức năng (FR) | `FR-01` | ✅ Đã đặc tả (Tabs danh mục, lọc món, VND) |
+| **2** | **Chi tiết sản phẩm** | Chức năng (FR) | `FR-02` | ✅ Đã đặc tả (Modal Size S/M/L, chọn Topping) |
+| **3** | **Giỏ hàng** | Chức năng (FR) | `FR-03` | ✅ Đã đặc tả (Zustand client store, localStorage) |
+| **4** | **Xác thực** | Chức năng (FR) | `FR-04` | ✅ Đã đặc tả (Đăng ký, Đăng nhập, JWT, Bcrypt) |
+| **5** | **Đặt đơn** | Chức năng (FR) | `FR-05` | ✅ Đã đặc tả (`POST /orders`, tính giá server-side) |
+| **6** | **Thanh toán** | Chức năng (FR) | `FR-06` | ✅ Đã đặc tả (Mock Ví/Thẻ, `Idempotency-Key`) |
+| **7** | **Lịch sử đơn** | Chức năng (FR) | `FR-10` | ✅ Đã đặc tả (Mã nhận nước `#1042`, `GET /orders/me`) |
+| **8** | **Quản lý trạng thái đơn** | Chức năng (FR) | `FR-07` | ✅ Đã đặc tả (State Machine, `assertTransition`) |
+| **9** | **Hiệu năng** | Phi chức năng (NFR) | `NFR-01` | ✅ Đã đặc tả ($p95 \le 500\text{ms}$, FCP $\le 1.8\text{s}$) |
+| **10** | **Bảo mật** | Phi chức năng (NFR) | `NFR-02` | ✅ Đã đặc tả (Bcrypt $\ge 10$, HTTPS/TLS 1.3, JWT) |
+| **11** | **Tính khả dụng** | Phi chức năng (NFR) | `NFR-03` | ✅ Đã đặc tả (Mobile-first, Skeleton, Empty, Error) |
+| **12** | **Khả năng triển khai** | Phi chức năng (NFR) | `NFR-05` | ✅ Đã đặc tả (Docker Compose, Cloud HTTPS) |
 
 ---
 
@@ -130,6 +151,7 @@ Các yêu cầu phi chức năng được thiết kế đảm bảo hệ thống
 | **NFR-06** | **Tự động hóa CI/CD (Automation)** | - Tự động kích hoạt kiểm tra khi mở Pull Request hoặc Push code lên nhánh chính.<br/>- Pipeline CI thực hiện tuần tự: `Install Dependencies` $\rightarrow$ `Lint Code` $\rightarrow$ `Run Unit Test` $\rightarrow$ `Build Frontend & Backend`.<br/>- Không cho phép merge mã nguồn nếu bất kỳ bước kiểm tra nào bị thất bại (Quality Gate). | **Must** | - GitHub Actions Workflows (`.github/workflows/ci.yml`).<br/>- ESLint, TypeScript Compiler (`tsc --noEmit`). |
 | **NFR-07** | **Chuẩn mực mã nguồn (Clean Code)** | - **Tuyệt đối không có bất kỳ comment giải thích, ghi chú nào trong các file mã nguồn** (`.ts`, `.tsx`, `.js`, `.css`). Mã nguồn phải tự tường minh (Self-documenting code).<br/>- Không để lại code thừa bị comment.<br/>- Đặt tên biến, hàm, class chuẩn tiếng Anh chuyên ngành. | **Must** | - Tuân thủ quy định [AGENTS.md](file:///c:/Study/HK1Nam3/CNPM/Project/AGENTS.md).<br/>- Quy chuẩn Git Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`). |
 | **NFR-08** | **Khả năng mở rộng (Scalability)** | - Kiến trúc Backend thiết kế dạng module hóa cao (NestJS Modules: `ProductsModule`, `OrdersModule`, `PaymentsModule`, `AuthModule`), dễ dàng tách thành Microservices khi cần.<br/>- Hỗ trợ khôi phục tự động khi cơ sở dữ liệu Serverless bị Cold-Start (cơ chế Retry trên Client). | **Should** | - NestJS Modular Architecture.<br/>- Cơ chế kết nối Neon Direct URL / Pooled URL. |
+| **NFR-09** | **Giám sát sức khỏe hệ thống (Health Check)** | - Cung cấp endpoint `GET /health` phản hồi mã HTTP `200 OK` kèm uptime, memory usage và tình trạng kết nối CSDL PostgreSQL.<br/>- Sử dụng bởi nền tảng Cloud (Render / Vercel) để tự động restart container khi gặp sự cố. | **Must** | - NestJS Terminus / Health Controller.<br/>- Cloud Container Health Check probe. |
 
 ---
 
@@ -140,11 +162,13 @@ pie title Phân Bổ Mức Ưu Tiên Yêu Cầu Chức Năng (MoSCoW)
     "Must Have (Bắt buộc cho MVP)" : 9
     "Should Have (Nên có trong Sprint 2)" : 2
     "Could Have (Mở rộng nếu kịp giờ)" : 1
+    "Won't Have (Loại trừ khỏi phạm vi v1.0)" : 2
 ```
 
-* **Must Have (9/12 yêu cầu chức năng):** Bắt buộc phải có để tạo nên sản phẩm khả dụng tối thiểu (MVP) có thể demo trọn vẹn luồng từ duyệt menu đến thanh toán và nhận đồ uống tại quầy (`FR-01` đến `FR-08`, `FR-10`).
-* **Should Have (2/12 yêu cầu chức năng):** Tích điểm thưởng thành viên (`FR-09`) và Áp dụng mã Voucher (`FR-11`) nhằm tăng giá trị giữ chân khách hàng.
-* **Could Have (1/12 yêu cầu chức năng):** Màn hình Barista KDS chuyên dụng tại quầy (`FR-12`).
+* **Must Have (9/14 yêu cầu chức năng):** Bắt buộc phải có để tạo nên sản phẩm khả dụng tối thiểu (MVP) có thể demo trọn vẹn luồng từ duyệt menu đến thanh toán và nhận đồ uống tại quầy (`FR-01` đến `FR-08`, `FR-10`).
+* **Should Have (2/14 yêu cầu chức năng):** Tích điểm thưởng thành viên (`FR-09`) và Áp dụng mã Voucher (`FR-11`) nhằm tăng giá trị giữ chân khách hàng trong Sprint 2.
+* **Could Have (1/14 yêu cầu chức năng):** Màn hình Barista KDS chuyên dụng tại quầy (`FR-12`).
+* **Won't Have (2/14 yêu cầu chức năng):** Giao hàng tận nhà (`FR-W01`) và Thu tiền mặt tại quầy (`FR-W02`) nhằm giữ đúng định vị không tiền mặt và đặt lấy tại quầy.
 
 ---
 

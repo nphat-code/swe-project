@@ -40,7 +40,8 @@
 | **NFR-05** | **Khả năng triển khai (Deployability)** | Chạy local bằng 1 lệnh `docker-compose up`, deploy Cloud có URL công khai | `docker-compose.yml`, Dockerfile Multi-stage | `docker-compose.yml`, Cloud URL | `DEPLOY-01` |
 | **NFR-06** | **Tự động hóa CI/CD** | Pipeline CI chạy tự động: Lint $\rightarrow$ Test $\rightarrow$ Build, chặn merge khi lỗi | GitHub Actions Workflow (`ci.yml`, `cd.yml`) | `.github/workflows/ci.yml` | `CI-GATE01` |
 | **NFR-07** | **Chuẩn mực mã nguồn (Clean Code)** | **Tuyệt đối không có comment trong code**, Self-documenting code, Conventional Commits | Quy định [AGENTS.md](../AGENTS.md) | Toàn bộ mã nguồn `.ts`, `.tsx` | `LINT-01` |
-| **NFR-08** | **Kiểm tra sức khỏe hệ thống** | Endpoint `GET /health` kiểm tra trạng thái API và kết nối CSDL | Health Module / Terminus Indicator | `app.controller.ts` (`/health`) | `HEALTH-01` |
+| **NFR-08** | **Khả năng mở rộng (Scalability)** | Kiến trúc Module hóa cao (NestJS Modules), hỗ trợ auto-retry khi CSDL cold-start | NestJS Modular Architecture + Neon Pooling | `app.module.ts`, `prisma.service.ts` | `SCALE-01` |
+| **NFR-09** | **Kiểm tra sức khỏe hệ thống** | Endpoint `GET /health` kiểm tra uptime API và ping kết nối CSDL (Status: 200 OK) | Health Module / Terminus Indicator | `app.controller.ts` (`/health`) | `HEALTH-01` |
 
 ---
 *Tài liệu ma trận truy vết được cập nhật liên tục qua từng giai đoạn từ Task 1 đến Task 5.*
