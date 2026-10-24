@@ -27,6 +27,7 @@ flowchart LR
 
     subgraph CheckoutBoundary [PHẠM VI TRỌNG TÂM: ĐẶT HÀNG & THANH TOÁN (BREWLITE)]
         UC04([UC04: Quản lý giỏ hàng])
+        UC07([UC07: Đăng nhập / Xác thực JWT])
         UC05([UC05: Đặt hàng - Checkout])
         UC05_1([UC05.1: Áp dụng mã Voucher])
         
@@ -34,21 +35,25 @@ flowchart LR
         UC06_1([UC06.1: Chọn phương thức Ví / Thẻ])
         UC06_2([UC06.2: Xử lý Idempotent & Trừ tiền])
         
+        UC08([UC08: Xem lịch sử đơn hàng])
         UC09([UC09: Tích lũy điểm thưởng])
     end
 
     Customer --- UC04
-    Customer --- UC05
+    Customer --- UC07
 
+    Member --- UC05
+    Member --- UC08
+    Member --- UC09
+
+    UC05 -.->|include| UC07
     UC05 -.->|include| UC06
     UC05_1 -.->|extend| UC05
+    UC09 -.->|extend| UC05
     
     UC06 -.->|include| UC06_1
     UC06 -.->|include| UC06_2
     UC06_2 --- PaymentGW
-
-    UC09 -.->|extend| UC05
-    Member --- UC09
 ```
 
 ---
@@ -58,12 +63,12 @@ flowchart LR
 | Thuộc tính | Chi tiết đặc tả kỹ thuật |
 | :--- | :--- |
 | **Tên Use Case** | **UC-CORE: Đặt Hàng & Thanh Toán Trực Tuyến (Online Order & Checkout)** |
-| **Mã định danh** | `UC05: Đặt hàng - Checkout` & `UC06: Thanh toán trực tuyến` (phân rã `UC06.1: Chọn phương thức`, `UC06.2: Xử lý Idempotent`, `UC05.1: Voucher`, `UC09: Điểm thưởng`) |
-| **Tác nhân chính (Primary Actor)** | **Khách hàng (Customer)** / **Khách thành viên (Member)** |
+| **Mã định danh** | `UC05: Đặt hàng - Checkout` & `UC06: Thanh toán trực tuyến` (liên kết `UC07: Xác thực JWT`, `UC06.1: Chọn phương thức`, `UC06.2: Xử lý Idempotent`, `UC05.1: Voucher`, `UC09: Điểm thưởng`, `UC08: Lịch sử đơn`) |
+| **Tác nhân chính (Primary Actor)** | **Khách thành viên (Member)** (Khách hàng sau khi đăng nhập / xác thực JWT) |
 | **Tác nhân hỗ trợ (Supporting Actor)** | **Cổng thanh toán điện tử (Mock Payment Gateway)** (MoMo, VNPay, Thẻ ngân hàng) |
 | **Sự kiện kích hoạt (Trigger)** | Khách hàng nhấn nút **"Tiến hành đặt hàng"** từ Giỏ hàng (Cart Drawer) hoặc nút **"Thanh toán ngay"** trên màn hình Checkout. |
-| **Tiền điều kiện (Pre-conditions)** | 1. Giỏ hàng của khách hàng có ít nhất 1 sản phẩm (`cartCount > 0`).<br/>2. Các món trong giỏ hàng ở trạng thái khả dụng kinh doanh (`isAvailable = true`) và còn tồn kho (`stock > 0`).<br/>3. Máy khách (Client) duy trì kết nối Internet và gọi được REST API Backend (`/health` trả về `200 OK`). |
-| **Hậu điều kiện thành công (Post-conditions - Success)** | 1. Đơn hàng được tạo thành công trong CSDL với trạng thái chuyển từ `PENDING` $\rightarrow$ `PAID`.<br/>2. Số lượng tồn kho (`stock`) của các món được trừ an toàn bằng cơ chế Khóa lạc quan (**Optimistic Locking**).<br/>3. Giao dịch thanh toán được ghi nhận kèm mã `Idempotency-Key` và `transactionId`.<br/>4. Khách hàng nhận được Mã đơn hàng to rõ (ví dụ: `#1042`) kèm thông báo: *"Mời bạn đến quầy nhận nước sau 5-7 phút"*.<br/>5. Giỏ hàng phía Client được xóa sạch (`cartItems = []`).<br/>6. Nếu là Khách thành viên (Member), hệ thống tự động tích lũy điểm thưởng tương ứng (10.000đ = 1 điểm). |
+| **Tiền điều kiện (Pre-conditions)** | 1. Giỏ hàng của khách hàng có ít nhất 1 sản phẩm (`cartCount > 0`).<br/>2. Các món trong giỏ hàng ở trạng thái khả dụng kinh doanh (`isAvailable = true`) và còn tồn kho (`stock > 0`).<br/>3. **Khách hàng đã đăng nhập tài khoản thành viên thành công và sở hữu Token JWT hợp lệ** (nếu chưa đăng nhập, hệ thống kích hoạt luồng `UC07` yêu cầu đăng nhập trước).<br/>4. Máy khách (Client) duy trì kết nối Internet và gọi được REST API Backend (`/health` trả về `200 OK`). |
+| **Hậu điều kiện thành công (Post-conditions - Success)** | 1. Đơn hàng được tạo thành công trong CSDL gắn với `userId` của Member, trạng thái chuyển từ `PENDING` $\rightarrow$ `PAID`.<br/>2. Số lượng tồn kho (`stock`) của các món được trừ an toàn bằng cơ chế Khóa lạc quan (**Optimistic Locking**).<br/>3. Giao dịch thanh toán được ghi nhận kèm mã `Idempotency-Key` và `transactionId`.<br/>4. Khách hàng nhận được Mã đơn hàng to rõ (ví dụ: `#1042`) kèm thông báo: *"Mời bạn đến quầy nhận nước sau 5-7 phút"*.<br/>5. Giỏ hàng phía Client được xóa sạch (`cartItems = []`).<br/>6. Hệ thống tự động tích lũy điểm thưởng thành viên tương ứng (10.000đ = 1 điểm, lưu vào `LoyaltyTransaction`).<br/>7. Đơn hàng được lưu vào trang Lịch sử đơn hàng cá nhân (`UC08`). |
 | **Hậu điều kiện thất bại (Post-conditions - Failure)** | 1. Đơn hàng chuyển sang trạng thái `PAYMENT_FAILED` hoặc `CANCELLED`.<br/>2. Số lượng tồn kho không bị trừ (hoặc được hoàn lại trong Transaction).<br/>3. Giỏ hàng của khách hàng được giữ nguyên vẹn để khách không phải chọn món lại từ đầu.<br/>4. Khách hàng nhận được thông báo lỗi rõ ràng kèm lý do (ví dụ: *Tài khoản không đủ số dư*, *Món vừa hết hàng*). |
 
 ---
@@ -73,68 +78,79 @@ flowchart LR
 ```mermaid
 sequenceDiagram
     autonumber
-    actor C as Khách hàng
+    actor C as Khách hàng / Thành viên
     participant UI as Giao diện Web (Next.js)
     participant API as API Server (NestJS)
     participant DB as PostgreSQL (Prisma)
     participant Pay as Cổng Thanh Toán (Mock)
 
     C->>UI: 1. Nhấn "Tiến hành đặt hàng" từ Giỏ
-    UI->>C: 2. Hiển thị Form Checkout (Họ tên, SĐT, Phương thức)
-    C->>UI: 3. Nhập SĐT, chọn Ví MoMo & Bấm "Thanh toán ngay"
-    UI->>API: 4. POST /orders (Items, Size, Topping, CustomerInfo)
-    Note over API: Kiểm tra DTO & Tính lại tổng tiền từ CSDL
-    API->>DB: 5. Tạo Order (Trạng thái = PENDING)
-    DB-->>API: 6. Trả về Order (#1042)
-    API-->>UI: 7. Trả về orderId
-    UI->>API: 8. POST /payments (orderId, Idempotency-Key, Method)
-    API->>Pay: 9. Yêu cầu trừ tiền giả lập
-    Pay-->>API: 10. Phản hồi SUCCESS
-    Note over API: State Machine: PENDING -> PAID<br/>Optimistic Lock: Trừ stock
-    API->>DB: 11. Cập nhật status=PAID, trừ stock, tạo Payment
-    DB-->>API: 12. Transaction hoàn tất
-    API-->>UI: 13. Thanh toán thành công (200 OK)
-    UI->>UI: 14. Dọn sạch giỏ hàng (Zustand/LocalStorage)
-    UI-->>C: 15. Hiển thị màn hình Xác nhận (Mã đơn #1042)
+    alt Chưa đăng nhập (Không có JWT)
+        UI->>C: 2. Hiển thị Modal Đăng nhập / Đăng ký (UC07)
+        C->>UI: 3. Nhập tài khoản & Đăng nhập
+        UI->>API: 4. POST /auth/login
+        API-->>UI: 5. Trả về accessToken (JWT)
+    end
+    UI->>C: 6. Hiển thị Form Checkout (Họ tên, SĐT tự điền, Phương thức)
+    C->>UI: 7. Chọn Ví MoMo & Bấm "Thanh toán ngay"
+    UI->>API: 8. POST /orders (Items, Size, Topping; Header: Bearer JWT)
+    Note over API: JwtAuthGuard: Xác thực JWT & lấy userId<br/>Kiểm tra DTO & Tính lại giá từ CSDL
+    API->>DB: 9. Tạo Order (Trạng thái = PENDING, userId)
+    DB-->>API: 10. Trả về Order (#1042)
+    API-->>UI: 11. Trả về orderId
+    UI->>API: 12. POST /payments (orderId, Idempotency-Key, Method, Bearer JWT)
+    API->>Pay: 13. Yêu cầu trừ tiền giả lập
+    Pay-->>API: 14. Phản hồi SUCCESS
+    Note over API: State Machine: PENDING -> PAID<br/>Optimistic Lock: Trừ stock<br/>Tích điểm Loyalty: total / 10000
+    API->>DB: 15. Transaction: Update PAID, trừ stock, tạo Payment, cộng Points
+    DB-->>API: 16. Transaction hoàn tất
+    API-->>UI: 17. Thanh toán thành công (200 OK)
+    UI->>UI: 18. Dọn sạch giỏ hàng (Zustand/LocalStorage)
+    UI-->>C: 19. Màn hình Xác nhận (Mã đơn #1042, Điểm tích lũy)
 ```
 
 ### 3.1. Luồng sự kiện chính (Normal / Main Flow)
 
 1. **Khách hàng** duyệt giỏ hàng và nhấn nút **"Tiến hành đặt hàng"**.
-2. **Hệ thống** hiển thị màn hình Đặt hàng (Checkout) bao gồm:
+2. **Hệ thống** kiểm tra trạng thái xác thực người dùng:
+   * **Nếu chưa đăng nhập:** Hệ thống hiển thị Modal Đăng nhập / Đăng ký (`UC07`). Khách hàng đăng nhập thành công, hệ thống lưu chuỗi `accessToken` (JWT) vào phiên làm việc.
+   * **Nếu đã đăng nhập:** Hệ thống tự động chuyển tiếp vào màn hình Đặt hàng (Checkout).
+3. **Màn hình Đặt hàng (Checkout)** hiển thị các thông tin:
+   * Thông tin người nhận: Họ và tên, Số điện thoại từ hồ sơ thành viên (cho phép điều chỉnh).
    * Danh sách tóm tắt các món (Tên, Size, Topping, Ghi chú, Số lượng, Đơn giá).
-   * Bảng kê tài chính: Tạm tính, Chiết khấu voucher (nếu có), Phí dịch vụ, Tổng tiền thanh toán.
-   * Form thông tin người nhận: Ô nhập **Họ và tên**, ô nhập **Số điện thoại**.
+   * Bảng kê tài chính: Tạm tính, Chiết khấu voucher (nếu có), Tổng tiền thanh toán.
    * Lựa chọn phương thức thanh toán: Ví điện tử MoMo, ZaloPay, VNPay, hoặc Thẻ ngân hàng.
-3. **Khách hàng** nhập đầy đủ Họ tên, Số điện thoại hợp lệ và chọn phương thức thanh toán là **Ví điện tử MoMo**.
-4. **Khách hàng** nhấn nút **"Xác nhận thanh toán • [Tổng tiền]"**.
-5. **Giao diện Client** gửi yêu cầu `POST /orders` kèm theo payload DTO chứa danh sách món, tùy chọn size/topping và thông tin người đặt lên Backend.
+4. **Khách hàng** chọn phương thức thanh toán (ví dụ: Ví MoMo) và nhấn nút **"Xác nhận thanh toán • [Tổng tiền]"**.
+5. **Giao diện Client** gửi yêu cầu `POST /orders` kèm theo header `Authorization: Bearer <JWT>` và payload DTO chứa danh sách món lên Backend.
 6. **Backend NestJS** thực hiện các bước kiểm tra nghiệp vụ:
-   * `ValidationPipe` thẩm định tính hợp lệ của kiểu dữ liệu đầu vào.
-   * Truy vấn CSDL để lấy đơn giá gốc, phụ thu size, giá topping và **tự động tính toán lại tổng tiền trên Server** (chống gian lận sửa giá từ Client).
-   * Khởi tạo bản ghi `Order` trong CSDL với trạng thái khởi đầu là `PENDING` và sinh mã đơn hiển thị (ví dụ: `#1042`).
+   * `JwtAuthGuard` kiểm tra tính hợp lệ của Token JWT và trích xuất `userId` của Thành viên.
+   * `ValidationPipe` thẩm định tính hợp lệ của cấu trúc dữ liệu đầu vào.
+   * Backend truy vấn CSDL để lấy đơn giá gốc, phụ thu size, giá topping và **tự động tính toán lại tổng tiền trên Server** (chống gian lận sửa giá từ Client).
+   * Khởi tạo bản ghi `Order` trong CSDL với trạng thái khởi đầu là `PENDING`, liên kết với `userId` và sinh mã đơn hiển thị (ví dụ: `#1042`).
    * Trả về thông tin đơn hàng vừa tạo (`orderId`) cho Client.
-7. **Client** nhận `orderId`, tự động sinh chuỗi mã khóa duy nhất `Idempotency-Key` (chuỗi UUIDv4) và gửi yêu cầu `POST /payments` lên Backend.
+7. **Client** nhận `orderId`, tự động sinh chuỗi mã khóa duy nhất `Idempotency-Key` (chuỗi UUIDv4) và gửi yêu cầu `POST /payments` (kèm JWT Header) lên Backend.
 8. **Backend** chuyển tiếp yêu cầu trừ tiền đến **Cổng thanh toán điện tử (Mock Payment Gateway)**.
 9. **Cổng thanh toán** xử lý trừ tiền và phản hồi kết quả giao dịch thành công (`status: SUCCESS`, `transactionId: "TXN_..."`).
 10. **Backend** thực thi khối lệnh `prisma.$transaction` đảm bảo tính toàn vẹn dữ liệu:
     * Kích hoạt cỗ máy trạng thái (Order State Machine) chuyển trạng thái đơn hàng từ `PENDING` $\rightarrow$ `PAID`.
     * Áp dụng Khóa lạc quan (**Optimistic Locking**) kiểm tra trường `version` và trừ số lượng tồn kho (`stock = stock - qty`) của từng món.
     * Ghi nhận bản ghi thanh toán vào bảng `Payment` với trạng thái `PAID`.
-    * Nếu khách hàng là Thành viên (`Role.CUSTOMER` đã đăng nhập), tính và cộng dồn điểm tích lũy vào tài khoản (`loyaltyPoints = loyaltyPoints + (total / 10000)`).
+    * Tự động tính và cộng dồn điểm tích lũy vào tài khoản thành viên (`loyaltyPoints = loyaltyPoints + (total / 10000)`, lưu bản ghi `LoyaltyTransaction`).
 11. **Backend** phản hồi mã `200 OK` kèm dữ liệu đơn hàng đã thanh toán thành công về Client.
 12. **Client** thực hiện dọn sạch giỏ hàng trong bộ nhớ `Zustand` và `localStorage`.
-13. **Hệ thống** điều hướng người dùng đến **Màn hình Xác nhận Đơn hàng (Order Success Screen)** hiển thị mã đơn `#1042` to rõ, trạng thái `ĐÃ THANH TOÁN` kèm thông điệp: *"Mời bạn đến quầy nhận nước sau 5-7 phút"*.
+13. **Hệ thống** điều hướng người dùng đến **Màn hình Xác nhận Đơn hàng (Order Success Screen)** hiển thị mã đơn `#1042` to rõ, điểm thưởng vừa tích lũy, trạng thái `ĐÃ THANH TOÁN` kèm thông điệp: *"Mời bạn đến quầy nhận nước sau 5-7 phút"*. Đơn hàng đồng thời được lưu vào trang Lịch sử đơn hàng (`UC08`).
 
 ---
 
 ### 3.2. Các luồng thay thế (Alternative Flows)
 
-* **A1. Khách hàng đã đăng nhập tài khoản thành viên (Member Flow):**
-  * Tại bước 2, hệ thống tự động điền sẵn Họ tên và Số điện thoại từ hồ sơ cá nhân.
-  * Hệ thống hiển thị số điểm thưởng hiện có và cho phép khách tích chọn *"Dùng điểm thưởng giảm giá"* (ví dụ: 50 điểm = giảm 50.000đ).
-  * Tổng tiền thanh toán được cập nhật tương ứng trước khi tiến hành thanh toán.
-* **A2. Khách hàng áp dụng mã Voucher ưu đãi (Voucher Flow):**
+* **A1. Khách hàng chưa đăng nhập tài khoản (Unauthenticated Branch):**
+  * Tại bước 2, nếu khách hàng chưa đăng nhập hoặc Token JWT hết hạn, hệ thống hiển thị Modal Đăng nhập / Đăng ký (`UC07`).
+  * Khách hàng hoàn tất đăng nhập, hệ thống tự động giữ nguyên các món trong giỏ hàng và chuyển tiếp vào màn hình Checkout mà không làm mất dữ liệu người dùng đã chọn.
+* **A2. Khách hàng sử dụng điểm thưởng thành viên giảm giá (Loyalty Redemption Flow):**
+  * Tại bước 3, hệ thống hiển thị số điểm thưởng hiện có trong tài khoản thành viên.
+  * Khách hàng tích chọn *"Dùng điểm thưởng giảm giá"* (ví dụ: 50 điểm = giảm 50.000đ). Tổng tiền thanh toán được trừ đi tương ứng trước khi gọi thanh toán.
+* **A3. Khách hàng áp dụng mã Voucher ưu đãi (Voucher Flow):**
   * Tại bước 2, khách hàng nhập mã khuyến mãi (ví dụ: `BREWNEW20`) vào ô voucher và nhấn *"Áp dụng"*.
   * Hệ thống gọi `POST /vouchers/validate` để kiểm tra tính hợp lệ: hạn dùng, số lượt còn lại, giá trị đơn hàng tối thiểu.
   * Nếu hợp lệ, hệ thống trừ số tiền chiết khấu vào mục `Giảm giá Voucher` và tính lại tổng tiền.
@@ -188,7 +204,7 @@ Bảng này cung cấp các kịch bản kiểm thử theo cấu trúc chuẩn `
 
 | Mã kịch bản | Tên kịch bản kiểm thử | Given (Tiền đề) | When (Hành động) | Then (Kết quả kỳ vọng) |
 | :---: | :--- | :--- | :--- | :--- |
-| **AC-CORE-01** | **Đặt hàng & Thanh toán thành công (Happy Path)** | Khách hàng có 2 món trong giỏ, điền đủ Tên và SĐT hợp lệ. | Nhấn *"Xác nhận thanh toán"* qua cổng Ví MoMo giả lập. | - Đơn hàng chuyển sang `PAID`.<br/>- Tồn kho các món giảm tương ứng.<br/>- Giỏ hàng rỗng.<br/>- Trả về mã đơn `#1042` kèm thời gian chờ 5-7 phút. |
+| **AC-CORE-01** | **Đặt hàng & Thanh toán thành công (Happy Path)** | Khách hàng đã đăng nhập tài khoản thành viên, có 2 món trong giỏ. | Nhấn *"Xác nhận thanh toán"* qua cổng Ví MoMo giả lập. | - Đơn hàng gắn với `userId`, chuyển sang `PAID`.<br/>- Tồn kho các món giảm tương ứng.<br/>- Tích lũy điểm thưởng thành viên.<br/>- Giỏ hàng rỗng.<br/>- Trả về mã đơn `#1042` kèm thời gian chờ 5-7 phút. |
 | **AC-CORE-02** | **Bảo vệ tính lũy thừa (Idempotency)** | Một đơn hàng `orderId` đang ở trạng thái `PENDING` và đã gửi request thanh toán có `Idempotency-Key: KEY-123`. | Client gửi tiếp request thứ hai có cùng `Idempotency-Key: KEY-123`. | - Hệ thống phát hiện khóa trùng lặp.<br/>- Chỉ thực hiện trừ tiền đúng 1 lần duy nhất.<br/>- Cả 2 request đều nhận được kết quả `200 OK`. |
 | **AC-CORE-03** | **Thanh toán thất bại giữ nguyên giỏ hàng** | Khách hàng thực hiện thanh toán với tài khoản giả lập không đủ số dư. | Cổng thanh toán phản hồi `status: FAILED`. | - Đơn hàng chuyển sang `PAYMENT_FAILED`.<br/>- Tồn kho không bị trừ.<br/>- Giỏ hàng của khách hàng trên giao diện **được giữ nguyên** để chọn lại phương thức. |
 | **AC-CORE-04** | **Kiểm soát bán âm tồn kho (Concurrency)** | Món Trà đào chỉ còn `stock = 1`, `version = 1`. Hai khách hàng A và B cùng bấm thanh toán cùng một phần nghìn giây. | Cả hai request gọi cập nhật tồn kho đồng thời trong transaction. | - Khách hàng A thành công: `stock = 0`, `version = 2`.<br/>- Khách hàng B thất bại do không khớp `version`: nhận lỗi `409 Conflict`, không bị trừ tiền oan. |
@@ -205,7 +221,7 @@ Use case trọng tâm này kết nối trực tiếp với các mã định danh
 | **Chức năng (FR)** | `FR-02` | Tùy biến đồ uống (Size, Topping, Ghi chú) | `ProductDetailModal.tsx` |
 | | `FR-03` | Quản lý giỏ hàng phía Client | `useCartStore` (Zustand), `localStorage` |
 | | `FR-04` | Xác thực tài khoản thành viên (JWT) | `POST /auth/login`, `JwtAuthGuard` |
-| | `FR-05` | Khởi tạo đơn hàng (Server Calculation) | `POST /orders`, `OrdersService.createOrder` |
+| | `FR-05` | Khởi tạo đơn hàng (Server Calculation & JWT Guard) | `POST /orders`, `OrdersService.createOrder` |
 | | `FR-06` | Thanh toán trực tuyến Idempotent | `POST /payments`, `PaymentsService.processPayment`, `IdempotencyInterceptor` |
 | | `FR-07` | Cỗ máy trạng thái đơn hàng | `assertTransition`, `OrderStatus` (`PENDING` $\rightarrow$ `PAID`) |
 | | `FR-08` | Kiểm soát tồn kho tranh chấp | `Optimistic Locking` (`version` column), Prisma Transaction |

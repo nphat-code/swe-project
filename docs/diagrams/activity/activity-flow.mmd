@@ -4,17 +4,27 @@ flowchart TD
     A2 --> A3[Thêm vào giỏ hàng]
     A3 --> A4[Xác nhận giỏ hàng & Bấm Đặt hàng]
     
-    A4 --> B1[Client gửi yêu cầu POST /orders]
-    B1 --> C1{Kiểm tra dữ liệu & Tồn kho}
+    A4 --> CheckAuth{Kiểm tra trạng thái đăng nhập}
+    CheckAuth -->|Chưa đăng nhập| PromptLogin[Hiển thị Modal Đăng nhập / Đăng ký]
+    PromptLogin --> PerformLogin[Người dùng đăng nhập & Nhận Token JWT]
+    PerformLogin --> B1
+    
+    CheckAuth -->|Đã đăng nhập| B1[Client gửi POST /orders kèm Bearer JWT]
+    
+    B1 --> AuthGuard{Xác thực JWT Guard}
+    AuthGuard -->|JWT không hợp lệ / Hết hạn| HandleAuthError[Báo lỗi 401 Unauthorized & Yêu cầu đăng nhập lại]
+    HandleAuthError --> PromptLogin
+    
+    AuthGuard -->|JWT hợp lệ| C1{Kiểm tra dữ liệu & Tồn kho}
     
     C1 -->|Hết hàng / Lỗi DTO| B2[Hiển thị thông báo lỗi & yêu cầu sửa giỏ]
     B2 --> EndFail1([Kết thúc])
     
-    C1 -->|Đủ tồn kho & Hợp lệ| C2[Tạo bản ghi Order: PENDING]
+    C1 -->|Đủ tồn kho & Hợp lệ| C2[Tạo bản ghi Order: PENDING gắn với userId]
     C2 --> B3[Hiển thị tùy chọn thanh toán trực tuyến]
     
     B3 --> A5[Khách hàng chọn Ví MoMo / VNPay / Thẻ]
-    A5 --> B4[Client gửi POST /payments kèm Idempotency-Key]
+    A5 --> B4[Client gửi POST /payments kèm Idempotency-Key & JWT]
     B4 --> D1[Cổng thanh toán xử lý trừ tiền]
     
     D1 --> C3{Kết quả giao dịch}
@@ -23,12 +33,10 @@ flowchart TD
     B5 --> EndFail2([Kết thúc])
     
     C3 -->|Thành công| C5[Chuyển Order: PAID & Trừ tồn kho]
-    C5 --> C6{Kiểm tra tài khoản}
-    C6 -->|Đã đăng nhập| C7[Tích lũy điểm thưởng thành viên]
-    C6 -->|Khách vãng lai| C8[Bỏ qua tích điểm]
+    C5 --> C7[Tích lũy điểm thưởng thành viên]
+    C7 --> C8[Tự động lưu vào Lịch sử đơn hàng tài khoản]
     
-    C7 --> Par1[Phân nhánh xử lý song song]
-    C8 --> Par1
+    C8 --> Par1[Phân nhánh xử lý song song]
     
     Par1 --> B6[Client dọn sạch giỏ hàng & Hiện mã nước #1042]
     Par1 --> E1[Barista tiếp nhận đơn & Chuyển: PREPARING]
