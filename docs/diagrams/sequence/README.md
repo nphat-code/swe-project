@@ -63,8 +63,8 @@ sequenceDiagram
     else Đủ tồn kho & Hợp lệ
         API->>+DB: INSERT INTO Order (PENDING) & OrderItem, UPDATE stock & version+1
         API->>DB: COMMIT Transaction
-        DB-->>-API: Order created (#1042)
-        API-->>UI: 201 Created (orderId: #1042, totalAmount: 85000)
+        DB-->>-API: Order created (orderId)
+        API-->>UI: 201 Created (orderId, totalAmount)
 
         UI->>UI: Sinh UUID Idempotency-Key
         UI->>API: POST /payments (orderId, method, Idempotency-Key, Bearer JWT)
@@ -77,7 +77,7 @@ sequenceDiagram
             API->>Payment: Chuyển tiếp yêu cầu trừ tiền (orderId, amount, method)
             alt Thanh toán thất bại (Thiếu số dư / Sai OTP / Khách hủy)
                 Payment-->>API: 400 Failed (errorCode: PAYMENT_DECLINED)
-                API->>+DB: UPDATE Order SET status = PAYMENT_FAILED WHERE id = #1042
+                API->>+DB: UPDATE Order SET status = PAYMENT_FAILED WHERE id = orderId
                 DB-->>-API: OK
                 API-->>UI: 400 Bad Request (Thanh toán thất bại)
                 UI-->>Customer: Cảnh báo lỗi thanh toán & Giữ nguyên giỏ hàng để thử lại
@@ -85,9 +85,9 @@ sequenceDiagram
                 Payment-->>API: 200 OK (transactionId: TXN_98765, status: SUCCESS)
                 API->>+DB: Transaction: UPDATE Order PAID, INSERT Payment, ADD Loyalty
                 DB-->>-API: Transaction hoàn tất
-                API-->>UI: 200 OK (orderId: #1042, status: PAID, pointsEarned: 8)
+                API-->>UI: 200 OK (orderId, status: PAID, pointsEarned)
                 UI->>UI: Xóa sạch giỏ hàng (Zustand Store & LocalStorage)
-                UI-->>Customer: Màn hình thành công: Mã lấy nước #1042, Hẹn 5-7 phút
+                UI-->>Customer: Màn hình thành công: Mã lấy nước (orderId), Hẹn 5-7 phút
             end
         end
     end
@@ -119,7 +119,7 @@ sequenceDiagram
 ### 3.4. Cỗ máy trạng thái & Hậu điều kiện (State Machine & Post-conditions)
 - Trạng thái đơn hàng chuyển đổi chặt chẽ: `PENDING` $\longrightarrow$ `PAID` $\longrightarrow$ `PREPARING` $\longrightarrow$ `READY` $\longrightarrow$ `COMPLETED`.
 - Nếu thanh toán thất bại, đơn chuyển sang `PAYMENT_FAILED` (không trừ tồn kho).
-- Khi thanh toán thành công, hệ thống tự động tích điểm thưởng thành viên (`LoyaltyTransaction`: 10.000đ = 1 điểm) và gửi mã lấy nước `#1042` kèm thời gian dự kiến (5-7 phút) cho khách hàng.
+- Khi thanh toán thành công, hệ thống tự động tích điểm thưởng thành viên (`LoyaltyTransaction`: 10.000đ = 1 điểm) và gửi mã lấy nước (`orderId`) kèm thời gian dự kiến (5-7 phút) cho khách hàng.
 
 ---
 

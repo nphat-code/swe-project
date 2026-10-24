@@ -117,18 +117,18 @@ fork
     |Giao diện Web\n(Next.js Client)|
     :Nhận 200 OK & Dọn sạch giỏ hàng\n(Lưu đơn vào Lịch sử đơn hàng);
     |Khách hàng\n(Customer / Member)|
-    :Màn hình xác nhận: Hiển thị mã #1042\n& Thời gian chờ 5-7 phút;
+    :Màn hình xác nhận: Hiển thị mã đơn hàng\n& Thời gian chờ 5-7 phút;
     :Di chuyển đến quầy nhận đồ uống;
 fork again
     |Quầy pha chế\n(Nhân viên Barista)|
-    :Màn hình quầy nhận thông báo đơn mới #1042;
+    :Màn hình quầy nhận thông báo đơn mới;
     :Bấm nhận đơn: Trạng thái sang PREPARING;
     :Pha chế đồ uống theo đúng Size, Topping & Ghi chú;
-    :Pha chế xong: Trạng thái sang READY\n& Gọi mã #1042 tại quầy;
+    :Pha chế xong: Trạng thái sang READY\n& Gọi mã đơn hàng tại quầy;
 end fork
 
 |Khách hàng\n(Customer / Member)|
-:Đối chiếu mã đơn #1042 với nhân viên Barista;
+:Đối chiếu mã đơn hàng với nhân viên Barista;
 
 |Quầy pha chế\n(Nhân viên Barista)|
 :Trao đồ uống cho khách & Bấm hoàn tất;
