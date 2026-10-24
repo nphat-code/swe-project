@@ -15,7 +15,7 @@
 
 Use case **"Đặt hàng và Thanh toán không tiền mặt"** là mạch máu nghiệp vụ cốt lõi nhất của BrewLite, giải quyết bài toán: *Khách hàng không phải xếp hàng chờ thanh toán tiền mặt tại quầy, mà có thể hoàn tất chọn món, áp voucher, thanh toán qua Ví điện tử và nhận mã lấy nước trong vài chạm.*
 
-* **Mã nguồn Mermaid:** [`docs/diagrams/use-case/use-case-checkout.mmd`](../diagrams/use-case/use-case-checkout.mmd)
+* **Mã nguồn sơ đồ:** [`Mermaid`](../diagrams/use-case/use-case-checkout.mmd) | [`PlantUML`](../diagrams/use-case/use-case-checkout.puml)
 
 ```mermaid
 flowchart LR
@@ -192,8 +192,9 @@ Use case trọng tâm này kết nối trực tiếp với các mã định danh
 
 | Nhóm yêu cầu | Mã định danh | Tên yêu cầu cụ thể | Thành phần hiện thực trong dự án |
 | :--- | :--- | :--- | :--- |
-| **Chức năng (FR)** | `FR-03` | Tùy biến đồ uống (Size, Topping, Ghi chú) | `ProductDetailModal.tsx` |
-| | `FR-04` | Quản lý giỏ hàng phía Client | `useCartStore` (Zustand), `localStorage` |
+| **Chức năng (FR)** | `FR-02` | Tùy biến đồ uống (Size, Topping, Ghi chú) | `ProductDetailModal.tsx` |
+| | `FR-03` | Quản lý giỏ hàng phía Client | `useCartStore` (Zustand), `localStorage` |
+| | `FR-04` | Xác thực tài khoản thành viên (JWT) | `POST /auth/login`, `JwtAuthGuard` |
 | | `FR-05` | Khởi tạo đơn hàng (Server Calculation) | `POST /orders`, `OrdersService.createOrder` |
 | | `FR-06` | Thanh toán không tiền mặt Idempotent | `POST /payments`, `PaymentsService.processPayment`, `IdempotencyInterceptor` |
 | | `FR-07` | Cỗ máy trạng thái đơn hàng | `assertTransition`, `OrderStatus` (`PENDING` $\rightarrow$ `PAID`) |
