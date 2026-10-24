@@ -7,30 +7,30 @@ flowchart LR
 
     subgraph CheckoutBoundary [PHẠM VI TRỌNG TÂM: ĐẶT HÀNG & THANH TOÁN (BREWLITE)]
         UC04([UC04: Quản lý giỏ hàng])
-        UC07([UC07: Đăng nhập / Xác thực JWT])
-        UC05([UC05: Đặt hàng - Checkout])
-        UC05_1([UC05.1: Áp dụng mã Voucher])
+        UC05([UC05: Đăng ký / Đăng nhập])
+        UC06([UC06: Đặt hàng - Checkout])
+        UC06_1([UC06.1: Áp dụng mã Voucher])
         
-        UC06([UC06: Thanh toán trực tuyến])
-        UC06_1([UC06.1: Chọn phương thức Ví / Thẻ])
-        UC06_2([UC06.2: Xử lý Idempotent & Trừ tiền])
+        UC07([UC07: Thanh toán trực tuyến])
+        UC07_1([UC07.1: Chọn phương thức Ví / Thẻ])
+        UC07_2([UC07.2: Xử lý Idempotent & Trừ tiền])
         
-        UC08([UC08: Xem lịch sử đơn hàng])
-        UC09([UC09: Tích lũy điểm thưởng])
+        UC08([UC08: Tích lũy điểm thưởng])
+        UC09([UC09: Xem lịch sử đơn hàng])
     end
 
     Customer --- UC04
-    Customer --- UC07
+    Customer --- UC05
 
-    Member --- UC05
+    Member --- UC06
     Member --- UC08
     Member --- UC09
 
-    UC05 -.->|include| UC07
-    UC05 -.->|include| UC06
-    UC05_1 -.->|extend| UC05
-    UC09 -.->|extend| UC05
+    UC06 -.->|include| UC05
+    UC06 -.->|include| UC07
+    UC06_1 -.->|extend| UC06
+    UC08 -.->|extend| UC06
     
-    UC06 -.->|include| UC06_1
-    UC06 -.->|include| UC06_2
-    UC06_2 --- PaymentGW
+    UC07 -.->|include| UC07_1
+    UC07 -.->|include| UC07_2
+    UC07_2 --- PaymentGW

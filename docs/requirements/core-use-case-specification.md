@@ -7,7 +7,7 @@
 > **Môn học:** Công nghệ Phần mềm (Software Engineering)  
 > **Hạng mục:** Assignment 2 — Task 1.3: Đặc tả một use-case trọng tâm  
 > **Phiên bản:** v1.0  
-> **Use Case lựa chọn:** `UC05 - Đặt hàng` & `UC06 - Thanh toán trực tuyến`  
+> **Use Case lựa chọn:** `UC06 - Đặt hàng` & `UC07 - Thanh toán trực tuyến`  
 
 ---
 
@@ -27,33 +27,33 @@ flowchart LR
 
     subgraph CheckoutBoundary [PHẠM VI TRỌNG TÂM: ĐẶT HÀNG & THANH TOÁN (BREWLITE)]
         UC04([UC04: Quản lý giỏ hàng])
-        UC07([UC07: Đăng nhập / Xác thực JWT])
-        UC05([UC05: Đặt hàng - Checkout])
-        UC05_1([UC05.1: Áp dụng mã Voucher])
+        UC05([UC05: Đăng ký / Đăng nhập])
+        UC06([UC06: Đặt hàng - Checkout])
+        UC06_1([UC06.1: Áp dụng mã Voucher])
         
-        UC06([UC06: Thanh toán trực tuyến])
-        UC06_1([UC06.1: Chọn phương thức Ví / Thẻ])
-        UC06_2([UC06.2: Xử lý Idempotent & Trừ tiền])
+        UC07([UC07: Thanh toán trực tuyến])
+        UC07_1([UC07.1: Chọn phương thức Ví / Thẻ])
+        UC07_2([UC07.2: Xử lý Idempotent & Trừ tiền])
         
-        UC08([UC08: Xem lịch sử đơn hàng])
-        UC09([UC09: Tích lũy điểm thưởng])
+        UC08([UC08: Tích lũy điểm thưởng])
+        UC09([UC09: Xem lịch sử đơn hàng])
     end
 
     Customer --- UC04
-    Customer --- UC07
+    Customer --- UC05
 
-    Member --- UC05
+    Member --- UC06
     Member --- UC08
     Member --- UC09
 
-    UC05 -.->|include| UC07
-    UC05 -.->|include| UC06
-    UC05_1 -.->|extend| UC05
-    UC09 -.->|extend| UC05
+    UC06 -.->|include| UC05
+    UC06 -.->|include| UC07
+    UC06_1 -.->|extend| UC06
+    UC08 -.->|extend| UC06
     
-    UC06 -.->|include| UC06_1
-    UC06 -.->|include| UC06_2
-    UC06_2 --- PaymentGW
+    UC07 -.->|include| UC07_1
+    UC07 -.->|include| UC07_2
+    UC07_2 --- PaymentGW
 ```
 
 ---
@@ -63,12 +63,12 @@ flowchart LR
 | Thuộc tính | Chi tiết đặc tả kỹ thuật |
 | :--- | :--- |
 | **Tên Use Case** | **UC-CORE: Đặt Hàng & Thanh Toán Trực Tuyến (Online Order & Checkout)** |
-| **Mã định danh** | `UC05: Đặt hàng - Checkout` & `UC06: Thanh toán trực tuyến` (liên kết `UC07: Xác thực JWT`, `UC06.1: Chọn phương thức`, `UC06.2: Xử lý Idempotent`, `UC05.1: Voucher`, `UC09: Điểm thưởng`, `UC08: Lịch sử đơn`) |
+| **Mã định danh** | `UC06: Đặt hàng - Checkout` & `UC07: Thanh toán trực tuyến` (liên kết `UC05: Đăng ký / Đăng nhập`, `UC07.1: Chọn phương thức`, `UC07.2: Xử lý Idempotent`, `UC06.1: Voucher`, `UC08: Tích lũy điểm thưởng`, `UC09: Xem lịch sử đơn`) |
 | **Tác nhân chính (Primary Actor)** | **Khách thành viên (Member)** (Khách hàng sau khi đăng nhập / xác thực JWT) |
 | **Tác nhân hỗ trợ (Supporting Actor)** | **Cổng thanh toán điện tử (Mock Payment Gateway)** (MoMo, VNPay, Thẻ ngân hàng) |
 | **Sự kiện kích hoạt (Trigger)** | Khách hàng nhấn nút **"Tiến hành đặt hàng"** từ Giỏ hàng (Cart Drawer) hoặc nút **"Thanh toán ngay"** trên màn hình Checkout. |
-| **Tiền điều kiện (Pre-conditions)** | 1. Giỏ hàng của khách hàng có ít nhất 1 sản phẩm (`cartCount > 0`).<br/>2. Các món trong giỏ hàng ở trạng thái khả dụng kinh doanh (`isAvailable = true`) và còn tồn kho (`stock > 0`).<br/>3. **Khách hàng đã đăng nhập tài khoản thành viên thành công và sở hữu Token JWT hợp lệ** (nếu chưa đăng nhập, hệ thống kích hoạt luồng `UC07` yêu cầu đăng nhập trước).<br/>4. Máy khách (Client) duy trì kết nối Internet và gọi được REST API Backend (`/health` trả về `200 OK`). |
-| **Hậu điều kiện thành công (Post-conditions - Success)** | 1. Đơn hàng được tạo thành công trong CSDL gắn với `userId` của Member, trạng thái chuyển từ `PENDING` $\rightarrow$ `PAID`.<br/>2. Số lượng tồn kho (`stock`) của các món được trừ an toàn bằng cơ chế Khóa lạc quan (**Optimistic Locking**).<br/>3. Giao dịch thanh toán được ghi nhận kèm mã `Idempotency-Key` và `transactionId`.<br/>4. Khách hàng nhận được Mã đơn hàng to rõ (ví dụ: `#1042`) kèm thông báo: *"Mời bạn đến quầy nhận nước sau 5-7 phút"*.<br/>5. Giỏ hàng phía Client được xóa sạch (`cartItems = []`).<br/>6. Hệ thống tự động tích lũy điểm thưởng thành viên tương ứng (10.000đ = 1 điểm, lưu vào `LoyaltyTransaction`).<br/>7. Đơn hàng được lưu vào trang Lịch sử đơn hàng cá nhân (`UC08`). |
+| **Tiền điều kiện (Pre-conditions)** | 1. Giỏ hàng của khách hàng có ít nhất 1 sản phẩm (`cartCount > 0`).<br/>2. Các món trong giỏ hàng ở trạng thái khả dụng kinh doanh (`isAvailable = true`) và còn tồn kho (`stock > 0`).<br/>3. **Khách hàng đã đăng nhập tài khoản thành viên thành công và sở hữu Token JWT hợp lệ** (nếu chưa đăng nhập, hệ thống kích hoạt luồng `UC05` yêu cầu đăng nhập trước).<br/>4. Máy khách (Client) duy trì kết nối Internet và gọi được REST API Backend (`/health` trả về `200 OK`). |
+| **Hậu điều kiện thành công (Post-conditions - Success)** | 1. Đơn hàng được tạo thành công trong CSDL gắn với `userId` của Member, trạng thái chuyển từ `PENDING` $\rightarrow$ `PAID`.<br/>2. Số lượng tồn kho (`stock`) của các món được trừ an toàn bằng cơ chế Khóa lạc quan (**Optimistic Locking**).<br/>3. Giao dịch thanh toán được ghi nhận kèm mã `Idempotency-Key` và `transactionId`.<br/>4. Khách hàng nhận được Mã đơn hàng to rõ (ví dụ: `#1042`) kèm thông báo: *"Mời bạn đến quầy nhận nước sau 5-7 phút"*.<br/>5. Giỏ hàng phía Client được xóa sạch (`cartItems = []`).<br/>6. Hệ thống tự động tích lũy điểm thưởng thành viên tương ứng (10.000đ = 1 điểm, lưu vào `LoyaltyTransaction`).<br/>7. Đơn hàng được lưu vào trang Lịch sử đơn hàng cá nhân (`UC09`). |
 | **Hậu điều kiện thất bại (Post-conditions - Failure)** | 1. Đơn hàng chuyển sang trạng thái `PAYMENT_FAILED` hoặc `CANCELLED`.<br/>2. Số lượng tồn kho không bị trừ (hoặc được hoàn lại trong Transaction).<br/>3. Giỏ hàng của khách hàng được giữ nguyên vẹn để khách không phải chọn món lại từ đầu.<br/>4. Khách hàng nhận được thông báo lỗi rõ ràng kèm lý do (ví dụ: *Tài khoản không đủ số dư*, *Món vừa hết hàng*). |
 
 ---
@@ -86,7 +86,7 @@ sequenceDiagram
 
     C->>UI: 1. Nhấn "Tiến hành đặt hàng" từ Giỏ
     alt Chưa đăng nhập (Không có JWT)
-        UI->>C: 2. Hiển thị Modal Đăng nhập / Đăng ký (UC07)
+        UI->>C: 2. Hiển thị Modal Đăng nhập / Đăng ký (UC05)
         C->>UI: 3. Nhập tài khoản & Đăng nhập
         UI->>API: 4. POST /auth/login
         API-->>UI: 5. Trả về accessToken (JWT)
@@ -113,7 +113,7 @@ sequenceDiagram
 
 1. **Khách hàng** duyệt giỏ hàng và nhấn nút **"Tiến hành đặt hàng"**.
 2. **Hệ thống** kiểm tra trạng thái xác thực người dùng:
-   * **Nếu chưa đăng nhập:** Hệ thống hiển thị Modal Đăng nhập / Đăng ký (`UC07`). Khách hàng đăng nhập thành công, hệ thống lưu chuỗi `accessToken` (JWT) vào phiên làm việc.
+   * **Nếu chưa đăng nhập:** Hệ thống hiển thị Modal Đăng nhập / Đăng ký (`UC05`). Khách hàng đăng nhập thành công, hệ thống lưu chuỗi `accessToken` (JWT) vào phiên làm việc.
    * **Nếu đã đăng nhập:** Hệ thống tự động chuyển tiếp vào màn hình Đặt hàng (Checkout).
 3. **Màn hình Đặt hàng (Checkout)** hiển thị các thông tin:
    * Thông tin người nhận: Họ và tên, Số điện thoại từ hồ sơ thành viên (cho phép điều chỉnh).
@@ -138,14 +138,14 @@ sequenceDiagram
     * Tự động tính và cộng dồn điểm tích lũy vào tài khoản thành viên (`loyaltyPoints = loyaltyPoints + (total / 10000)`, lưu bản ghi `LoyaltyTransaction`).
 11. **Backend** phản hồi mã `200 OK` kèm dữ liệu đơn hàng đã thanh toán thành công về Client.
 12. **Client** thực hiện dọn sạch giỏ hàng trong bộ nhớ `Zustand` và `localStorage`.
-13. **Hệ thống** điều hướng người dùng đến **Màn hình Xác nhận Đơn hàng (Order Success Screen)** hiển thị mã đơn `#1042` to rõ, điểm thưởng vừa tích lũy, trạng thái `ĐÃ THANH TOÁN` kèm thông điệp: *"Mời bạn đến quầy nhận nước sau 5-7 phút"*. Đơn hàng đồng thời được lưu vào trang Lịch sử đơn hàng (`UC08`).
+13. **Hệ thống** điều hướng người dùng đến **Màn hình Xác nhận Đơn hàng (Order Success Screen)** hiển thị mã đơn `#1042` to rõ, điểm thưởng vừa tích lũy, trạng thái `ĐÃ THANH TOÁN` kèm thông điệp: *"Mời bạn đến quầy nhận nước sau 5-7 phút"*. Đơn hàng đồng thời được lưu vào trang Lịch sử đơn hàng (`UC09`).
 
 ---
 
 ### 3.2. Các luồng thay thế (Alternative Flows)
 
 * **A1. Khách hàng chưa đăng nhập tài khoản (Unauthenticated Branch):**
-  * Tại bước 2, nếu khách hàng chưa đăng nhập hoặc Token JWT hết hạn, hệ thống hiển thị Modal Đăng nhập / Đăng ký (`UC07`).
+  * Tại bước 2, nếu khách hàng chưa đăng nhập hoặc Token JWT hết hạn, hệ thống hiển thị Modal Đăng nhập / Đăng ký (`UC05`).
   * Khách hàng hoàn tất đăng nhập, hệ thống tự động giữ nguyên các món trong giỏ hàng và chuyển tiếp vào màn hình Checkout mà không làm mất dữ liệu người dùng đã chọn.
 * **A2. Khách hàng sử dụng điểm thưởng thành viên giảm giá (Loyalty Redemption Flow):**
   * Tại bước 3, hệ thống hiển thị số điểm thưởng hiện có trong tài khoản thành viên.
