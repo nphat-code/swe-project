@@ -1,0 +1,44 @@
+flowchart TD
+    Start([Bắt đầu]) --> A1[Duyệt thực đơn & chọn đồ uống]
+    A1 --> A2[Tùy biến kích cỡ Size & Topping]
+    A2 --> A3[Thêm vào giỏ hàng]
+    A3 --> A4[Xác nhận giỏ hàng & Bấm Đặt hàng]
+    
+    A4 --> B1[Client gửi yêu cầu POST /orders]
+    B1 --> C1{Kiểm tra dữ liệu & Tồn kho}
+    
+    C1 -->|Hết hàng / Lỗi DTO| B2[Hiển thị thông báo lỗi & yêu cầu sửa giỏ]
+    B2 --> EndFail1([Kết thúc])
+    
+    C1 -->|Đủ tồn kho & Hợp lệ| C2[Tạo bản ghi Order: PENDING]
+    C2 --> B3[Hiển thị tùy chọn thanh toán trực tuyến]
+    
+    B3 --> A5[Khách hàng chọn Ví MoMo / VNPay / Thẻ]
+    A5 --> B4[Client gửi POST /payments kèm Idempotency-Key]
+    B4 --> D1[Cổng thanh toán xử lý trừ tiền]
+    
+    D1 --> C3{Kết quả giao dịch}
+    C3 -->|Thất bại / Hủy| C4[Chuyển Order: PAYMENT_FAILED]
+    C4 --> B5[Thông báo lỗi & Giữ nguyên giỏ hàng]
+    B5 --> EndFail2([Kết thúc])
+    
+    C3 -->|Thành công| C5[Chuyển Order: PAID & Trừ tồn kho]
+    C5 --> C6{Kiểm tra tài khoản}
+    C6 -->|Đã đăng nhập| C7[Tích lũy điểm thưởng thành viên]
+    C6 -->|Khách vãng lai| C8[Bỏ qua tích điểm]
+    
+    C7 --> Par1[Phân nhánh xử lý song song]
+    C8 --> Par1
+    
+    Par1 --> B6[Client dọn sạch giỏ hàng & Hiện mã nước #1042]
+    Par1 --> E1[Barista tiếp nhận đơn & Chuyển: PREPARING]
+    
+    E1 --> E2[Barista pha chế theo Size và Topping]
+    E2 --> E3[Chuyển trạng thái: READY & Gọi mã tại quầy]
+    
+    B6 --> A6[Khách đối chiếu mã #1042 nhận đồ uống]
+    E3 --> A6
+    
+    A6 --> E4[Barista xác nhận giao nước hoàn tất]
+    E4 --> C9[Chuyển trạng thái: COMPLETED]
+    C9 --> EndSuccess([Kết thúc thành công])
