@@ -154,7 +154,7 @@ sequenceDiagram
   * Tại bước 2, khách hàng nhập mã khuyến mãi (ví dụ: `BREWNEW20`) vào ô voucher và nhấn *"Áp dụng"*.
   * Hệ thống gọi `POST /vouchers/validate` để kiểm tra tính hợp lệ: hạn dùng, số lượt còn lại, giá trị đơn hàng tối thiểu.
   * Nếu hợp lệ, hệ thống trừ số tiền chiết khấu vào mục `Giảm giá Voucher` và tính lại tổng tiền.
-* **A3. Xử lý yêu cầu gửi lặp lại do mạng gián đoạn (Idempotent Flow):**
+* **A4. Xử lý yêu cầu gửi lặp lại do mạng gián đoạn (Idempotent Flow):**
   * Nếu khách hàng vô tình bấm nút *"Thanh toán"* 2 lần liên tiếp hoặc đường truyền mạng bị ngắt quãng khiến Client gửi lại request `POST /payments` có cùng `Idempotency-Key`.
   * Bộ chặn `IdempotencyInterceptor` tại Backend phát hiện khóa này đã được xử lý thành công trước đó.
   * Backend **không trừ tiền lần thứ hai**, mà trả về ngay lập tức kết quả giao dịch đã lưu trước đó kèm mã `200 OK`.
