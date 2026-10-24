@@ -27,7 +27,8 @@ Hệ thống phân định ranh giới trách nhiệm rõ ràng qua **5 làn bơ
 
 ## 2. SƠ ĐỒ HOẠT ĐỘNG CHI TIẾT (5 SWIMLANES ACTIVITY DIAGRAM)
 
-* **Tệp mã nguồn:** [`docs/diagrams/activity/activity-flow.mmd`](activity-flow.mmd)
+* **Mã nguồn PlantUML (Đầy đủ 5 Swimlanes):** [`docs/diagrams/activity/activity-flow.puml`](activity-flow.puml)
+* **Mã nguồn Mermaid (Xem trực tiếp trên GitHub):** [`docs/diagrams/activity/activity-flow.mmd`](activity-flow.mmd)
 
 ```mermaid
 flowchart TD

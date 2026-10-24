@@ -1,0 +1,137 @@
+@startuml activity-flow
+!theme plain
+skinparam defaultTextAlignment center
+skinparam roundCorner 8
+skinparam ActivityFontSize 12
+skinparam ArrowFontSize 11
+skinparam SwimlaneTitleFontSize 13
+skinparam SwimlaneTitleFontStyle bold
+skinparam ActivityBorderColor #2B2D42
+skinparam ActivityBackgroundColor #FFFFFF
+
+|#EBF5FB|Khách hàng\n(Customer / Member)|
+|#E8F8F5|Giao diện Web\n(Next.js Client)|
+|#FEF9E7|Backend API & CSDL\n(NestJS & PostgreSQL)|
+|#FDEDEC|Cổng thanh toán\n(Payment Gateway Mock)|
+|#EAFAF1|Quầy pha chế\n(Nhân viên Barista)|
+
+|Khách hàng\n(Customer / Member)|
+start
+:Duyệt menu & lọc danh mục đồ uống;
+
+|Giao diện Web\n(Next.js Client)|
+:Hiển thị danh sách món & Tabs danh mục;
+
+|Khách hàng\n(Customer / Member)|
+:Chọn món & Tùy biến\n(Size S/M/L, Topping, Ghi chú);
+
+|Giao diện Web\n(Next.js Client)|
+:Mở Modal tùy biến & tính giá tạm tính realtime;
+
+|Khách hàng\n(Customer / Member)|
+:Nhấn "Thêm vào giỏ hàng";
+
+|Giao diện Web\n(Next.js Client)|
+:Cập nhật Zustand Store & đồng bộ LocalStorage;
+
+|Khách hàng\n(Customer / Member)|
+:Nhấn "Tiến hành đặt hàng" từ giỏ;
+
+|Giao diện Web\n(Next.js Client)|
+if (Đã có Token JWT hợp lệ?) then (Chưa đăng nhập)
+    :Hiển thị Modal Đăng nhập / Đăng ký (UC05);
+    |Khách hàng\n(Customer / Member)|
+    :Nhập tài khoản & bấm Đăng nhập;
+    |Backend API & CSDL\n(NestJS & PostgreSQL)|
+    :Xác thực mật khẩu Bcrypt\n& Ký cấp accessToken JWT;
+    |Giao diện Web\n(Next.js Client)|
+    :Lưu accessToken JWT vào LocalStorage\n& giữ nguyên giỏ hàng;
+else (Đã đăng nhập)
+endif
+
+:Gửi POST /orders\n(Items, Size, Topping; Header: Bearer JWT);
+
+|Backend API & CSDL\n(NestJS & PostgreSQL)|
+if (JwtAuthGuard: Token hợp lệ?) then (Không hợp lệ / Hết hạn)
+    :Trả lỗi 401 Unauthorized;
+    |Giao diện Web\n(Next.js Client)|
+    :Hiển thị Modal yêu cầu đăng nhập lại;
+    stop
+else (Hợp lệ)
+endif
+
+:Truy vấn CSDL & Tự động\ntính lại tổng tiền trên Server;
+
+if (Kiểm tra tồn kho & Optimistic Lock?) then (Hết hàng / Xung đột version)
+    :Rollback Transaction\n& Trả lỗi 409 Conflict;
+    |Giao diện Web\n(Next.js Client)|
+    :Hiển thị: "Món đã hết hàng"\n& Giữ nguyên giỏ hàng;
+    |Khách hàng\n(Customer / Member)|
+    :Đổi món khác hoặc chỉnh lại số lượng;
+    detach
+else (Đủ hàng & Hợp lệ)
+    :Tạo bản ghi Order: PENDING\ngắn với userId của Member;
+endif
+
+|Giao diện Web\n(Next.js Client)|
+:Hiển thị Form Checkout, tổng tiền\n& các cổng thanh toán Ví/Thẻ;
+
+|Khách hàng\n(Customer / Member)|
+:Chọn phương thức: Ví MoMo / VNPay / Thẻ;
+:Nhấn "Xác nhận thanh toán";
+
+|Giao diện Web\n(Next.js Client)|
+:Sinh UUID Idempotency-Key\n& Gửi POST /payments;
+
+|Backend API & CSDL\n(NestJS & PostgreSQL)|
+if (IdempotencyInterceptor: Khóa đã xử lý?) then (Khóa đã tồn tại)
+    :Trả về ngay kết quả\ngiao dịch đã lưu trước đó;
+else (Khóa mới)
+    :Chuyển tiếp yêu cầu trừ tiền\nsang Payment Gateway;
+    |Cổng thanh toán\n(Payment Gateway Mock)|
+    :Tiếp nhận & Xử lý trừ tiền giả lập;
+    if (Kết quả thanh toán?) then (Thất bại / Hủy / Thiếu số dư)
+        :Phản hồi FAILED;
+        |Backend API & CSDL\n(NestJS & PostgreSQL)|
+        :Cập nhật Order: PAYMENT_FAILED\n& Không trừ tồn kho;
+        |Giao diện Web\n(Next.js Client)|
+        :Hiển thị cảnh báo lỗi thanh toán\n& Giữ nguyên giỏ hàng;
+        |Khách hàng\n(Customer / Member)|
+        :Chọn thử lại hoặc đổi phương thức khác;
+        detach
+    else (Thành công)
+        :Phản hồi SUCCESS kèm transactionId;
+        |Backend API & CSDL\n(NestJS & PostgreSQL)|
+        :Database Transaction:\nChuyển Order sang PAID & Trừ tồn kho;
+        :Tự động tích lũy điểm thưởng:\ntotal / 10000;
+    endif
+endif
+
+|Backend API & CSDL\n(NestJS & PostgreSQL)|
+fork
+    |Giao diện Web\n(Next.js Client)|
+    :Nhận 200 OK & Dọn sạch giỏ hàng\n(Lưu đơn vào Lịch sử đơn hàng);
+    |Khách hàng\n(Customer / Member)|
+    :Màn hình xác nhận: Hiển thị mã #1042\n& Thời gian chờ 5-7 phút;
+    :Di chuyển đến quầy nhận đồ uống;
+fork again
+    |Quầy pha chế\n(Nhân viên Barista)|
+    :Màn hình quầy nhận thông báo đơn mới #1042;
+    :Bấm nhận đơn: Trạng thái sang PREPARING;
+    :Pha chế đồ uống theo đúng Size, Topping & Ghi chú;
+    :Pha chế xong: Trạng thái sang READY\n& Gọi mã #1042 tại quầy;
+end fork
+
+|Khách hàng\n(Customer / Member)|
+:Đối chiếu mã đơn #1042 với nhân viên Barista;
+
+|Quầy pha chế\n(Nhân viên Barista)|
+:Trao đồ uống cho khách & Bấm hoàn tất;
+
+|Backend API & CSDL\n(NestJS & PostgreSQL)|
+:Cập nhật trạng thái Order: COMPLETED;
+
+|Khách hàng\n(Customer / Member)|
+:Nhận đồ uống & Thưởng thức;
+stop
+@enduml
