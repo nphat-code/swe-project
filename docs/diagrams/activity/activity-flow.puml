@@ -71,7 +71,7 @@ if () then ([Hết hàng / Xung đột version])
     :Hiển thị: "Món đã hết hàng"\n& Giữ nguyên giỏ hàng;
     |Khách hàng\n(Customer / Member)|
     :Đổi món khác hoặc chỉnh lại số lượng;
-    detach
+    stop
 else ([Đủ hàng & Hợp lệ])
     |Backend API & CSDL\n(NestJS & PostgreSQL)|
     :Tạo bản ghi Order: PENDING\ngắn với userId của Member;
@@ -102,7 +102,7 @@ else ([Khóa Idempotent mới])
         :Hiển thị cảnh báo lỗi thanh toán\n& Giữ nguyên giỏ hàng;
         |Khách hàng\n(Customer / Member)|
         :Chọn thử lại hoặc đổi phương thức khác;
-        detach
+        stop
     else ([Thanh toán thành công])
         |Cổng thanh toán\n(Payment Gateway Mock)|
         :Phản hồi SUCCESS kèm transactionId;
