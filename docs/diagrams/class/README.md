@@ -2,9 +2,9 @@
 
 > **Căn cứ đề bài:** Mục 4.3 (Task 2.3 - 2.0 điểm) trong tệp đặc tả gốc [`docs/DE_BAI_ASSIGNMENT_2_GOC.md`](../../docs/DE_BAI_ASSIGNMENT_2_GOC.md).  
 > **Tiêu chí nghiệm thu:** Sơ đồ mức domain mô hình hóa tối thiểu 7 thực thể: `User`, `Product`, `Order`, `OrderItem`, `Payment`, `Promotion`, `LoyaltyTransaction` cùng đầy đủ thuộc tính, kiểu dữ liệu, quan hệ, multiplicity và enum trạng thái; đảm bảo không mâu thuẫn với SRS và Sequence Diagram.  
-> **Tệp mã nguồn & Đồ họa:**
-> - **Mermaid (Markdown Web):** Mã nguồn [`class-domain.mmd`](class-domain.mmd) | Vector [`class-domain.svg`](class-domain.svg) | Ảnh [`class-domain.png`](class-domain.png)
-> - **PlantUML (Monochrome Print):** Mã nguồn [`class-domain.puml`](class-domain.puml) | Vector [`class-domain-puml.svg`](class-domain-puml.svg) | Ảnh [`class-domain-puml.png`](class-domain-puml.png)
+> **Tệp mã nguồn Mermaid:** [`class-domain.mmd`](class-domain.mmd)  
+> **Tệp xuất đồ họa vector (SVG):** [`class-domain.svg`](class-domain.svg)  
+> **Tệp ảnh chất lượng cao (PNG):** [`class-domain.png`](class-domain.png)
 
 ---
 
