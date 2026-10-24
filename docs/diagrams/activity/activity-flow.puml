@@ -38,7 +38,7 @@ start
 
 |Giao diện Web\n(Next.js Client)|
 if () then ([Chưa đăng nhập])
-    :Hiển thị Modal Đăng nhập / Đăng ký (UC05);
+    :Hiển thị Modal Đăng nhập / Đăng ký;
     |Khách hàng\n(Customer / Member)|
     :Nhập tài khoản & bấm Đăng nhập;
     |Backend API & CSDL\n(NestJS & PostgreSQL)|
