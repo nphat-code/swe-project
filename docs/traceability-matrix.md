@@ -23,7 +23,7 @@
 | **FR-07** | **Cỗ máy trạng thái đơn (State Machine)** | `UC11` (Cập nhật trạng thái) | - `sequence-checkout.puml`<br/>- `class-domain.puml` (`OrderStatus`) | - `OrdersService.assertTransition`<br/>- `OrdersService.updateStatus` | `UNIT-STATE01` | 🟢 Hoàn tất Task 1 |
 | **FR-08** | **Kiểm soát tồn kho đồng thời** | `UC14` (Quản lý tồn kho) | - `sequence-checkout.puml`<br/>- `class-domain.puml` (`Product.version`) | - Prisma Transaction (`$transaction`)<br/>- Optimistic Locking query | `UNIT-CONCUR01` | 🟢 Hoàn tất Task 1 |
 | **FR-09** | **Tích lũy điểm thưởng thành viên** | `UC09` (Tích lũy điểm thưởng) | - `use-case-checkout.mmd`<br/>- `class-domain.puml` (`LoyaltyTransaction`) | - `LoyaltyService.awardPoints` | `UNIT-LOYAL01` | 🟢 Hoàn tất Task 1 |
-| **FR-10** | **Lịch sử đơn & Mã nhận đồ uống** | `UC08` (Xem lịch sử đơn) | - `activity-flow.puml`<br/>- `class-domain.puml` (`Order`) | - `GET /orders/me`<br/>- `OrderSuccessModal.tsx` | `E2E-FLOW01` | 🟢 Hoàn tất Task 1 |
+| **FR-10** | **Lịch sử đơn & Mã nhận đồ uống** | `UC08` (Nhận mã nước & Xem lịch sử đơn) | - `activity-flow.puml`<br/>- `class-domain.puml` (`Order`) | - `GET /orders/me`<br/>- `OrderSuccessModal.tsx` | `E2E-FLOW01` | 🟢 Hoàn tất Task 1 |
 | **FR-11** | **Áp dụng mã Voucher giảm giá** | `UC05.1` (Áp dụng Voucher) | - `use-case-checkout.mmd`<br/>- `class-domain.puml` (`Promotion`) | - `POST /vouchers/apply`<br/>- `VoucherService.validate` | `INT-VOUCH01` | 🟢 Hoàn tất Task 1 |
 | **FR-12** | **Quầy tiếp nhận pha chế Barista** | `UC10`, `UC11`, `UC12` | - `activity-flow.puml` | - `app/barista/page.tsx` *(Mở rộng)* | `UI-BARISTA01` | 🟢 Hoàn tất Task 1 |
 

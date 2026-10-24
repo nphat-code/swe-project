@@ -18,11 +18,11 @@ rectangle "PHẠM VI TRỌNG TÂM: ĐẶT HÀNG & THANH TOÁN (BREWLITE)" {
     usecase "UC05: Đặt hàng (Checkout)" as UC5
     usecase "UC05.1: Áp dụng mã Voucher" as UC5_1
     
-    usecase "UC06: Thanh toán không tiền mặt" as UC6
+    usecase "UC06: Thanh toán trực tuyến" as UC6
     usecase "UC06.1: Chọn phương thức Ví / Thẻ" as UC6_1
     usecase "UC06.2: Xử lý Idempotent & Trừ tiền" as UC6_2
     
-    usecase "UC08: Nhận mã nước & Theo dõi đơn" as UC8
+    usecase "UC08: Nhận mã nước & Xem lịch sử đơn" as UC8
     usecase "UC09: Tích lũy điểm thưởng" as UC9
 }
 

@@ -47,7 +47,7 @@ flowchart LR
 
         subgraph P3 [3. Tài khoản & Thành viên]
             UC07([UC07: Đăng ký / Đăng nhập])
-            UC08([UC08: Xem lịch sử & trạng thái đơn])
+            UC08([UC08: Nhận mã nước & Xem lịch sử đơn])
             UC09([UC09: Tích lũy điểm thưởng])
         end
 
@@ -71,6 +71,7 @@ flowchart LR
     Customer --- UC04
     Customer --- UC05
     Customer --- UC07
+    Customer --- UC08
 
     Member --- UC08
     Member --- UC09
@@ -106,7 +107,7 @@ Mỗi yêu cầu chức năng được chuẩn hóa mã định danh `FR-xx`, ph
 | **FR-03** | **Quản lý Giỏ hàng (Client Store)** | Giỏ hàng<br/>*(Customer)* | **Must** | - Thêm món cùng Size & Topping tự tăng số lượng `quantity`.<br/>- Cho phép tăng (`+`), giảm (`-`), hoặc xóa món khỏi giỏ hàng.<br/>- Tự động tính Tạm tính, Giảm giá và Tổng tiền thanh toán.<br/>- Dữ liệu giỏ hàng lưu vào `localStorage`, không mất khi F5 trang. | - Use Case: `UC04`<br/>- Activity: `activity-flow.puml`<br/>- Class: `Order`, `OrderItem` | - Client Store: `useCartStore.ts` (Zustand)<br/>- UI: `CartDrawer.tsx` |
 | **FR-04** | **Xác thực người dùng bằng JWT** | Tài khoản<br/>*(Customer / Member)* | **Must** | - `POST /auth/register`: Đăng ký tài khoản, mật khẩu băm bằng `bcrypt` (salt rounds = 10).<br/>- `POST /auth/login`: Xác thực tài khoản, phản hồi chuỗi `accessToken` (JWT).<br/>- Sử dụng `JwtAuthGuard` bảo vệ các endpoint yêu cầu quyền cá nhân (`GET /orders/me`). | - Use Case: `UC07`<br/>- Sequence: `sequence-checkout.puml`<br/>- Class: `User`, `Role` | - API: `POST /auth/login`, `POST /auth/register`<br/>- Backend: `AuthService`, `JwtStrategy`, `JwtAuthGuard` |
 | **FR-05** | **Khởi tạo đơn hàng (Server Calculation)** | Đơn hàng<br/>*(Customer / System)* | **Must** | - `POST /orders` tiếp nhận DTO chứa danh sách món, số lượng, size, toppings.<br/>- Backend **tự truy vấn CSDL để tính lại tổng tiền**, chống gian lận giá từ Client.<br/>- Tạo bản ghi `Order` ở trạng thái ban đầu là `PENDING`.<br/>- Sinh mã đơn hiển thị thân thiện (ví dụ: `#1042`). | - Use Case: `UC05`<br/>- Sequence: `sequence-checkout.puml`<br/>- Class: `Order`, `OrderItem` | - API: `POST /orders`<br/>- Backend: `OrdersController`, `OrdersService.createOrder` |
-| **FR-06** | **Thanh toán không tiền mặt Idempotent** | Thanh toán<br/>*(Customer / Gateway)* | **Must** | - Hỗ trợ chọn: Ví MoMo, VNPay, Thẻ ngân hàng, hoặc Ví BrewLite.<br/>- Client gửi kèm header `Idempotency-Key` (UUIDv4). Gửi lặp request cùng key chỉ xử lý trừ tiền 1 lần.<br/>- Thành công: chuyển đơn sang `PAID`, dọn sạch giỏ hàng.<br/>- Thất bại: chuyển đơn sang `PAYMENT_FAILED`, giữ nguyên giỏ hàng. | - Use Case: `UC06`<br/>- Sequence: `sequence-checkout.puml`<br/>- Class: `Payment`, `PaymentStatus` | - API: `POST /payments`<br/>- Backend: `PaymentsService.processPayment`, `IdempotencyInterceptor` |
+| **FR-06** | **Thanh toán trực tuyến Idempotent** | Thanh toán<br/>*(Customer / Gateway)* | **Must** | - Hỗ trợ chọn: Ví MoMo, VNPay, Thẻ ngân hàng, hoặc Ví BrewLite.<br/>- Client gửi kèm header `Idempotency-Key` (UUIDv4). Gửi lặp request cùng key chỉ xử lý trừ tiền 1 lần.<br/>- Thành công: chuyển đơn sang `PAID`, dọn sạch giỏ hàng.<br/>- Thất bại: chuyển đơn sang `PAYMENT_FAILED`, giữ nguyên giỏ hàng. | - Use Case: `UC06`<br/>- Sequence: `sequence-checkout.puml`<br/>- Class: `Payment`, `PaymentStatus` | - API: `POST /payments`<br/>- Backend: `PaymentsService.processPayment`, `IdempotencyInterceptor` |
 | **FR-07** | **Cỗ máy trạng thái đơn (State Machine)** | Vòng đời đơn<br/>*(System / Barista)* | **Must** | - Kiểm soát chuyển đổi trạng thái nghiêm ngặt qua hàm `assertTransition`:<br/>  `PENDING` $\rightarrow$ `PAID` $\rightarrow$ `PREPARING` $\rightarrow$ `READY` $\rightarrow$ `COMPLETED`<br/>  `PENDING` $\rightarrow$ `PAYMENT_FAILED` $\rightarrow$ `PAID`<br/>  `PENDING` / `PAID` $\rightarrow$ `CANCELLED`<br/>- Chuyển trạng thái vi phạm (nhảy cóc) bị chặn và trả về lỗi `400 Bad Request`. | - Use Case: `UC11`<br/>- Sequence: `sequence-checkout.puml`<br/>- Class: `Order`, `OrderStatus` | - Backend: `OrdersService.updateStatus`, `assertTransition` helper |
 | **FR-08** | **Kiểm soát tồn kho tranh chấp (Concurrency)** | Tồn kho<br/>*(System)* | **Must** | - Sử dụng kỹ thuật Khóa lạc quan (**Optimistic Locking**) với trường `version` trong bảng `Product`.<br/>- Thực thi trừ tồn kho trong Database Transaction: `WHERE id = :id AND version = :version AND stock >= :qty`.<br/>- Nếu hết hàng hoặc tranh chấp phiên bản, ném lỗi `409 Conflict`. | - Use Case: `UC14`<br/>- Sequence: `sequence-checkout.puml`<br/>- Class: `Product` | - Backend: `PrismaService.$transaction`, `StockService.decrementStock` |
 | **FR-09** | **Tích lũy điểm thưởng thành viên** | Thành viên<br/>*(Member)* | **Should** | - Tự động cộng điểm thưởng cho khách hàng thành viên khi đơn đạt trạng thái `PAID` (công thức: mỗi 10.000đ tích lũy 1 điểm).<br/>- Khách vãng lai (không đăng nhập) thì bỏ qua tích điểm.<br/>- Lưu lịch sử biến động điểm trong bảng `LoyaltyTransaction`. | - Use Case: `UC09`<br/>- Sequence: `sequence-checkout.puml`<br/>- Class: `User`, `LoyaltyTransaction` | - Backend: `LoyaltyService.awardPoints` |
@@ -184,5 +185,5 @@ Toàn bộ ma trận truy vết chi tiết 4 chiều sẽ được lưu trữ ch
 * **Tài liệu bàn giao Task 1:**
   * 📋 **Task 1.1:** [Bối cảnh, Stakeholder & Phạm vi](context-and-scope.md)
   * 📋 **Task 1.2:** [Danh mục yêu cầu FR/NFR & Sơ đồ Use Case tổng quát](system-requirements-matrix.md)
-  * 📋 **Task 1.3:** [Đặc tả Use Case trọng tâm: Đặt & Thanh toán không tiền mặt](core-use-case-specification.md)
+  * 📋 **Task 1.3:** [Đặc tả Use Case trọng tâm: Đặt & Thanh toán trực tuyến](core-use-case-specification.md)
 

@@ -1,5 +1,5 @@
 # 📌 ĐẶC TẢ USE CASE TRỌNG TÂM — DỰ ÁN BREWLITE (TASK 1.3)
-## Core Use Case Specification: Đặt Hàng & Thanh Toán Không Tiền Mặt (Cashless Checkout)
+## Core Use Case Specification: Đặt Hàng & Thanh Toán Trực Tuyến (Online Checkout)
 
 ---
 
@@ -7,13 +7,13 @@
 > **Môn học:** Công nghệ Phần mềm (Software Engineering)  
 > **Hạng mục:** Assignment 2 — Task 1.3: Đặc tả một use-case trọng tâm  
 > **Phiên bản:** v1.0  
-> **Use Case lựa chọn:** `UC05 - Đặt hàng` & `UC06 - Thanh toán trực tuyến không tiền mặt`  
+> **Use Case lựa chọn:** `UC05 - Đặt hàng` & `UC06 - Thanh toán trực tuyến`  
 
 ---
 
 ## 1. PHẠM VI & SƠ ĐỒ USE CASE TRỌNG TÂM (FOCUS SCOPE DIAGRAM)
 
-Use case **"Đặt hàng và Thanh toán không tiền mặt"** là mạch máu nghiệp vụ cốt lõi nhất của BrewLite, giải quyết bài toán: *Khách hàng không phải xếp hàng chờ thanh toán tiền mặt tại quầy, mà có thể hoàn tất chọn món, áp voucher, thanh toán qua Ví điện tử và nhận mã lấy nước trong vài chạm.*
+Use case **"Đặt hàng và Thanh toán trực tuyến"** là mạch máu nghiệp vụ cốt lõi nhất của BrewLite, giải quyết bài toán: *Khách hàng không phải xếp hàng chờ thanh toán tiền mặt tại quầy, mà có thể hoàn tất chọn món, áp voucher, thanh toán trực tuyến qua Ví điện tử / Thẻ và nhận mã lấy nước trong vài chạm.*
 
 * **Mã nguồn sơ đồ:** [`Mermaid`](../diagrams/use-case/use-case-checkout.mmd) | [`PlantUML`](../diagrams/use-case/use-case-checkout.puml)
 
@@ -30,11 +30,11 @@ flowchart LR
         UC05([UC05: Đặt hàng - Checkout])
         UC05_1([UC05.1: Áp dụng mã Voucher])
         
-        UC06([UC06: Thanh toán không tiền mặt])
+        UC06([UC06: Thanh toán trực tuyến])
         UC06_1([UC06.1: Chọn phương thức Ví / Thẻ])
         UC06_2([UC06.2: Xử lý Idempotent & Trừ tiền])
         
-        UC08([UC08: Nhận mã nước & Theo dõi đơn])
+        UC08([UC08: Nhận mã nước & Xem lịch sử đơn])
         UC09([UC09: Tích lũy điểm thưởng])
     end
 
@@ -60,8 +60,8 @@ flowchart LR
 
 | Thuộc tính | Chi tiết đặc tả kỹ thuật |
 | :--- | :--- |
-| **Tên Use Case** | **UC-CORE: Đặt Hàng & Thanh Toán Trực Tuyến (Cashless Order & Checkout)** |
-| **Mã định danh** | `UC05: Đặt hàng - Checkout` & `UC06: Thanh toán không tiền mặt` (phân rã `UC06.1: Chọn phương thức`, `UC06.2: Xử lý Idempotent`, `UC05.1: Voucher`, `UC08: Nhận mã nước`, `UC09: Điểm thưởng`) |
+| **Tên Use Case** | **UC-CORE: Đặt Hàng & Thanh Toán Trực Tuyến (Online Order & Checkout)** |
+| **Mã định danh** | `UC05: Đặt hàng - Checkout` & `UC06: Thanh toán trực tuyến` (phân rã `UC06.1: Chọn phương thức`, `UC06.2: Xử lý Idempotent`, `UC05.1: Voucher`, `UC08: Nhận mã nước & Xem lịch sử đơn`, `UC09: Điểm thưởng`) |
 | **Tác nhân chính (Primary Actor)** | **Khách hàng (Customer)** / **Khách thành viên (Member)** |
 | **Tác nhân hỗ trợ (Supporting Actor)** | **Cổng thanh toán điện tử (Mock Payment Gateway)** (MoMo, VNPay, Thẻ ngân hàng) |
 | **Sự kiện kích hoạt (Trigger)** | Khách hàng nhấn nút **"Tiến hành đặt hàng"** từ Giỏ hàng (Cart Drawer) hoặc nút **"Thanh toán ngay"** trên màn hình Checkout. |
@@ -209,7 +209,7 @@ Use case trọng tâm này kết nối trực tiếp với các mã định danh
 | | `FR-03` | Quản lý giỏ hàng phía Client | `useCartStore` (Zustand), `localStorage` |
 | | `FR-04` | Xác thực tài khoản thành viên (JWT) | `POST /auth/login`, `JwtAuthGuard` |
 | | `FR-05` | Khởi tạo đơn hàng (Server Calculation) | `POST /orders`, `OrdersService.createOrder` |
-| | `FR-06` | Thanh toán không tiền mặt Idempotent | `POST /payments`, `PaymentsService.processPayment`, `IdempotencyInterceptor` |
+| | `FR-06` | Thanh toán trực tuyến Idempotent | `POST /payments`, `PaymentsService.processPayment`, `IdempotencyInterceptor` |
 | | `FR-07` | Cỗ máy trạng thái đơn hàng | `assertTransition`, `OrderStatus` (`PENDING` $\rightarrow$ `PAID`) |
 | | `FR-08` | Kiểm soát tồn kho tranh chấp | `Optimistic Locking` (`version` column), Prisma Transaction |
 | | `FR-09` | Tích lũy điểm thưởng thành viên | `LoyaltyService.awardPoints` |
