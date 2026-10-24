@@ -14,3 +14,10 @@
   - Code phải tự tường minh (Self-documenting code) bằng cách đặt tên biến, hàm, kiểu dữ liệu, component rõ nghĩa và chuẩn chỉ.
   - Không để lại code thừa bị comment (`commented-out code`).
 
+## 📄 Căn cứ yêu cầu đề tài (Single Source of Truth)
+- **Tuyệt đối tuân thủ tệp Markdown đề bài gốc**:
+  - Toàn bộ nội dung yêu cầu, tiêu chuẩn kỹ thuật, phân bổ điểm (5 Tasks x 2.0đ) và checklist 9.1 của Assignment 2 được lưu trữ nguyên bản tại [`docs/DE_BAI_ASSIGNMENT_2_GOC.md`](docs/DE_BAI_ASSIGNMENT_2_GOC.md).
+  - Mọi hoạt động khai thác yêu cầu, mô hình hóa, thiết kế kiến trúc, lập trình Sprint 1 & 2, kiểm thử và nghiệm thu bắt buộc phải căn cứ trực tiếp vào tệp [`docs/DE_BAI_ASSIGNMENT_2_GOC.md`](docs/DE_BAI_ASSIGNMENT_2_GOC.md).
+  - **Không bao giờ cần đọc, decode hay chạy script trích xuất lại từ tệp `Assignment2-BrewLite.pdf` nữa**.
+
+
