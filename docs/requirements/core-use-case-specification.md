@@ -34,13 +34,11 @@ flowchart LR
         UC06_1([UC06.1: Chọn phương thức Ví / Thẻ])
         UC06_2([UC06.2: Xử lý Idempotent & Trừ tiền])
         
-        UC08([UC08: Nhận mã nước & Xem lịch sử đơn])
         UC09([UC09: Tích lũy điểm thưởng])
     end
 
     Customer --- UC04
     Customer --- UC05
-    Customer --- UC08
 
     UC05 -.->|include| UC06
     UC05_1 -.->|extend| UC05
@@ -49,7 +47,6 @@ flowchart LR
     UC06 -.->|include| UC06_2
     UC06_2 --- PaymentGW
 
-    UC05 -.->|include| UC08
     UC09 -.->|extend| UC05
     Member --- UC09
 ```
@@ -61,7 +58,7 @@ flowchart LR
 | Thuộc tính | Chi tiết đặc tả kỹ thuật |
 | :--- | :--- |
 | **Tên Use Case** | **UC-CORE: Đặt Hàng & Thanh Toán Trực Tuyến (Online Order & Checkout)** |
-| **Mã định danh** | `UC05: Đặt hàng - Checkout` & `UC06: Thanh toán trực tuyến` (phân rã `UC06.1: Chọn phương thức`, `UC06.2: Xử lý Idempotent`, `UC05.1: Voucher`, `UC08: Nhận mã nước & Xem lịch sử đơn`, `UC09: Điểm thưởng`) |
+| **Mã định danh** | `UC05: Đặt hàng - Checkout` & `UC06: Thanh toán trực tuyến` (phân rã `UC06.1: Chọn phương thức`, `UC06.2: Xử lý Idempotent`, `UC05.1: Voucher`, `UC09: Điểm thưởng`) |
 | **Tác nhân chính (Primary Actor)** | **Khách hàng (Customer)** / **Khách thành viên (Member)** |
 | **Tác nhân hỗ trợ (Supporting Actor)** | **Cổng thanh toán điện tử (Mock Payment Gateway)** (MoMo, VNPay, Thẻ ngân hàng) |
 | **Sự kiện kích hoạt (Trigger)** | Khách hàng nhấn nút **"Tiến hành đặt hàng"** từ Giỏ hàng (Cart Drawer) hoặc nút **"Thanh toán ngay"** trên màn hình Checkout. |
@@ -213,7 +210,7 @@ Use case trọng tâm này kết nối trực tiếp với các mã định danh
 | | `FR-07` | Cỗ máy trạng thái đơn hàng | `assertTransition`, `OrderStatus` (`PENDING` $\rightarrow$ `PAID`) |
 | | `FR-08` | Kiểm soát tồn kho tranh chấp | `Optimistic Locking` (`version` column), Prisma Transaction |
 | | `FR-09` | Tích lũy điểm thưởng thành viên | `LoyaltyService.awardPoints` |
-| | `FR-10` | Mã nhận nước & Lịch sử đơn hàng | `OrderSuccessModal.tsx`, `GET /orders/me` |
+| | `FR-10` | Xem lịch sử đơn hàng (dành cho Member) | `app/orders/page.tsx`, `GET /orders/me` |
 | | `FR-11` | Áp dụng mã Voucher giảm giá | `POST /vouchers/apply` |
 | **Phi chức năng (NFR)** | `NFR-01` | Hiệu năng phản hồi API $\le 500\text{ ms}$ | Prisma Connection Pooling, Stateless REST API |
 | | `NFR-02` | Bảo mật giao dịch & Idempotent Header | HTTPS/TLS, JWT Guard, UUIDv4 Idempotency Key |

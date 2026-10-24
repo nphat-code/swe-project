@@ -34,7 +34,7 @@ rectangle "HỆ THỐNG ĐẶT ĐỒ UỐNG BREWLITE" {
 
     package "3. Tài khoản & Thành viên" {
         usecase "UC07: Đăng ký / Đăng nhập" as UC7
-        usecase "UC08: Nhận mã nước & Xem lịch sử đơn" as UC8
+        usecase "UC08: Xem lịch sử đơn hàng" as UC8
         usecase "UC09: Tích lũy điểm thưởng" as UC9
     }
 
@@ -58,7 +58,6 @@ Customer -- UC3
 Customer -- UC4
 Customer -- UC5
 Customer -- UC7
-Customer -- UC8
 
 Member -- UC8
 Member -- UC9
