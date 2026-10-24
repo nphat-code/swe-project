@@ -15,6 +15,7 @@
 
 Use case **"Đặt hàng và Thanh toán trực tuyến"** là mạch máu nghiệp vụ cốt lõi nhất của BrewLite, giải quyết bài toán: *Khách hàng không phải xếp hàng chờ thanh toán tiền mặt tại quầy, mà có thể hoàn tất chọn món, áp voucher, thanh toán trực tuyến qua Ví điện tử / Thẻ và nhận mã lấy nước trong vài chạm.*
 
+* **Hình ảnh sơ đồ trực quan:** [`docs/diagrams/use-case/use-case-checkout.png`](../diagrams/use-case/use-case-checkout.png) | [`SVG Vector`](../diagrams/use-case/use-case-checkout.svg)
 * **Mã nguồn sơ đồ:** [`Mermaid Source (docs/diagrams/use-case/use-case-checkout.mmd)`](../diagrams/use-case/use-case-checkout.mmd)
 
 ```mermaid

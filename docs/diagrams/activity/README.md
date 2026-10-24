@@ -1,8 +1,10 @@
 # SƠ ĐỒ HOẠT ĐỘNG TOÀN TRÌNH (END-TO-END ACTIVITY DIAGRAM) - BREWLITE
 
 > **Căn cứ đề bài:** Mục 4.1 (Task 2.1 - 2.0 điểm) trong tệp đặc tả gốc [`docs/DE_BAI_ASSIGNMENT_2_GOC.md`](../../docs/DE_BAI_ASSIGNMENT_2_GOC.md).  
-> **Ngôn ngữ mô hình hóa:** PlantUML chuẩn UML 2.0 (Monochrome, Black & White).  
-> **Tệp mã nguồn sơ đồ:** [`activity-flow.puml`](activity-flow.puml).
+> **Ngôn ngữ mô hình hóa:** PlantUML / UML 2.0 (Monochrome, Black & White).  
+> **Tệp mã nguồn sơ đồ:** [`activity-flow.puml`](activity-flow.puml)  
+> **Tệp đồ họa vector (SVG):** [`activity-flow.svg`](activity-flow.svg)  
+> **Tệp ảnh chất lượng cao (PNG):** [`activity-flow.png`](activity-flow.png)
 
 ---
 
