@@ -1,19 +1,18 @@
 @startuml activity-flow
-!theme plain
+skinparam monochrome true
+skinparam shadowing false
 skinparam defaultTextAlignment center
-skinparam roundCorner 8
+skinparam roundCorner 6
 skinparam ActivityFontSize 12
 skinparam ArrowFontSize 11
 skinparam SwimlaneTitleFontSize 13
 skinparam SwimlaneTitleFontStyle bold
-skinparam ActivityBorderColor #2B2D42
-skinparam ActivityBackgroundColor #FFFFFF
 
-|#EBF5FB|Khách hàng\n(Customer / Member)|
-|#E8F8F5|Giao diện Web\n(Next.js Client)|
-|#FEF9E7|Backend API & CSDL\n(NestJS & PostgreSQL)|
-|#FDEDEC|Cổng thanh toán\n(Payment Gateway Mock)|
-|#EAFAF1|Quầy pha chế\n(Nhân viên Barista)|
+|Khách hàng\n(Customer / Member)|
+|Giao diện Web\n(Next.js Client)|
+|Backend API & CSDL\n(NestJS & PostgreSQL)|
+|Cổng thanh toán\n(Payment Gateway Mock)|
+|Quầy pha chế\n(Nhân viên Barista)|
 
 |Khách hàng\n(Customer / Member)|
 start
