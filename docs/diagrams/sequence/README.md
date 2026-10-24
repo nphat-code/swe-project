@@ -34,7 +34,7 @@ sequenceDiagram
     participant DB as Database (PostgreSQL)
     participant Payment as Payment Service
 
-    Customer->>+UI: Click Tiến hành đặt hàng từ Giỏ
+    Customer->>UI: Click Tiến hành đặt hàng từ Giỏ
     alt Chưa có JWT (Chưa đăng nhập)
         UI-->>Customer: Hiển thị Modal Đăng nhập / Đăng ký
         Customer->>UI: Nhập email, password & Click Đăng nhập
@@ -45,10 +45,10 @@ sequenceDiagram
         API-->>-UI: 200 OK (accessToken, userProfile)
         UI->>UI: Lưu accessToken vào LocalStorage & Giữ giỏ hàng
     end
-    UI-->>-Customer: Hiển thị Form Checkout (Họ tên, SĐT, Tóm tắt món, Tổng tiền)
+    UI-->>Customer: Hiển thị Form Checkout (Họ tên, SĐT, Tóm tắt món, Tổng tiền)
 
-    Customer->>+UI: Chọn phương thức Ví/Thẻ & Click Xác nhận thanh toán
-    UI->>+API: POST /orders (Items, Size, Topping, Bearer JWT)
+    Customer->>UI: Chọn phương thức Ví/Thẻ & Click Xác nhận thanh toán
+    UI->>API: POST /orders (Items, Size, Topping, Bearer JWT)
     API->>API: JwtAuthGuard: Xác thực JWT & giải mã userId
     API->>API: Validate DTO & Tự động tính lại tổng tiền từ CSDL
 
@@ -58,36 +58,36 @@ sequenceDiagram
     alt Hết hàng hoặc Xung đột đồng thời (stock < qty OR version mismatch)
         API->>+DB: ROLLBACK Transaction
         DB-->>-API: Transaction aborted
-        API-->>-UI: 409 Conflict (Món đã hết hàng hoặc thay đổi giá)
+        API-->>UI: 409 Conflict (Món đã hết hàng hoặc thay đổi giá)
         UI-->>Customer: Cảnh báo hết hàng & Giữ nguyên giỏ hàng
     else Đủ tồn kho & Hợp lệ
         API->>+DB: INSERT INTO Order (PENDING) & OrderItem, UPDATE stock & version+1
         API->>DB: COMMIT Transaction
         DB-->>-API: Order created (#1042)
-        API-->>-UI: 201 Created (orderId: #1042, totalAmount: 85000)
+        API-->>UI: 201 Created (orderId: #1042, totalAmount: 85000)
 
         UI->>UI: Sinh UUID Idempotency-Key
-        UI->>+API: POST /payments (orderId, method, Idempotency-Key, Bearer JWT)
+        UI->>API: POST /payments (orderId, method, Idempotency-Key, Bearer JWT)
         API->>+DB: SELECT * FROM Payment WHERE idempotencyKey = ?
         DB-->>-API: Kết quả tra cứu khóa
 
         alt Khóa Idempotent đã tồn tại (Duplicate request)
-            API-->>-UI: 200 OK (Trả về kết quả thanh toán đã lưu trong cache/DB)
+            API-->>UI: 200 OK (Trả về kết quả thanh toán đã lưu trong cache/DB)
         else Khóa Idempotent mới (Xử lý trừ tiền giao dịch)
-            API->>+Payment: Chuyển tiếp yêu cầu trừ tiền (orderId, amount, method)
+            API->>Payment: Chuyển tiếp yêu cầu trừ tiền (orderId, amount, method)
             alt Thanh toán thất bại (Thiếu số dư / Sai OTP / Khách hủy)
-                Payment-->>-API: 400 Failed (errorCode: PAYMENT_DECLINED)
+                Payment-->>API: 400 Failed (errorCode: PAYMENT_DECLINED)
                 API->>+DB: UPDATE Order SET status = PAYMENT_FAILED WHERE id = #1042
                 DB-->>-API: OK
-                API-->>-UI: 400 Bad Request (Thanh toán thất bại)
+                API-->>UI: 400 Bad Request (Thanh toán thất bại)
                 UI-->>Customer: Cảnh báo lỗi thanh toán & Giữ nguyên giỏ hàng để thử lại
             else Thanh toán thành công
-                Payment-->>-API: 200 OK (transactionId: TXN_98765, status: SUCCESS)
+                Payment-->>API: 200 OK (transactionId: TXN_98765, status: SUCCESS)
                 API->>+DB: Transaction: UPDATE Order PAID, INSERT Payment, ADD Loyalty
                 DB-->>-API: Transaction hoàn tất
-                API-->>-UI: 200 OK (orderId: #1042, status: PAID, pointsEarned: 8)
+                API-->>UI: 200 OK (orderId: #1042, status: PAID, pointsEarned: 8)
                 UI->>UI: Xóa sạch giỏ hàng (Zustand Store & LocalStorage)
-                UI-->>-Customer: Màn hình thành công: Mã lấy nước #1042, Hẹn 5-7 phút
+                UI-->>Customer: Màn hình thành công: Mã lấy nước #1042, Hẹn 5-7 phút
             end
         end
     end
