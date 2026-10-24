@@ -1,0 +1,173 @@
+@startuml class-domain
+skinparam monochrome true
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+hide empty members
+
+enum Role {
+    CUSTOMER
+    BARISTA
+    ADMIN
+}
+
+enum ProductCategory {
+    COFFEE
+    TEA
+    FREEZE
+    PASTRY
+}
+
+enum Size {
+    SMALL
+    MEDIUM
+    LARGE
+}
+
+enum OrderStatus {
+    PENDING
+    PAID
+    PREPARING
+    READY_FOR_PICKUP
+    COMPLETED
+    CANCELLED
+}
+
+enum PaymentMethod {
+    MOMO
+    VNPAY
+    ZALOPAY
+    CREDIT_CARD
+    CASH
+}
+
+enum PaymentStatus {
+    PENDING
+    SUCCESS
+    FAILED
+}
+
+enum LoyaltyType {
+    EARN
+    REDEEM
+    EXPIRE
+}
+
+class User {
+    - String id
+    - String email
+    - String passwordHash
+    - String fullName
+    - String phone
+    - Role role
+    - Int loyaltyPoints
+    - DateTime createdAt
+    - DateTime updatedAt
+    + register(): void
+    + login(): String
+    + updateProfile(fullName, phone): void
+}
+
+class Product {
+    - String id
+    - String name
+    - String description
+    - Decimal basePrice
+    - String imageUrl
+    - ProductCategory category
+    - Boolean isAvailable
+    - Int stock
+    - Int version
+    - DateTime createdAt
+    - DateTime updatedAt
+    + checkStock(qty: Int): Boolean
+    + updateStock(delta: Int): void
+}
+
+class Order {
+    - String id
+    - String orderCode
+    - String userId
+    - OrderStatus status
+    - Decimal totalAmount
+    - Decimal discountAmount
+    - Decimal finalAmount
+    - String promotionId
+    - String pickupCode
+    - String notes
+    - DateTime createdAt
+    - DateTime updatedAt
+    + calculateTotal(): Decimal
+    + applyPromotion(promo: Promotion): void
+    + transitionTo(nextStatus: OrderStatus): void
+}
+
+class OrderItem {
+    - String id
+    - String orderId
+    - String productId
+    - Int quantity
+    - Size selectedSize
+    - String selectedToppings
+    - Decimal unitPrice
+    - Decimal subtotal
+    + calculateSubtotal(): Decimal
+}
+
+class Payment {
+    - String id
+    - String orderId
+    - Decimal amount
+    - PaymentMethod method
+    - PaymentStatus status
+    - String idempotencyKey
+    - String transactionId
+    - DateTime paidAt
+    - DateTime createdAt
+    + markSuccess(txId: String): void
+    + markFailed(): void
+}
+
+class Promotion {
+    - String id
+    - String code
+    - Decimal discountPercent
+    - Decimal maxDiscount
+    - Decimal minOrderAmount
+    - DateTime startDate
+    - DateTime endDate
+    - Boolean isActive
+    - Int usageLimit
+    - Int usedCount
+    + isValid(orderAmount: Decimal): Boolean
+    + calculateDiscount(orderAmount: Decimal): Decimal
+}
+
+class LoyaltyTransaction {
+    - String id
+    - String userId
+    - String orderId
+    - Int points
+    - LoyaltyType type
+    - Int balanceAfter
+    - String description
+    - DateTime createdAt
+}
+
+User "1" --> "0..*" Order : places >
+User "1" --> "0..*" LoyaltyTransaction : owns >
+Order "1" *-- "1..*" OrderItem : contains >
+Product "1" <-- "0..*" OrderItem : references >
+Order "1" --> "0..1" Payment : settled by >
+Promotion "0..1" <-- "0..*" Order : applied to <
+Order "0..1" --> "0..1" LoyaltyTransaction : triggers >
+
+User ..> Role
+Product ..> ProductCategory
+OrderItem ..> Size
+Order ..> OrderStatus
+Payment ..> PaymentMethod
+Payment ..> PaymentStatus
+LoyaltyTransaction ..> LoyaltyType
+
+@enduml
