@@ -14,18 +14,18 @@
 
 | Mã yêu cầu | Tên yêu cầu chức năng | Use Case liên quan | Thiết kế / Sơ đồ tương ứng | Code / API Hiện thực | Mã Kiểm thử (Test ID) | Trạng thái |
 | :---: | :--- | :--- | :--- | :--- | :---: | :---: |
-| **FR-01** | **Duyệt menu & Lọc danh mục** | `UC01` (Xem thực đơn) | - Sơ đồ Use Case tổng quát<br/>- `activity-flow.mmd`<br/>- `class-domain.mmd` (`Product`, `Category`) | - `GET /products`<br/>- `GET /products/categories`<br/>- `CategoryFilter.tsx`, `ProductCard.tsx` | `API-T01`<br/>`UI-T01` | 🟢 Hoàn tất Task 1 |
-| **FR-02** | **Tùy biến Size & Topping** | `UC03` (Tùy biến món)<br/>`UC03.1`, `UC03.2`, `UC03.3` | - `activity-flow.mmd`<br/>- `class-domain.mmd` (`SizeOption`, `Topping`) | - `GET /products/:id`<br/>- `ProductDetailModal.tsx` | `UI-T02` | 🟢 Hoàn tất Task 1 |
-| **FR-03** | **Quản lý Giỏ hàng Client** | `UC04` (Quản lý giỏ hàng) | - `use-case-checkout.mmd`<br/>- `activity-flow.mmd`<br/>- `class-domain.mmd` (`OrderItem`) | - `useCartStore.ts` (Zustand)<br/>- `CartDrawer.tsx` | `UNIT-CART01` | 🟢 Hoàn tất Task 1 |
+| **FR-01** | **Duyệt menu & Lọc danh mục** | `UC01` (Xem thực đơn) | - Sơ đồ Use Case tổng quát<br/>- `activity-flow.mmd`<br/>- `class-domain.mmd` (`Product`, `Category`) | - `GET /products`<br/>- `GET /products/categories`<br/>- `CategoryFilter.tsx`, `ProductCard.tsx` | `API-T01`<br/>`UI-T01` | 🟢 Hoàn tất Task 1 & 2.1 |
+| **FR-02** | **Tùy biến Size & Topping** | `UC03` (Tùy biến món)<br/>`UC03.1`, `UC03.2`, `UC03.3` | - `activity-flow.mmd`<br/>- `class-domain.mmd` (`SizeOption`, `Topping`) | - `GET /products/:id`<br/>- `ProductDetailModal.tsx` | `UI-T02` | 🟢 Hoàn tất Task 1 & 2.1 |
+| **FR-03** | **Quản lý Giỏ hàng Client** | `UC04` (Quản lý giỏ hàng) | - `use-case-checkout.mmd`<br/>- `activity-flow.mmd`<br/>- `class-domain.mmd` (`OrderItem`) | - `useCartStore.ts` (Zustand)<br/>- `CartDrawer.tsx` | `UNIT-CART01` | 🟢 Hoàn tất Task 1 & 2.1 |
 | **FR-04** | **Xác thực người dùng (JWT)** | `UC05` (Đăng ký / Đăng nhập) | - `sequence-checkout.mmd`<br/>- `class-domain.mmd` (`User`, `Role`) | - `POST /auth/register`<br/>- `POST /auth/login`<br/>- `JwtAuthGuard`, `AuthService` | `API-AUTH01` | 🟢 Hoàn tất Task 1 |
 | **FR-05** | **Khởi tạo đơn hàng (Server Calc & JWT)** | `UC06` (Đặt hàng - Checkout) | - `use-case-checkout.mmd`<br/>- `sequence-checkout.mmd`<br/>- `class-domain.mmd` (`Order`, `User`) | - `POST /orders`<br/>- `OrdersController.create`<br/>- `OrdersService.createOrder`<br/>- `OrderSuccessModal.tsx` | `INT-ORD01` | 🟢 Hoàn tất Task 1 |
 | **FR-06** | **Thanh toán trực tuyến Idempotent** | `UC07` (Thanh toán trực tuyến) | - `use-case-checkout.mmd`<br/>- `sequence-checkout.mmd`<br/>- `class-domain.mmd` (`Payment`) | - `POST /payments`<br/>- `PaymentsService.process`<br/>- `IdempotencyInterceptor` | `INT-PAY01`<br/>`UNIT-IDEMP01` | 🟢 Hoàn tất Task 1 |
 | **FR-07** | **Cỗ máy trạng thái đơn (State Machine)** | `UC11` (Cập nhật trạng thái) | - `sequence-checkout.mmd`<br/>- `class-domain.mmd` (`OrderStatus`) | - `OrdersService.assertTransition`<br/>- `OrdersService.updateStatus` | `UNIT-STATE01` | 🟢 Hoàn tất Task 1 |
 | **FR-08** | **Kiểm soát tồn kho đồng thời** | `UC14` (Quản lý tồn kho) | - `sequence-checkout.mmd`<br/>- `class-domain.mmd` (`Product.version`) | - Prisma Transaction (`$transaction`)<br/>- Optimistic Locking query | `UNIT-CONCUR01` | 🟢 Hoàn tất Task 1 |
 | **FR-09** | **Tích lũy điểm thưởng thành viên** | `UC08` (Tích lũy điểm thưởng) | - `use-case-checkout.mmd`<br/>- `class-domain.mmd` (`LoyaltyTransaction`) | - `LoyaltyService.awardPoints` | `UNIT-LOYAL01` | 🟢 Hoàn tất Task 1 |
-| **FR-10** | **Xem lịch sử đơn hàng** | `UC09` (Xem lịch sử đơn hàng) | - `activity-flow.mmd`<br/>- `class-domain.mmd` (`Order`) | - `GET /orders/me`<br/>- `app/orders/page.tsx` | `E2E-FLOW01` | 🟢 Hoàn tất Task 1 |
+| **FR-10** | **Xem lịch sử đơn hàng** | `UC09` (Xem lịch sử đơn hàng) | - `activity-flow.mmd`<br/>- `class-domain.mmd` (`Order`) | - `GET /orders/me`<br/>- `app/orders/page.tsx` | `E2E-FLOW01` | 🟢 Hoàn tất Task 1 & 2.1 |
 | **FR-11** | **Áp dụng mã Voucher giảm giá** | `UC06.1` (Áp dụng Voucher) | - `use-case-checkout.mmd`<br/>- `class-domain.mmd` (`Promotion`) | - `POST /vouchers/apply`<br/>- `VoucherService.validate` | `INT-VOUCH01` | 🟢 Hoàn tất Task 1 |
-| **FR-12** | **Quầy tiếp nhận pha chế Barista** | `UC10`, `UC11`, `UC12` | - `activity-flow.mmd` | - `app/barista/page.tsx` *(Mở rộng)* | `UI-BARISTA01` | 🟢 Hoàn tất Task 1 |
+| **FR-12** | **Quầy tiếp nhận pha chế Barista** | `UC10`, `UC11`, `UC12` | - `activity-flow.mmd` | - `app/barista/page.tsx` *(Mở rộng)* | `UI-BARISTA01` | 🟢 Hoàn tất Task 1 & 2.1 |
 
 ---
 
