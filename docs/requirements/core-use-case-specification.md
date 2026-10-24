@@ -29,16 +29,29 @@ flowchart LR
         UC04([UC04: Quản lý giỏ hàng])
         UC05([UC05: Đặt hàng - Checkout])
         UC05_1([UC05.1: Áp dụng mã Voucher])
-        UC06([UC06: Thanh toán trực tuyến])
+        
+        UC06([UC06: Thanh toán không tiền mặt])
+        UC06_1([UC06.1: Chọn phương thức Ví / Thẻ])
+        UC06_2([UC06.2: Xử lý Idempotent & Trừ tiền])
+        
+        UC08([UC08: Nhận mã nước & Theo dõi đơn])
+        UC09([UC09: Tích lũy điểm thưởng])
     end
 
     Customer --- UC04
     Customer --- UC05
+    Customer --- UC08
 
     UC05 -.->|include| UC06
     UC05_1 -.->|extend| UC05
+    
+    UC06 -.->|include| UC06_1
+    UC06 -.->|include| UC06_2
+    UC06_2 --- PaymentGW
 
-    UC06 --- PaymentGW
+    UC05 -.->|include| UC08
+    UC09 -.->|extend| UC05
+    Member --- UC09
 ```
 
 ---
@@ -48,7 +61,7 @@ flowchart LR
 | Thuộc tính | Chi tiết đặc tả kỹ thuật |
 | :--- | :--- |
 | **Tên Use Case** | **UC-CORE: Đặt Hàng & Thanh Toán Trực Tuyến (Cashless Order & Checkout)** |
-| **Mã định danh** | `UC05: Đặt hàng - Checkout` & `UC06: Thanh toán trực tuyến` (kèm `UC05.1: Áp dụng mã Voucher`) |
+| **Mã định danh** | `UC05: Đặt hàng - Checkout` & `UC06: Thanh toán không tiền mặt` (phân rã `UC06.1: Chọn phương thức`, `UC06.2: Xử lý Idempotent`, `UC05.1: Voucher`, `UC08: Nhận mã nước`, `UC09: Điểm thưởng`) |
 | **Tác nhân chính (Primary Actor)** | **Khách hàng (Customer)** / **Khách thành viên (Member)** |
 | **Tác nhân hỗ trợ (Supporting Actor)** | **Cổng thanh toán điện tử (Mock Payment Gateway)** (MoMo, VNPay, Thẻ ngân hàng) |
 | **Sự kiện kích hoạt (Trigger)** | Khách hàng nhấn nút **"Tiến hành đặt hàng"** từ Giỏ hàng (Cart Drawer) hoặc nút **"Thanh toán ngay"** trên màn hình Checkout. |
