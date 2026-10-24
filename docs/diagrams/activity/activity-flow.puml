@@ -37,7 +37,7 @@ start
 :Nhấn "Tiến hành đặt hàng" từ giỏ;
 
 |Giao diện Web\n(Next.js Client)|
-if (Đã có Token JWT hợp lệ?) then (Chưa đăng nhập)
+if () then ([Chưa đăng nhập])
     :Hiển thị Modal Đăng nhập / Đăng ký (UC05);
     |Khách hàng\n(Customer / Member)|
     :Nhập tài khoản & bấm Đăng nhập;
@@ -45,30 +45,30 @@ if (Đã có Token JWT hợp lệ?) then (Chưa đăng nhập)
     :Xác thực mật khẩu Bcrypt\n& Ký cấp accessToken JWT;
     |Giao diện Web\n(Next.js Client)|
     :Lưu accessToken JWT vào LocalStorage\n& giữ nguyên giỏ hàng;
-else (Đã đăng nhập)
+else ([Đã có JWT hợp lệ])
 endif
 
 :Gửi POST /orders\n(Items, Size, Topping; Header: Bearer JWT);
 
 |Backend API & CSDL\n(NestJS & PostgreSQL)|
-if (JwtAuthGuard: Token hợp lệ?) then (Không hợp lệ / Hết hạn)
+if () then ([JWT không hợp lệ / Hết hạn])
     :Trả lỗi 401 Unauthorized;
     |Giao diện Web\n(Next.js Client)|
     :Hiển thị Modal yêu cầu đăng nhập lại;
     stop
-else (Hợp lệ)
+else ([JWT hợp lệ])
 endif
 
 :Truy vấn CSDL & Tự động\ntính lại tổng tiền trên Server;
 
-if (Kiểm tra tồn kho & Optimistic Lock?) then (Hết hàng / Xung đột version)
+if () then ([Hết hàng / Xung đột version])
     :Rollback Transaction\n& Trả lỗi 409 Conflict;
     |Giao diện Web\n(Next.js Client)|
     :Hiển thị: "Món đã hết hàng"\n& Giữ nguyên giỏ hàng;
     |Khách hàng\n(Customer / Member)|
     :Đổi món khác hoặc chỉnh lại số lượng;
     detach
-else (Đủ hàng & Hợp lệ)
+else ([Đủ hàng & Hợp lệ])
     :Tạo bản ghi Order: PENDING\ngắn với userId của Member;
 endif
 
@@ -83,13 +83,13 @@ endif
 :Sinh UUID Idempotency-Key\n& Gửi POST /payments;
 
 |Backend API & CSDL\n(NestJS & PostgreSQL)|
-if (IdempotencyInterceptor: Khóa đã xử lý?) then (Khóa đã tồn tại)
+if () then ([Khóa Idempotent đã tồn tại])
     :Trả về ngay kết quả\ngiao dịch đã lưu trước đó;
-else (Khóa mới)
+else ([Khóa Idempotent mới])
     :Chuyển tiếp yêu cầu trừ tiền\nsang Payment Gateway;
     |Cổng thanh toán\n(Payment Gateway Mock)|
     :Tiếp nhận & Xử lý trừ tiền giả lập;
-    if (Kết quả thanh toán?) then (Thất bại / Hủy / Thiếu số dư)
+    if () then ([Thanh toán thất bại / Hủy])
         :Phản hồi FAILED;
         |Backend API & CSDL\n(NestJS & PostgreSQL)|
         :Cập nhật Order: PAYMENT_FAILED\n& Không trừ tồn kho;
@@ -98,7 +98,7 @@ else (Khóa mới)
         |Khách hàng\n(Customer / Member)|
         :Chọn thử lại hoặc đổi phương thức khác;
         detach
-    else (Thành công)
+    else ([Thanh toán thành công])
         :Phản hồi SUCCESS kèm transactionId;
         |Backend API & CSDL\n(NestJS & PostgreSQL)|
         :Database Transaction:\nChuyển Order sang PAID & Trừ tồn kho;

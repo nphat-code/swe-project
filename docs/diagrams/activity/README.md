@@ -53,7 +53,7 @@ flowchart TD
         FE_ShowMenu["Hiển thị danh sách món & Tabs danh mục"]
         FE_ShowModal["Mở Modal tùy biến & tính giá tạm tính realtime"]
         FE_UpdateCart["Cập nhật Zustand Store & đồng bộ LocalStorage"]
-        FE_CheckAuth{"Kiểm tra JWT trong LocalStorage"}
+        FE_CheckAuth{" "}
         FE_PromptLogin["Hiển thị Modal Đăng nhập / Đăng ký (UC05)"]
         FE_SaveJWT["Lưu accessToken JWT & Giữ nguyên giỏ hàng"]
         FE_SubmitOrder["Gửi POST /orders (Items, Size, Topping; Bearer JWT)"]
@@ -66,14 +66,14 @@ flowchart TD
     end
 
     subgraph LaneBackend ["⚙️ BACKEND API & CSDL (NESTJS & POSTGRESQL)"]
-        BE_AuthGuard{"JwtAuthGuard: Xác thực JWT hợp lệ?"}
+        BE_AuthGuard{" "}
         BE_AuthFail["Trả lỗi 401 Unauthorized"]
         BE_AuthLogin["Xác thực mật khẩu Bcrypt & Ký chuỗi JWT"]
         BE_ValidatePrice["Truy vấn CSDL & Tự tính lại tổng tiền trên Server"]
-        BE_CheckStock{"Kiểm tra tồn kho & Optimistic Locking"}
+        BE_CheckStock{" "}
         BE_StockFail["Rollback Transaction & Trả lỗi 409 Conflict"]
         BE_CreateOrder["Tạo bản ghi Order: PENDING gắn với userId"]
-        BE_CheckIdempotent{"IdempotencyInterceptor: Khóa đã xử lý?"}
+        BE_CheckIdempotent{" "}
         BE_ReturnCached["Trả về ngay kết quả giao dịch đã lưu trước đó"]
         BE_CallGateway["Chuyển tiếp yêu cầu trừ tiền sang Payment Gateway"]
         BE_TxSuccess["Database Transaction: Order sang PAID & Trừ tồn kho"]
@@ -84,7 +84,7 @@ flowchart TD
 
     subgraph LaneGateway ["💳 CỔNG THANH TOÁN (PAYMENT GATEWAY MOCK)"]
         GW_Process["Tiếp nhận & Xử lý trừ tiền giả lập"]
-        GW_Result{"Kết quả thanh toán?"}
+        GW_Result{" "}
         GW_Success["Phản hồi SUCCESS kèm transactionId"]
         GW_Fail["Phản hồi FAILED: Thiếu số dư / OTP sai / Người dùng hủy"]
     end
