@@ -2,7 +2,9 @@
 
 > **Căn cứ đề bài:** Mục 4.2 (Task 2.2 - 2.0 điểm) trong tệp đặc tả gốc [`docs/DE_BAI_ASSIGNMENT_2_GOC.md`](../../docs/DE_BAI_ASSIGNMENT_2_GOC.md).  
 > **Use Case trọng tâm:** `UC06 - Đặt hàng (Checkout)` & `UC07 - Thanh toán trực tuyến` (Task 1.3).  
-> **Tệp mã nguồn Mermaid:** [`sequence-checkout.mmd`](sequence-checkout.mmd)
+> **Tệp mã nguồn Mermaid:** [`sequence-checkout.mmd`](sequence-checkout.mmd)  
+> **Tệp xuất đồ họa vector (SVG đã xóa logo):** [`SWE - Sequence Diagram.svg`](SWE%20-%20Sequence%20Diagram.svg)  
+> **Tệp ảnh chất lượng cao (PNG):** [`SWE - Sequence Diagram.png`](SWE%20-%20Sequence%20Diagram.png)
 
 ---
 
@@ -81,7 +83,7 @@ sequenceDiagram
             UI-->>Customer: Cảnh báo lỗi thanh toán & Giữ nguyên giỏ hàng để thử lại
         else Khóa mới - Thanh toán thành công (Happy path)
             API->>Payment: Chuyển tiếp yêu cầu trừ tiền (orderId, amount, method)
-            Payment-->>API: 200 OK (transactionId: TXN_98765, status: SUCCESS)
+            Payment-->>API: 200 OK (transactionId, status: SUCCESS)
             API->>+DB: Transaction: UPDATE Order PAID, INSERT Payment, ADD Loyalty
             DB-->>-API: Transaction hoàn tất
             API-->>UI: 200 OK (orderId, status: PAID, pointsEarned)
