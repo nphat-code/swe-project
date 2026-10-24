@@ -46,8 +46,10 @@ if () then ([Chưa đăng nhập])
     |Giao diện Web\n(Next.js Client)|
     :Lưu accessToken JWT vào LocalStorage\n& giữ nguyên giỏ hàng;
 else ([Đã có JWT hợp lệ])
+    |Giao diện Web\n(Next.js Client)|
 endif
 
+|Giao diện Web\n(Next.js Client)|
 :Gửi POST /orders\n(Items, Size, Topping; Header: Bearer JWT);
 
 |Backend API & CSDL\n(NestJS & PostgreSQL)|
@@ -57,8 +59,10 @@ if () then ([JWT không hợp lệ / Hết hạn])
     :Hiển thị Modal yêu cầu đăng nhập lại;
     stop
 else ([JWT hợp lệ])
+    |Backend API & CSDL\n(NestJS & PostgreSQL)|
 endif
 
+|Backend API & CSDL\n(NestJS & PostgreSQL)|
 :Truy vấn CSDL & Tự động\ntính lại tổng tiền trên Server;
 
 if () then ([Hết hàng / Xung đột version])
@@ -69,6 +73,7 @@ if () then ([Hết hàng / Xung đột version])
     :Đổi món khác hoặc chỉnh lại số lượng;
     detach
 else ([Đủ hàng & Hợp lệ])
+    |Backend API & CSDL\n(NestJS & PostgreSQL)|
     :Tạo bản ghi Order: PENDING\ngắn với userId của Member;
 endif
 
@@ -99,6 +104,7 @@ else ([Khóa Idempotent mới])
         :Chọn thử lại hoặc đổi phương thức khác;
         detach
     else ([Thanh toán thành công])
+        |Cổng thanh toán\n(Payment Gateway Mock)|
         :Phản hồi SUCCESS kèm transactionId;
         |Backend API & CSDL\n(NestJS & PostgreSQL)|
         :Database Transaction:\nChuyển Order sang PAID & Trừ tồn kho;
