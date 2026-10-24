@@ -48,7 +48,7 @@
 * **`Role`:** `CUSTOMER` (Khách hàng), `BARISTA` (Nhân viên quầy pha chế), `ADMIN` (Quản trị viên).
 * **`ProductCategory`:** `COFFEE` (Cà phê), `TEA` (Trà trái cây / Trà sữa), `FREEZE` (Đá xay), `PASTRY` (Bánh ngọt).
 * **`Size`:** `SMALL`, `MEDIUM`, `LARGE`.
-* **`OrderStatus`:** `PENDING` (Chờ thanh toán) $\rightarrow$ `PAID` (Đã thanh toán) $\rightarrow$ `PREPARING` (Đang pha chế) $\rightarrow$ `READY_FOR_PICKUP` (Sẵn sàng lấy nước) $\rightarrow$ `COMPLETED` (Hoàn tất) / `CANCELLED` (Đã hủy).
+* **`OrderStatus`:** `PENDING` (Chờ thanh toán) $\rightarrow$ `PAID` (Đã thanh toán) $\rightarrow$ `PREPARING` (Đang pha chế) $\rightarrow$ `READY` (Sẵn sàng lấy nước) $\rightarrow$ `COMPLETED` (Hoàn tất) / `PAYMENT_FAILED` (Thanh toán lỗi) / `CANCELLED` (Đã hủy).
 * **`PaymentMethod`:** `MOMO`, `VNPAY`, `ZALOPAY`, `CREDIT_CARD`, `CASH`.
 * **`PaymentStatus`:** `PENDING`, `SUCCESS`, `FAILED`.
 * **`LoyaltyType`:** `EARN` (Cộng điểm từ đơn hàng), `REDEEM` (Tiêu điểm đổi voucher), `EXPIRE` (Điểm hết hạn).
@@ -200,8 +200,9 @@ classDiagram
         <<enumeration>>
         PENDING
         PAID
+        PAYMENT_FAILED
         PREPARING
-        READY_FOR_PICKUP
+        READY
         COMPLETED
         CANCELLED
     }
