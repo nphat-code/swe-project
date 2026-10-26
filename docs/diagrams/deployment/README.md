@@ -123,12 +123,14 @@ Tài liệu này dùng làm căn cứ chuẩn mực khi nhóm tự kéo thả tr
 | **Máy chủ đám mây** | **Hộp 3D trơn** *(Node)* | `AWS EC2 Virtual Machine Instance (Ubuntu 22.04 LTS)`<br/>*[Elastic IP: 13.250.x.x \| Domain: brewlite.coffee]* |
 | **Hệ điều hành máy chủ** | `<<e>>` *(Execution Env)* | `Ubuntu 22.04 LTS` *(khung lồng bên trong EC2)* |
 | **Cổng đón Reverse Proxy** | **Component** *(2 mấu)* | `Nginx Web Server (SSL/TLS 1.3 Termination, Ports 80 & 443)`<br/>*(Đặt trong `<<executionEnvironment>> Ubuntu 22.04 LTS`, nằm phía trên và bên ngoài khối Docker Engine để làm Gateway đón luồng HTTPS 443)* |
+| **Cổng tiếp nhận SSH** | **Component** *(2 mấu)* | `OpenSSH Server (sshd) [TCP Port 22]`<br/>*(Đặt ở góc trên bên phải trong khung Ubuntu 22.04 LTS để đón dây SSH từ DevOps PC)* |
+| **Tiến trình kéo code Git** | **Component** *(2 mấu)* | `Git CLI Runner [git pull origin main]`<br/>*(Đặt trong khung Ubuntu 22.04 LTS, nhận kết nối kéo code từ GitHub Repo)* |
 | **Engine chạy Container** | `<<e>>` *(Execution Env)* | `Docker Container Runtime Engine (Docker Compose)` |
 | **Container Frontend** | `<<e>>` *(Execution Env)* | `Container: Frontend (web)` chứa Component `Next.js Node Server [Port 3000]` |
 | **Container Backend** | `<<e>>` *(Execution Env)* | `Container: Backend API (api)` chứa Component `NestJS REST API Service [Port 3001]`, `Health Probe`, `Logger` |
 | **Container CSDL** | `<<e>>` *(Execution Env)* | `Container: Database (db)` chứa Component `PostgreSQL 16 Engine [Port 5432]` |
-| **Ổ đĩa lưu trữ ngoài** | **Hình trụ Database** *(Cylinder)* | Lồng dưới PostgreSQL: `Mounted AWS EBS SSD Volume (/var/lib/postgresql/data - Persistent)` |
-| **Tệp cấu hình & Biến MT** | `<<a>>` *(Artifact)* | `<<a>> Configuration & Secrets (.env, nginx.conf, docker-compose.yml)` |
+| **Ổ đĩa lưu trữ ngoài** | **Hình trụ Database** *(Cylinder)* | `Mounted AWS EBS SSD Volume (/var/lib/postgresql/data - Persistent)`<br/>*(Nằm cùng trong `Container: db`, đặt **bên dưới** ô `PostgreSQL 16 Engine`, nối dây `Mount Volume`)* |
+| **Tệp cấu hình & Biến MT** | `<<a>>` *(Artifact)* | `<<a>> Configuration & Secrets (.env, nginx.conf, docker-compose.yml)`<br/>*(Đặt trong khung Ubuntu 22.04 LTS, gần Docker Engine)* |
 
 ### 6.3. Bố cục 3 tầng không bị đè chéo dây nối (3-Tier Layout)
 ```plaintext
@@ -180,4 +182,6 @@ Tài liệu này dùng làm căn cứ chuẩn mực khi nhóm tự kéo thả tr
    - Từ `Nginx` rẽ 2 nhánh: xuống `Container web (HTTP : 3000)` và `Container api (HTTP : 3001)`.
    - Từ `NestJS API` nối ngang sang `PostgreSQL (TCP : 5432)`.
    - Từ `NestJS API` nối ra ngoài sang `Mock Payment Gateway (HTTPS Outbound)`.
+5. **Dây Mount Volume (Lưu trữ CSDL):** Nối từ `PostgreSQL 16 Engine` cắm xuống hình trụ `Mounted AWS EBS SSD Volume` bên trong `Container: db`. Ghi nhãn: `Mount Volume` hoặc `Read/Write`.
+
 
