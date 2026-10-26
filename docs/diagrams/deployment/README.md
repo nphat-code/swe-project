@@ -174,14 +174,28 @@ Tài liệu này dùng làm căn cứ chuẩn mực khi nhóm tự kéo thả tr
 +-------------------------------------------------------------------------------------------------+
 ```
 
-### 6.4. Quy tắc kẻ dây nối (Connectors) chuyên nghiệp
-1. **Dây HTTPS (Port 443):** Nối từ `Client Device` $\rightarrow$ xuyên qua `DNS/Internet` $\rightarrow$ cắm vào đỉnh `Nginx Reverse Proxy`. Ghi nhãn: `HTTPS : 443 (Pages & API)`.
-2. **Dây SSH (Port 22):** Nối từ `DevOps Workstation` (bên phải) $\rightarrow$ cắm vào `OpenSSH (sshd)`. Ghi nhãn: `SSH : 22 (ssh -i key.pem ubuntu@IP)`.
-3. **Dây Git Sync:** Nối từ `DevOps Git` $\rightarrow$ `GitHub Repo` $\rightarrow$ `Server Git Runner`. Ghi nhãn: `git push` và `git pull`.
-4. **Dây nội bộ Docker:**
-   - Từ `Nginx` rẽ 2 nhánh: xuống `Container web (HTTP : 3000)` và `Container api (HTTP : 3001)`.
-   - Từ `NestJS API` nối ngang sang `PostgreSQL (TCP : 5432)`.
-   - Từ `NestJS API` nối ra ngoài sang `Mock Payment Gateway (HTTPS Outbound)`.
-5. **Dây Mount Volume (Lưu trữ CSDL):** Nối từ `PostgreSQL 16 Engine` cắm xuống hình trụ `Mounted AWS EBS SSD Volume` bên trong `Container: db`. Ghi nhãn: `Mount Volume` hoặc `Read/Write`.
+### 6.4. Quy tắc và Bảng chỉ dẫn cách nối dây (Connectors Guide)
+
+#### A. Nguyên tắc chọn loại đường dây trên Visual Paradigm:
+* **Đường nét liền không mũi tên `—` (Communication Path - ô thứ 4 hàng 2):**
+  * Đây là **chuẩn mực chính thức của UML 2.0** cho các kết nối mạng giữa các Node/Component (vì kết nối mạng như TCP/IP, HTTP, SSH bản chất vật lý là truyền thông 2 chiều gửi đi - nhận về).
+  * Bạn chỉ cần chọn đường nét liền `—`, kéo nối giữa 2 khối và nhấp đúp chuột (double-click) để gõ nhãn cổng và giao thức.
+* **Mũi tên nét đứt `···>` (Dependency - ô thứ 2 hàng 3):**
+  * Dùng cho quan hệ phụ thuộc cấu hình (từ tiến trình `Git CLI Runner` trỏ sang tệp `<<a>> Configuration & Secrets`).
+
+#### B. Bảng chi tiết 10 tuyến dây nối và nhãn text:
+| STT | Khối bắt đầu (Source) | Khối kết thúc (Target) | Loại đường dây | Nhãn hiển thị trên dây (Label) | Ý nghĩa kỹ thuật |
+| :---: | :--- | :--- | :---: | :--- | :--- |
+| **1** | `Client Device` | `Nginx Web Server` | Nét liền `—` | `HTTPS : 443 (Pages & API)` | Người dùng truy cập tải trang và gọi API qua cổng bảo mật 443 |
+| **2** | `DevOps Workstation` | `OpenSSH Server (sshd)` | Nét liền `—` | `SSH : 22` | Kỹ sư quản trị từ xa qua SSH dòng lệnh (`ssh -i key.pem ubuntu@IP`) |
+| **3** | `DevOps (Git Client)` | `GitHub Platform` | Nét liền `—` | `git push` | Đẩy mã nguồn mới lên kho chứa GitHub từ máy dev |
+| **4** | `GitHub Platform` | `Git CLI Runner` | Nét liền `—` | `git pull` | Máy chủ Ubuntu kéo mã nguồn cập nhật về để triển khai |
+| **5** | `Git CLI Runner` | `Configuration & Secrets`| Nét đứt `···>` | `Apply config` | Nạp biến môi trường `.env` và tệp cấu hình `docker-compose.yml` |
+| **6** | `Nginx Web Server` | `Next.js Node Server` | Nét liền `—` | `HTTP : 3000` | Reverse Proxy chuyển tiếp yêu cầu giao diện vào container Frontend |
+| **7** | `Nginx Web Server` | `NestJS REST API Service`| Nét liền `—` | `HTTP : 3001` | Reverse Proxy chuyển tiếp yêu cầu API vào container Backend |
+| **8** | `NestJS REST API` | `PostgreSQL 16 Engine` | Nét liền `—` | `TCP : 5432` | Kết nối nội bộ truy vấn dữ liệu CSDL qua Prisma Connection Pool |
+| **9** | `PostgreSQL 16 Engine` | `Mounted AWS EBS SSD Vol`| Nét liền `—` | `Mount Volume` | Gắn phân vùng ổ đĩa ngoài bền vững để lưu trữ dữ liệu lâu dài |
+| **10**| `NestJS REST API` | `Mock Payment Gateway` | Nét liền `—` | `HTTPS Outbound` | Gọi ra cổng thanh toán ngoại vi xác thực đơn hàng |
+| **11**| `Client Device` *(Tùy chọn)*| `DNS Provider` | Nét đứt `···>` | `Resolve Domain` | Phân giải tên miền `brewlite.coffee` ra địa chỉ Elastic IP |
 
 
