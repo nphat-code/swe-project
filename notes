@@ -23,6 +23,8 @@ yeu cau:
 + cai he dieu hanh (khuyen khich ubuntu)
 + lay src code dua vao server (push len git, pull ve server)
 + ket noi voi aws (login): ssh -i -IP (command line)
++ co dia chi
++ thue ten mien dua vao dia chi
 
 - sequence diagram
 
