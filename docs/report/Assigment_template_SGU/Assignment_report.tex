@@ -1,0 +1,444 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{vntex}
+\usepackage{a4wide,amssymb,latexsym,multicol,array,hhline,fancyhdr}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{lastpage}
+\usepackage{enumerate}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{tabularx, caption}
+\usepackage{multirow}
+\usepackage[framemethod=tikz]{mdframed}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{hyperref}
+
+\geometry{
+  a4paper,
+  top=25mm,
+  bottom=25mm,
+  left=30mm,
+  right=20mm
+}
+
+\hypersetup{
+  urlcolor=blue,
+  linkcolor=black,
+  citecolor=black,
+  colorlinks=true
+}
+
+\setlength{\headheight}{40pt}
+\pagestyle{fancy}
+\fancyhead{}
+\fancyhead[L]{
+  \begin{tabular}{rl}
+    \begin{picture}(25,15)(0,0)
+      \put(0,-8){\includegraphics[width=8mm, height=8mm]{logoITSGUsmall.png}}
+    \end{picture}&
+    \begin{tabular}{l}
+      \textbf{\ttfamily Trường Đại học Sài Gòn}\\
+      \textbf{\ttfamily Khoa Công Nghệ Thông Tin}
+    \end{tabular}
+  \end{tabular}
+}
+\fancyhead[R]{
+  \begin{tabular}{r}
+    \tiny \bf CÔNG NGHỆ PHẦN MỀM \\
+    \tiny \bf ASSIGNMENT 2 -- BREWLITE
+  \end{tabular}
+}
+\fancyfoot{}
+\fancyfoot[L]{\scriptsize \ttfamily Bài tập lớn môn Công nghệ Phần mềm -- Học kỳ I Năm học 2026--2027}
+\fancyfoot[R]{\scriptsize \ttfamily Trang {\thepage}/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{3}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{codebg}{rgb}{0.96,0.96,0.96}
+
+\lstset{
+  backgroundcolor=\color{codebg},
+  basicstyle=\small\ttfamily,
+  breaklines=true,
+  breakatwhitespace=true,
+  frame=single,
+  numbers=left,
+  numbersep=5pt,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  tabsize=2,
+  showstringspaces=false
+}
+
+\begin{document}
+
+\begin{titlepage}
+\begin{center}
+  \textbf{\large TRƯỜNG ĐẠI HỌC SÀI GÒN} \\
+  \textbf{\large KHOA CÔNG NGHỆ THÔNG TIN} \\
+  \vspace{0.8cm}
+  \includegraphics[width=3.2cm]{logoITSGU.png} \\
+  \vspace{1cm}
+
+  \begin{tabular}{c}
+    \textbf{\Large BÁO CÁO BÀI TẬP LỚN} \\
+    \textbf{\Huge MÔN CÔNG NGHỆ PHẦN MỀM} \\
+    \vspace{0.3cm} \\
+    \hline
+    \vspace{0.3cm} \\
+    \textbf{\Large ĐỀ TÀI: BREWLITE} \\
+    \textbf{\huge HỆ THỐNG ĐẶT VÀ THANH TOÁN} \\
+    \textbf{\huge ĐỒ UỐNG KHÔNG DÙNG TIỀN MẶT} \\
+    \vspace{0.2cm} \\
+    \textit{\large (Requirements to Deployment -- Agile Scrum Architecture)} \\
+    \vspace{0.3cm} \\
+    \hline
+  \end{tabular}
+\end{center}
+
+\vspace{1.5cm}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{rrl}
+  \textbf{Giảng viên hướng dẫn:} & & \textbf{ThS. Từ Lãng Phiêu} \\
+  \vspace{0.2cm} \\
+  \textbf{Sinh viên thực hiện:}   & & Nguyễn Văn A -- MSSV: 3121xxxxxx \\
+                                  & & Trần Thị B   -- MSSV: 3121xxxxxx \\
+                                  & & Lê Văn C     -- MSSV: 3121xxxxxx \\
+  \vspace{0.2cm} \\
+  \textbf{Lớp:}                   & & DCN12xxxx \\
+  \textbf{Khoá học:}              & & 2021 -- 2025
+\end{tabular}
+\end{table}
+
+\vfill
+
+\begin{center}
+  \textbf{TP. HỒ CHÍ MINH, NĂM 2026}
+\end{center}
+\end{titlepage}
+
+\thispagestyle{empty}
+\newpage
+
+\tableofcontents
+\newpage
+
+\section{Tổng quan dự án và Khai thác đặc tả yêu cầu (Task 1)}
+
+\subsection{Bối cảnh, Stakeholder và Phạm vi sản phẩm (Task 1.1)}
+Dự án \textbf{BrewLite} ra đời nhằm giải quyết vấn đề tắc nghẽn quầy pha chế, thời gian chờ đợi thanh toán tiền mặt kéo dài và sai sót đối soát đơn hàng tại các chuỗi cửa hàng thức uống hiện đại.
+
+\subsubsection{Danh mục Stakeholder}
+Hệ thống xác định 6 nhóm bên liên quan chủ chốt:
+\begin{enumerate}[1.]
+  \item \textbf{Khách hàng (Customer):} Người trực tiếp xem thực đơn, tùy chọn sản phẩm, thanh toán không dùng tiền mặt và nhận thông báo hoàn thành đơn hàng.
+  \item \textbf{Nhân viên quầy (Barista):} Nhân viên tiếp nhận đơn, thực hiện pha chế và chuyển trạng thái đơn hàng.
+  \item \textbf{Quản lý cửa hàng (Store Manager):} Theo dõi doanh thu, cấu hình giá, số lượng tồn kho và khuyến mãi.
+  \item \textbf{Giảng viên hướng dẫn / Khách hàng nghiệm thu:} Đánh giá chất lượng kỹ thuật, quy trình công nghệ phần mềm và tính đúng đắn của giải pháp.
+  \item \textbf{Nhóm phát triển phần mềm (Dev Team):} Thiết kế kiến trúc, hiện thực Sprint, xây dựng kiểm thử tự động và vận hành CI/CD.
+  \item \textbf{Cổng thanh toán điện tử (Payment Gateway):} Nhà cung cấp dịch vụ xử lý giao dịch thanh toán trực tuyến (Ví MoMo, VNPay, Thẻ ngân hàng).
+\end{enumerate}
+
+\subsubsection{Phạm vi hệ thống (In-scope và Out-of-scope)}
+\begin{itemize}
+  \item \textbf{In-scope (MVP):} Duyệt thực đơn theo Tabs danh mục, tùy biến kích cỡ (Size S/M/L), thêm topping, giỏ hàng client (Zustand/LocalStorage), xác thực tài khoản JWT, đặt hàng, thanh toán mô phỏng Idempotency và màn hình điều phối đơn hàng.
+  \item \textbf{Out-of-scope:} Giao hàng tận nơi (Delivery logistics phức tạp), tích hợp thiết bị phần cứng POS chuyên dụng và quản lý chuỗi cung ứng nông sản.
+\end{itemize}
+
+\subsection{Yêu cầu chức năng và Phi chức năng (Task 1.2)}
+Tài liệu yêu cầu phần mềm (SRS) được chuẩn hóa theo mã định danh tinh gọn và mức ưu tiên MoSCoW.
+
+\subsubsection{Bảng yêu cầu chức năng (Functional Requirements -- FR)}
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|c|l|c|X|}
+\hline
+\textbf{Mã FR} & \textbf{Tên chức năng} & \textbf{Ưu tiên} & \textbf{Tiêu chí nghiệm thu (Acceptance Criteria)} \\
+\hline
+\textbf{FR-01} & Duyệt thực đơn \& Lọc danh mục & Must & Hiển thị danh sách món theo danh mục; có Skeleton Loading. \\
+\hline
+\textbf{FR-02} & Tùy biến món (Size \& Topping) & Must & Modal chọn Size, đa Topping; tổng giá tính tự động realtime. \\
+\hline
+\textbf{FR-03} & Quản lý giỏ hàng phía Client & Must & Thêm, bớt, xóa món; tự động tính tổng tiền; lưu LocalStorage. \\
+\hline
+\textbf{FR-04} & Xác thực \& Phân quyền JWT & Must & Đăng nhập/Đăng ký; bảo vệ endpoint bằng Guard; cấp JWT Bearer. \\
+\hline
+\textbf{FR-05} & Khởi tạo đơn hàng & Must & Ghi nhận bản ghi Order; trạng thái khởi tạo \texttt{PENDING\_PAYMENT}. \\
+\hline
+\textbf{FR-06} & Khóa lạc quan (Optimistic Lock) & Must & Kiểm tra phiên bản tồn kho (\texttt{version}); trả về HTTP 409 nếu xung đột. \\
+\hline
+\textbf{FR-07} & Thanh toán không tiền mặt & Must & Xác thực \texttt{Idempotency-Key}; mô phỏng MoMo/VNPay thành công/thất bại. \\
+\hline
+\textbf{FR-08} & Máy trạng thái đơn (State Machine)& Must & Chuyển trạng thái đơn nghiêm ngặt qua hàm \texttt{assertTransition}. \\
+\hline
+\textbf{FR-09} & Tích điểm thành viên (Loyalty) & Should & Tự động tích lũy điểm thưởng thành viên khi đơn chuyển sang \texttt{PAID}. \\
+\hline
+\textbf{FR-10} & Xem lịch sử đơn hàng & Must & Hiển thị các đơn cá nhân của tài khoản đã đăng nhập. \\
+\hline
+\end{tabularx}
+\caption{Bảng yêu cầu chức năng cốt lõi hệ thống BrewLite}
+\end{table}
+
+\subsubsection{Yêu cầu phi chức năng (Non-Functional Requirements -- NFR)}
+\begin{itemize}
+  \item \textbf{NFR-01 (Hiệu năng):} Thời gian phản hồi API trung bình đạt dưới $200$ms đối với tải đọc thực đơn.
+  \item \textbf{NFR-02 (Bảo mật):} Mật khẩu được băm bằng thuật toán \texttt{bcrypt}; mã hóa toàn diện qua giao thức HTTPS/TLS 1.3.
+  \item \textbf{NFR-03 (Tính khả dụng):} Giao diện thích ứng hoàn hảo trên thiết bị di động (Mobile-First / PWA).
+  \item \textbf{NFR-04 (Tính toàn vẹn dữ liệu):} Quá trình thanh toán và trừ kho tuân thủ chuẩn ACID thông qua Prisma Transaction.
+\end{itemize}
+
+\subsection{Sơ đồ Use Case tổng quát hệ thống}
+Hệ thống gồm 2 Actor chính tác động trực tiếp: \textbf{Khách hàng (Customer / Member)} và \textbf{Nhân viên quầy (Barista)}, cùng 1 hệ thống ngoại vi \textbf{Payment Gateway}. Toàn bộ luồng được mô hình hóa theo chuẩn UML 2.0.
+
+\subsection{Đặc tả Use Case trọng tâm: Đặt hàng và Thanh toán (Task 1.3)}
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Thuộc tính} & \textbf{Chi tiết đặc tả chuẩn CNPM} \\
+\hline
+\textbf{Tên Use Case} & Đặt hàng và Thanh toán không dùng tiền mặt (UC-Checkout) \\
+\hline
+\textbf{Actor chính} & Khách hàng (Customer / Member), Cổng thanh toán (Payment Gateway Mock) \\
+\hline
+\textbf{Mô tả tóm tắt} & Khách hàng gửi đơn hàng từ giỏ, hệ thống kiểm tra tồn kho, khóa lạc quan, tạo giao dịch thanh toán trực tuyến và cập nhật trạng thái đơn hàng. \\
+\hline
+\textbf{Điều kiện tiên quyết} & Khách hàng đã chọn ít nhất một sản phẩm vào giỏ hàng và đã đăng nhập hệ thống. \\
+\hline
+\textbf{Luồng sự kiện chính (Normal Flow)} & 
+1. Khách hàng nhấn "Tiến hành đặt hàng" từ giỏ hàng.\\
+& 2. Giao diện gửi request \texttt{POST /orders} kèm token JWT và danh sách món.\\
+& 3. Backend mở Transaction: kiểm tra tồn kho, áp dụng Optimistic Locking.\\
+& 4. Tạo bản ghi đơn hàng với trạng thái \texttt{PENDING\_PAYMENT}.\\
+& 5. Hệ thống điều hướng sang cổng thanh toán mô phỏng.\\
+& 6. Khách hàng xác nhận thanh toán.\\
+& 7. Cổng thanh toán gọi webhook phản hồi trạng thái \texttt{SUCCESS}.\\
+& 8. Backend cập nhật đơn sang \texttt{PAID}, ghi nhận điểm thưởng và thông báo hoàn tất. \\
+\hline
+\textbf{Luồng ngoại lệ (Exception Flow)} & 
+\textbf{3a. Hết hàng / Xung đột tồn kho đồng thời:} Backend trả về HTTP 409 Conflict; Client giữ nguyên giỏ hàng và thông báo món vừa hết để khách đổi món.\\
+\textbf{7a. Thanh toán thất bại / Hủy giao dịch:} Cổng thanh toán trả về FAILED; Backend đổi trạng thái đơn sang \texttt{PAYMENT\_FAILED}; Client giữ nguyên giỏ và cung cấp nút thử lại. \\
+\hline
+\textbf{Luồng thay thế (Alternative Flow)} & 
+\textbf{1a. Khách hàng chưa đăng nhập:} Giao diện mở Modal Đăng nhập/Đăng ký nhanh, giữ nguyên giỏ hàng; sau khi xác thực thành công thì tiếp tục bước 2. \\
+\hline
+\end{tabularx}
+\caption{Bảng đặc tả Use-case trọng tâm theo mẫu 7 ô chuẩn CNPM}
+\end{table}
+
+\newpage
+\section{Mô hình hóa hệ thống (Task 2)}
+
+\subsection{Sơ đồ Hoạt động toàn trình (Activity Diagram -- Task 2.1)}
+Sơ đồ Hoạt động của hệ thống được thiết kế theo chuẩn UML 2.0:
+\begin{itemize}
+  \item \textbf{Phân làn (Swimlanes):} Gồm 5 làn trách nhiệm rõ rệt: Khách hàng, Giao diện Web (Next.js), Backend API (NestJS), Cổng thanh toán và Quầy Barista.
+  \item \textbf{Đồng thời (Fork \& Join):} Sau khi đơn được xác nhận thanh toán (\texttt{PAID}), luồng điều phối tách thành 2 nhánh song song qua thanh Fork: (1) Quầy Barista nhận đơn và hiển thị lên màn hình pha chế; (2) Hệ thống tích lũy điểm thưởng thành viên. Cả hai luồng hội tụ tại thanh Join trước khi kết thúc đơn.
+  \item \textbf{Quyết định phân nhánh (Decision):} Tuyệt đối không dùng nhãn Yes/No đơn thuần; các điều kiện rẽ nhánh đều có hành động và biểu thức canh giữ (Guard Conditions) cụ thể: \texttt{[Chưa đăng nhập]}, \texttt{[Hết hàng / Tranh chấp version]}, \texttt{[Thanh toán thành công]}.
+\end{itemize}
+
+\subsection{Sơ đồ Tuần tự (Sequence Diagram -- Task 2.2)}
+Sơ đồ Tuần tự mô hình hóa chi tiết trình tự trao đổi thông điệp qua các lớp kiến trúc:
+\begin{itemize}
+  \item \textbf{Các đối tượng tham gia (Lifelines):} \texttt{Customer}, \texttt{Next.js UI}, \texttt{OrderController}, \texttt{OrderService}, \texttt{PrismaService}, \texttt{PostgreSQL DB}, \texttt{PaymentService}.
+  \item \textbf{Khung tương tác (Combined Fragments):} 
+    \begin{itemize}
+      \item \texttt{alt}: Xử lý rẽ nhánh cho kịch bản đủ hàng đối chiếu với kịch bản xung đột phiên bản Optimistic Lock.
+      \item \texttt{opt}: Nhánh tùy chọn áp dụng mã giảm giá hoặc tích lũy điểm thưởng thành viên.
+      \item \texttt{loop}: Lặp qua từng món trong đơn để thẩm định tính toàn vẹn của giá gốc và giá topping.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Sơ đồ Lớp miền nghiệp vụ (Class Diagram -- Task 2.3)}
+Mô hình lớp miền nghiệp vụ (Domain Model) phản ánh chính xác cấu trúc thực thể và quan hệ trong CSDL:
+\begin{itemize}
+  \item \textbf{Các lớp chính:} \texttt{User}, \texttt{Product}, \texttt{Category}, \texttt{Order}, \texttt{OrderItem}, \texttt{PaymentTransaction}, \texttt{LoyaltyAccount}.
+  \item \textbf{Thuộc tính \& Phương thức:} Thể hiện rõ kiểu dữ liệu, phạm vi truy cập (\texttt{public}, \texttt{private}) và các phương thức cốt lõi (ví dụ: \texttt{assertTransition()}, \texttt{calculateTotal()}).
+  \item \textbf{Quan hệ:} Thể hiện rõ quan hệ Kết tập (Aggregation), Hợp thành (Composition giữa \texttt{Order} và \texttt{OrderItem}) và Đa số lượng ($1 - 1$, $1 - n$).
+\end{itemize}
+
+\newpage
+\section{Thiết kế kiến trúc hệ thống (Task 3)}
+
+\subsection{Phương pháp và Quyết định kiến trúc (Task 3.1)}
+Hệ thống lựa chọn mô hình kiến trúc phân lớp hướng module (Modular Monolith) kết hợp Client-Server hiện đại:
+\begin{itemize}
+  \item \textbf{Frontend (Next.js 15 / React 19):} Áp dụng Server Components (RSC) kết hợp Client Components phục vụ giao diện Mobile-First/PWA; quản lý trạng thái giỏ hàng bằng Zustand.
+  \item \textbf{Backend (NestJS 11):} Tổ chức theo các Domain Module độc lập (\texttt{AuthModule}, \texttt{ProductsModule}, \texttt{OrdersModule}, \texttt{PaymentsModule}).
+  \item \textbf{Cơ sở dữ liệu (PostgreSQL 16):} Sử dụng Prisma ORM để quản lý cấu trúc bảng, migrations và bảo đảm giao dịch ACID.
+\end{itemize}
+
+\subsubsection{Các bản ghi quyết định kiến trúc (Architecture Decision Records -- ADR)}
+\begin{enumerate}[1.]
+  \item \textbf{ADR-001 (Monorepo Workspace):} Lựa chọn cấu trúc Monorepo dùng chung cấu hình npm workspace giúp đồng bộ kiểu dữ liệu TypeScript giữa Frontend và Backend.
+  \item \textbf{ADR-002 (Prisma Optimistic Locking):} Sử dụng trường số nguyên \texttt{version} trên bảng \texttt{Product} để kiểm soát tranh chấp kho hàng mà không cần khóa bi quan (Pessimistic Locking), giúp tăng tối đa thông lượng xử lý.
+  \item \textbf{ADR-003 (Idempotent Payment Handling):} Mọi yêu cầu thanh toán bắt buộc kèm \texttt{Idempotency-Key} duy nhất nhằm ngăn chặn giao dịch trừ tiền trùng lặp khi người dùng bấm nút nhiều lần hoặc mạng chập chờn.
+\end{enumerate}
+
+\subsection{Sơ đồ Triển khai hạ tầng Production (Deployment Diagram -- Task 3.2)}
+Sơ đồ Triển khai hệ thống được mô hình hóa theo chuẩn UML 2.0 trên môi trường đám mây \textbf{AWS EC2 Ubuntu}:
+\begin{itemize}
+  \item \textbf{Client Device:} Smartphone / Laptop chạy trình duyệt Web Browser (Chrome, Safari, PWA) giao tiếp qua HTTPS cổng 443.
+  \item \textbf{DevOps Station:} Kỹ sư quản trị kết nối dòng lệnh an toàn qua giao thức SSH cổng 22 (\texttt{ssh -i key.pem ubuntu@IP}), thực hiện đẩy mã lên GitHub và kéo mã nguồn về máy chủ (\texttt{git pull}).
+  \item \textbf{AWS EC2 Instance (Ubuntu 22.04 LTS):}
+    \begin{itemize}
+      \item Gắn địa chỉ \textbf{Elastic IP} tĩnh và tên miền phân giải \texttt{brewlite.coffee}.
+      \item \textbf{Nginx Reverse Proxy \& SSL Termination:} Tiếp nhận cổng 80/443, định tuyến sang container tương ứng và kiểm tra sức khỏe hệ thống định kỳ (\texttt{GET /health}).
+      \item \textbf{Docker Compose Runtime Engine:}
+        \begin{itemize}
+          \item Container \texttt{web}: Next.js App (Cổng nội bộ 3000).
+          \item Container \texttt{api}: NestJS REST API (Cổng nội bộ 3001) kèm Structured Logger.
+          \item Container \texttt{db}: PostgreSQL 16 (Cổng 5432) gắn phân vùng ổ cứng ngoài \textbf{AWS EBS SSD Volume} bền vững.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\newpage
+\section{Hiện thực Sprint 1 và Tích hợp liên tục CI (Task 4)}
+
+\subsection{Thiết lập Repository và Môi trường phát triển}
+Kho mã nguồn dự án được khởi tạo tại GitHub: \url{https://github.com/nphat-code/swe-project}. Dự án tuân thủ nghiêm ngặt quy tắc Git:
+\begin{itemize}
+  \item Quy chuẩn Commit: Tuân thủ Conventional Commits (\texttt{feat:}, \texttt{fix:}, \texttt{chore:}, \texttt{docs:}).
+  \item Bảo mật cấu hình: File \texttt{.env} được giữ kín, tệp mẫu \texttt{.env.example} được công khai để chuẩn hóa cấu hình.
+\end{itemize}
+
+\subsection{Hiện thực MVP Sprint 1: Luồng xem thực đơn}
+Sprint 1 hoàn thành trọn vẹn luồng duyệt thực đơn theo đúng mục tiêu:
+\begin{itemize}
+  \item API Endpoint: \texttt{GET /products} (lấy danh sách món) và \texttt{GET /products/categories} (lấy danh mục đồ uống).
+  \item Giao diện người dùng: Tabs danh mục (Cà phê, Trà, Đá xay, Bánh), thẻ sản phẩm kèm ảnh và giá hiển thị định dạng VND (\texttt{35.000đ}).
+  \item Xử lý trạng thái tải: Skeleton Loading và giao diện khi không có sản phẩm.
+\end{itemize}
+
+\subsection{Pipeline Tích hợp liên tục (Continuous Integration -- CI)}
+Quy trình CI được thiết lập tự động hóa hoàn toàn bằng \textbf{GitHub Actions} (\texttt{.github/workflows/ci.yml}):
+\begin{enumerate}[1.]
+  \item \textbf{Lint \& Format Check:} Chạy ESLint và Prettier bảo đảm mã nguồn sạch.
+  \item \textbf{TypeScript Type Check:} Biên dịch kiểm tra kiểu tĩnh không có lỗi.
+  \item \textbf{Automated Testing:} Tự động chạy toàn bộ các bài kiểm thử Jest Unit Tests.
+  \item \textbf{Docker Build Validation:} Kiểm tra tính hợp lệ của quá trình đóng gói Docker multi-stage.
+\end{enumerate}
+
+\newpage
+\section{Hiện thực Sprint 2, CD và Bàn giao sản phẩm (Task 5)}
+
+\subsection{Hoàn thiện MVP: Đặt hàng, Giỏ hàng và Thanh toán}
+Sprint 2 hoàn thiện toàn bộ chuỗi nghiệp vụ mua sắm không tiền mặt:
+\begin{itemize}
+  \item \textbf{Tùy biến món:} Modal chi tiết hỗ trợ chọn kích cỡ (S/M/L) và đa topping.
+  \item \textbf{Giỏ hàng Client:} Tăng giảm số lượng, tự động đồng bộ giỏ hàng vào \texttt{localStorage}.
+  \item \textbf{Thanh toán Idempotent:} Tích hợp thanh toán mô phỏng MoMo/VNPay kèm bảo vệ giao dịch trùng lặp.
+  \item \textbf{Máy trạng thái đơn hàng (Order State Machine):} Quản lý chuyển đổi trạng thái đơn tuần tự từ \texttt{PENDING\_PAYMENT} $\rightarrow$ \texttt{PAID} $\rightarrow$ \texttt{PREPARING} $\rightarrow$ \texttt{READY} $\rightarrow$ \texttt{COMPLETED}.
+\end{itemize}
+
+\subsection{Kiểm thử tự động toàn diện (Testing QA)}
+Hệ thống xây dựng tháp kiểm thử 3 tầng:
+\begin{itemize}
+  \item \textbf{Unit Tests (Jest):} Kiểm thử logic chuyển đổi trạng thái đơn hàng và các hàm tính toán giá.
+  \item \textbf{Integration Tests:} Kiểm thử tương tác giữa NestJS Service, Prisma ORM và Database PostgreSQL thực nghiệm.
+  \item \textbf{End-to-End Tests:} Kiểm thử trọn vẹn luồng duyệt menu $\rightarrow$ thêm giỏ $\rightarrow$ đặt hàng $\rightarrow$ thanh toán.
+\end{itemize}
+
+\subsection{Continuous Delivery / Deployment và Môi trường Production}
+Pipeline CD tự động triển khai mã nguồn mới sau khi vượt qua toàn bộ các bước kiểm thử của CI:
+\begin{itemize}
+  \item Đóng gói Docker Images và lưu trữ tại GitHub Packages (GHCR).
+  \item Kích hoạt Webhook cập nhật ứng dụng tự động trên máy chủ đám mây.
+  \item Kiểm tra sức khỏe dịch vụ qua endpoint \texttt{GET /health} trước khi hoàn tất phiên bản phát hành.
+\end{itemize}
+
+\subsection{Tổng kết Sprint, Đánh giá và Cải tiến (Sprint Retrospective)}
+\begin{itemize}
+  \item \textbf{Điểm làm tốt (What went well):} Kiến trúc phân tách rõ ràng; áp dụng Optimistic Lock giải quyết triệt để vấn đề tranh chấp tồn kho; hoàn thành đúng tiến độ cam kết.
+  \item \textbf{Thách thức (Challenges):} Cấu hình mạng Docker và quản lý biến môi trường an toàn đòi hỏi kiểm soát chặt chẽ.
+  \item \textbf{Kế hoạch cải tiến (Action items):} Tối ưu hóa dung lượng Docker Image bằng Alpine Linux và nâng cao độ bao phủ kiểm thử tự động.
+\end{itemize}
+
+\newpage
+\section{Ma trận truy vết yêu cầu (Traceability Matrix)}
+
+Bảng ma trận truy vết thể hiện tính liên kết 100\% từ Yêu cầu phần mềm $\rightarrow$ Use-case $\rightarrow$ Sơ đồ thiết kế $\rightarrow$ Mã nguồn thực thi $\rightarrow$ Bài kiểm thử nghiệm thu:
+
+\begin{table}[h!]
+\centering
+\scriptsize
+\begin{tabularx}{\textwidth}{|c|l|c|X|X|c|}
+\hline
+\textbf{Mã FR} & \textbf{Tên chức năng} & \textbf{Use Case} & \textbf{Thiết kế / Sơ đồ} & \textbf{Code / API Endpoint} & \textbf{Mã Test} \\
+\hline
+\textbf{FR-01} & Duyệt thực đơn & UC01 & Activity-Flow, Class-Domain & \texttt{GET /products} & API-T01 \\
+\hline
+\textbf{FR-02} & Tùy biến món & UC03 & Activity-Flow, Class-Domain & \texttt{GET /products/:id} & UI-T02 \\
+\hline
+\textbf{FR-03} & Quản lý giỏ hàng & UC04 & Activity-Flow, Class-Domain & \texttt{useCartStore.ts} & UNIT-CART01 \\
+\hline
+\textbf{FR-04} & Xác thực người dùng & UC05 & Sequence-Checkout & \texttt{POST /auth/login} & API-AUTH01 \\
+\hline
+\textbf{FR-05} & Khởi tạo đơn hàng & UC06 & Sequence-Checkout & \texttt{POST /orders} & INT-ORD01 \\
+\hline
+\textbf{FR-06} & Khóa lạc quan & UC06 & Activity-Flow, State-Machine & \texttt{orders.service.ts} & UNIT-LOCK01 \\
+\hline
+\textbf{FR-07} & Thanh toán trực tuyến & UC07 & Sequence-Checkout & \texttt{POST /payments} & INT-PAY01 \\
+\hline
+\textbf{FR-08} & Máy trạng thái đơn & UC08 & Activity-Flow, Class-Domain & \texttt{order-state.ts} & UNIT-STATE01 \\
+\hline
+\textbf{FR-09} & Tích điểm thành viên & UC07 & Activity-Flow, Class-Domain & \texttt{loyalty.service.ts} & UNIT-LOY01 \\
+\hline
+\textbf{FR-10} & Xem lịch sử đơn & UC09 & Activity-Flow & \texttt{GET /orders/me} & E2E-FLOW01 \\
+\hline
+\end{tabularx}
+\caption{Ma trận truy vết yêu cầu hệ thống BrewLite (Mục 8 Đề bài gốc)}
+\end{table}
+
+\newpage
+\begin{thebibliography}{80}
+
+\bibitem{sommerville}
+Ian Sommerville,
+\textit{Software Engineering (10th Edition)},
+Pearson, 2015.
+
+\bibitem{pressman}
+Roger S. Pressman, Bruce R. Maxim,
+\textit{Software Engineering: A Practitioner's Approach (9th Edition)},
+McGraw-Hill, 2020.
+
+\bibitem{uml25}
+Object Management Group (OMG),
+\textit{OMG Unified Modeling Language (OMG UML) Version 2.5.1 Specification},
+2017.
+
+\bibitem{nextjs}
+Vercel,
+\textit{Next.js Documentation -- App Router, Server Components and Optimizations},
+\url{https://nextjs.org/docs}, 2026.
+
+\bibitem{nestjs}
+Kamil Myśliwiec,
+\textit{NestJS Framework Official Documentation},
+\url{https://docs.nestjs.com}, 2026.
+
+\bibitem{prisma}
+Prisma Data, Inc.,
+\textit{Prisma ORM -- Next-generation ORM for Node.js and TypeScript},
+\url{https://www.prisma.io/docs}, 2026.
+
+\end{thebibliography}
+
+\end{document}
