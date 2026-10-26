@@ -32,4 +32,21 @@ Thumbs.db
 # Coverage / Testing
 coverage/
 *.lcov
-.nyc_output
+*.nyc_output
+
+# LaTeX Build Artifacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.out
+*.synctex.gz
+*.toc
+*.xdv
+*.nav
+*.snm
+*.vrb
