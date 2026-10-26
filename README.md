@@ -22,7 +22,7 @@
   * 🏛️ Sơ đồ Lớp Domain (Class Diagram) — `docs/diagrams/class/class-domain.puml`
 * 🏗️ **Tài liệu Task 3 — Thiết kế Kiến trúc (2.0đ):**
   * 🏛️ [Tài liệu Kiến trúc C4 / Phân lớp](docs/architecture/architecture-description.md) & Các bản ghi ADR (`docs/architecture/adr/`)
-  * ☁️ [Sơ đồ Triển khai Production (Deployment Diagram)](docs/deployment.md)
+  * ☁️ [Sơ đồ Triển khai Production (Deployment Diagram)](docs/diagrams/deployment/README.md)
 * 🔗 **Mục 8 — Ma trận Truy vết Bắt buộc:**
   * 📊 [Ma trận Truy vết Yêu cầu (Traceability Matrix)](docs/traceability-matrix.md)
 

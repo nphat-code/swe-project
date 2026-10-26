@@ -1,66 +1,93 @@
 # SƠ ĐỒ TRIỂN KHAI HỆ THỐNG (UML DEPLOYMENT DIAGRAM) - BREWLITE
 
-> **Ngôn ngữ mô hình hóa:** PlantUML / UML 2.0 & Mermaid.js  
-> **Tệp PlantUML chuẩn mẫu:** [`deployment-web-app.puml`](deployment-web-app.puml)  
-> **Tệp PlantUML triển khai AWS/Ubuntu:** [`deployment-aws.puml`](deployment-aws.puml)  
-> **Tệp Mermaid toàn trình Production:** [`deployment-production.mmd`](deployment-production.mmd)  
-> **Tệp đồ họa vector (SVG):** [`deployment-production.svg`](deployment-production.svg)  
-> **Tệp ảnh chất lượng cao (PNG):** [`deployment-production.png`](deployment-production.png)
+> **Căn cứ đề bài:** Mục 5.2 (Task 3.2 - 2.0 điểm) trong tệp đặc tả gốc [`docs/DE_BAI_ASSIGNMENT_2_GOC.md`](../../docs/DE_BAI_ASSIGNMENT_2_GOC.md).  
+> **Căn cứ chỉ dẫn giảng viên:** Ghi chú thực thi hạ tầng đám mây tại [`notes`](../../../notes) *(AWS EC2, Ubuntu OS, SSH login qua IP, Git pull, gán tên miền & IP tĩnh)*.  
+> **Ngôn ngữ mô hình hóa:** PlantUML / UML 2.0 (Monochrome, Black & White).  
+> **Tệp mã nguồn sơ đồ chính thức:** [`deployment-diagram.puml`](deployment-diagram.puml)
 
 ---
 
-## 1. MỤC TIÊU & PHẠM VI MÔ HÌNH HÓA
+## 1. MỤC TIÊU & NGUYÊN TẮC THIẾT KẾ SƠ ĐỒ
 
-Sơ đồ Triển khai (Deployment Diagram) thể hiện kiến trúc phần cứng, máy chủ ảo, hạ tầng mạng, container và các thành phần phần mềm (artifacts, components) được phân bổ và giao tiếp với nhau trong môi trường vận hành thực tế.
+Sơ đồ Triển khai (Deployment Diagram) thể hiện kiến trúc phần cứng, máy chủ ảo, hạ tầng mạng, các container Docker và thành phần phần mềm được phân bổ, kết nối với nhau trong môi trường vận hành thực tế (Production Environment).
 
-### Các nguyên tắc chuẩn UML 2.0:
-1. **Phân định rõ Node vật lý / máy chủ ảo:**
-   - Client Device (Máy tính cá nhân / Điện thoại di động chạy Web Browser).
-   - DevOps Station (Máy trạm quản trị kết nối qua giao thức an toàn).
-   - Load Balancer / Reverse Proxy (Bộ cân bằng tải phân phối lưu lượng).
-   - Application Server Tier (Cụm Web/App Server xử lý nghiệp vụ).
-   - Database Server Tier (Hệ quản trị CSDL & Volume lưu trữ bền vững).
-2. **Ký hiệu chuẩn hóa:**
-   - `node`: Thể hiện môi trường thực thi (EC2, Virtual Host, Docker Container, Browser).
-   - `component` / `artifact`: Thể hiện module mã nguồn hoặc tệp cấu hình thực thi.
-   - `database`: Thể hiện nút lưu trữ dữ liệu chuyên dụng.
-   - Giao thức mạng rõ ràng: `HTTPS (Port 443)`, `SSH (Port 22)`, `TCP (Port 5432)`.
-
----
-
-## 2. CÁC PHIÊN BẢN SƠ ĐỒ TRIỂN KHAI
-
-### 2.1. Sơ đồ mô hình chuẩn N-Tier Web App ([`deployment-web-app.puml`](deployment-web-app.puml))
-- Chuẩn hóa từ mẫu kiến trúc tải cao:
-  - **Client Device:** Chứa Web Browser với 2 thành phần `User Interface` và `API Client`.
-  - **Load Generator:** Node giả lập kiểm thử tải (`Artillery`/`JMeter`) bơm lưu lượng qua Internet.
-  - **Load Balancer Host:** Nginx / ALB tiếp nhận cổng HTTPS 443 và phân phối Round-Robin.
-  - **Application Server Tier:** Cụm 3 Web Server instances độc lập xử lý song song.
-  - **Persistence Tier:** Database Server (PostgreSQL) tiếp nhận kết nối qua cổng TCP 5432.
-
-### 2.2. Sơ đồ triển khai hạ tầng AWS EC2 Ubuntu ([`deployment-aws.puml`](deployment-aws.puml))
-- Phù hợp với khuyến nghị môi trường AWS/Azure:
-  - **Hệ điều hành:** Ubuntu Server 22.04 LTS chạy trên AWS EC2.
-  - **Quản trị & Triển khai:** DevOps kết nối SSH (Port 22), pull mã nguồn từ GitHub về server.
-  - **Cấu hình (Config):** File `.env`, `nginx.conf` và `docker-compose.yml` điều phối service.
-  - **Đóng gói Container:** Next.js (Port 3000), NestJS API (Port 3001) và PostgreSQL 16 (Port 5432) với EBS Volume bền vững.
-
-### 2.3. Sơ đồ Production Serverless Cloud ([`deployment-production.mmd`](deployment-production.mmd))
-- Kiến trúc microservices đám mây hiện đại:
-  - **Frontend:** Vercel Global Edge Network (CDN & SSR).
-  - **Backend API:** Render Web Service (Docker Container Node.js 20).
-  - **Database:** Neon Serverless PostgreSQL với PgBouncer Connection Pooler.
-  - **CI/CD:** GitHub Actions tự động build, test và kích hoạt Webhook deploy.
+### Nguyên tắc tuân thủ chuẩn UML 2.0 & Đề bài:
+1. **Phân định rõ ràng các ranh giới thực thi (Execution Boundaries):**
+   - **Thiết bị người dùng (Client Device):** Smartphone / Máy tính chạy trình duyệt web hoặc PWA.
+   - **Máy trạm quản trị (DevOps Workstation):** Kỹ sư vận hành kết nối dòng lệnh bảo mật qua SSH và điều khiển Git.
+   - **Dịch vụ mạng ngoại vi (External Services):** Máy chủ phân giải tên miền (DNS Provider) và Cổng thanh toán giả lập (Mock Payment Gateway).
+   - **Đám mây AWS VPC (Cloud Infrastructure):** Máy chủ ảo AWS EC2 chạy hệ điều hành Ubuntu 22.04 LTS với địa chỉ IP tĩnh (Elastic IP) và tên miền định tuyến.
+2. **Ký hiệu chuẩn hóa theo UML 2.0:**
+   - `node`: Thể hiện môi trường máy chủ vật lý, máy ảo (VM) hoặc Docker Container.
+   - `component` / `artifact`: Thể hiện module mã nguồn, tiến trình chạy hoặc tệp cấu hình (`.env`, `nginx.conf`, `docker-compose.yml`).
+   - `database` / `storage`: Thể hiện hệ quản trị CSDL PostgreSQL và phân vùng lưu trữ bền vững (Mounted EBS SSD Volume).
+   - Giao thức mạng rõ ràng: Ghi rõ cổng kết nối (`Port 443`, `Port 22`, `Port 3000`, `Port 3001`, `Port 5432`) và giao thức (`HTTPS`, `SSH`, `HTTP`, `TCP`).
+3. **Phong cách thiết kế Monochrome:**
+   - Đường nét đen trắng chuẩn mực, rõ ràng, tối ưu cho báo cáo kỹ thuật và in ấn học thuật.
 
 ---
 
-## 3. BẢNG DANH MỤC GIAO THỨC & CỔNG KẾT NỐI
+## 2. NỘI DUNG MÃ NGUỒN SƠ ĐỒ PLANTUML
 
-| Tuyến kết nối | Nguồn phát | Điểm đến | Giao thức | Cổng (Port) | Mục đích |
+Mã nguồn sơ đồ được lưu trữ độc lập tại tệp [`deployment-diagram.puml`](deployment-diagram.puml).
+
+---
+
+## 3. PHÂN TÍCH CHI TIẾT CÁC TẦNG HẠ TẦNG & THÀNH PHẦN
+
+### 3.1. Thiết bị người dùng (Client Tier)
+* **Thành phần:** `Web Browser` chạy trên thiết bị cá nhân (Desktop / Mobile).
+* **Cơ chế hoạt động:** 
+  - `User Interface`: Tải các trang HTML/CSS/JS do Next.js biên dịch.
+  - `API Client`: Thực hiện các cuộc gọi REST API bất đồng bộ thông qua `fetch` hoặc `axios`.
+
+### 3.2. Quản trị & Vận hành (DevOps & Deployment Workflow)
+* Đúng theo yêu cầu giảng viên hướng dẫn trong môn học:
+  1. **Đẩy mã nguồn:** Lập trình viên đẩy code lên kho chứa GitHub (`git push origin main`).
+  2. **Kết nối máy chủ:** Kỹ sư DevOps đăng nhập vào máy chủ Ubuntu trên AWS thông qua giao thức SSH dòng lệnh:
+     ```bash
+     ssh -i "brewlite-key.pem" ubuntu@13.250.x.x
+     ```
+  3. **Kéo mã nguồn & Cấu hình:** Thực hiện `git pull` để nhận mã nguồn mới nhất, áp dụng tệp biến môi trường `.env` và tệp điều phối `docker-compose.yml`.
+
+### 3.3. Máy chủ AWS EC2 Ubuntu & Reverse Proxy Nginx
+* **Hạ tầng:** AWS EC2 Instance cấu hình hệ điều hành **Ubuntu 22.04 LTS**, gắn địa chỉ **Elastic IP** tĩnh.
+* **Tên miền (Domain Name):** Thuê tên miền (ví dụ: `brewlite.coffee`), cấu hình DNS Bản ghi A (`A-Record`) trỏ thẳng về Elastic IP của EC2.
+* **Nginx Reverse Proxy:**
+  - Tiếp nhận kết nối HTTPS cổng 443 (được mã hóa SSL/TLS bởi Let's Encrypt / Certbot).
+  - Tự động định tuyến (Reverse Proxy):
+    - Các yêu cầu tải trang (`/`) $\rightarrow$ chuyển tiếp tới Next.js Container (`HTTP : 3000`).
+    - Các yêu cầu gọi API (`/api/*`) $\rightarrow$ chuyển tiếp tới NestJS API Container (`HTTP : 3001`).
+  - Định kỳ thăm dò sức khỏe hệ thống (`Health Check Probe`) qua endpoint `GET /health`.
+
+### 3.4. Cụm Docker Compose (Container Runtime)
+Toàn bộ hệ thống chạy khép kín trong mạng nội bộ Docker:
+1. **Frontend Container (`web`):** Chạy Next.js Node.js Server phục vụ Server-Side Rendering (SSR) và Client Component.
+2. **Backend Container (`api`):** Chạy NestJS REST API Server, xử lý logic nghiệp vụ, quản lý trạng thái đơn hàng (`assertTransition`), thẩm định bảo mật và ghi log ra luồng JSON (`stdout`).
+3. **Database Container (`db`):** Chạy PostgreSQL 16 Engine. Thư mục dữ liệu `/var/lib/postgresql/data` được gắn trực tiếp ra phân vùng ổ cứng ngoài (**AWS EBS SSD Volume**) nhằm đảm bảo an toàn dữ liệu, không bị mất mát khi container khởi động lại.
+
+---
+
+## 4. BẢNG DANH MỤC GIAO THỨC & CỔNG KẾT NỐI (PORTS & PROTOCOLS)
+
+| Tuyến kết nối | Điểm bắt đầu (Source) | Điểm kết thúc (Target) | Giao thức (Protocol) | Cổng (Port) | Mục đích kỹ thuật |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Client Web Traffic** | Web Browser | Load Balancer | HTTPS / TLS 1.3 | 443 | Tải trang giao diện & gọi REST API |
-| **Remote Admin** | DevOps Workstation | AWS EC2 (sshd) | SSH / TCP | 22 | Quản trị từ xa, pull code từ Git, cập nhật config |
-| **Reverse Proxy Web** | Nginx / LB | Next.js Container | HTTP | 3000 | Chuyển tiếp request giao diện |
-| **Reverse Proxy API** | Nginx / LB | NestJS Container | HTTP | 3001 | Chuyển tiếp request nghiệp vụ Backend |
-| **Database Connection**| NestJS App | PostgreSQL Engine | TCP (SSL) | 5432 | Truy vấn dữ liệu CRUD qua Prisma ORM |
-| **Testing Traffic** | Load Generator | Load Balancer | HTTP / HTTPS | 80 / 443 | Kiểm thử khả năng chịu tải & hiệu năng hệ thống |
+| **DNS Resolution** | Trình duyệt Client | DNS Provider | DNS / UDP | 53 | Phân giải tên miền `brewlite.coffee` ra Elastic IP |
+| **Client HTTPS Traffic** | Trình duyệt Client | Nginx Web Server | HTTPS / TLS 1.3 | 443 | Tải tài nguyên giao diện và gửi request đặt đơn |
+| **Remote SSH Admin** | Máy trạm DevOps | OpenSSH Server (sshd) | SSH / TCP | 22 | Quản trị từ xa bằng lệnh terminal `ssh -i ...` |
+| **Git Deployment** | Máy chủ Ubuntu | GitHub Repository | HTTPS / Git Protocol | 443 / 9418 | Tải mã nguồn cập nhật về máy chủ (`git pull`) |
+| **Web Reverse Proxy** | Nginx | Next.js Container | HTTP | 3000 | Chuyển tiếp request trang giao diện người dùng |
+| **API Reverse Proxy** | Nginx | NestJS API Container | HTTP | 3001 | Chuyển tiếp request gọi API nghiệp vụ |
+| **Health Probe** | Nginx / Cron | NestJS API Container | HTTP | 3001 | Kiểm tra sức khỏe hệ thống (`GET /health`) |
+| **Database Connection**| NestJS Service | PostgreSQL Engine | TCP (SSL internal) | 5432 | Truy vấn dữ liệu CRUD qua Prisma Connection Pool |
+| **Payment Gateway** | NestJS Service | Mock Payment Server | HTTPS Outbound | 443 | Giao tiếp xác thực giao dịch thanh toán |
+
+---
+
+## 5. HƯỚNG DẪN XEM & XUẤT SƠ ĐỒ
+
+1. **Xem trực tiếp trong Visual Studio Code:**
+   - Cài đặt tiện ích mở rộng **PlantUML** (của *jebbs*).
+   - Mở tệp [`deployment-diagram.puml`](deployment-diagram.puml) và nhấn tổ hợp phím `Alt + D` để xem bản vẽ trực quan.
+2. **Xuất sang ảnh chất lượng cao (PNG / SVG):**
+   - Click chuột phải vào mã nguồn `deployment-diagram.puml` $\rightarrow$ Chọn `PlantUML: Export Current Diagram` $\rightarrow$ Chọn định dạng `png` hoặc `svg` để đính kèm vào báo cáo Word/PDF.
