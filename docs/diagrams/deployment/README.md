@@ -122,7 +122,7 @@ Tài liệu này dùng làm căn cứ chuẩn mực khi nhóm tự kéo thả tr
 | **Cổng thanh toán giả lập** | **Hộp 3D trơn** *(Node)* | `<<external service>> Mock Payment Gateway (MoMo / VNPay / Visa Webhook)` |
 | **Máy chủ đám mây** | **Hộp 3D trơn** *(Node)* | `AWS EC2 Virtual Machine Instance (Ubuntu 22.04 LTS)`<br/>*[Elastic IP: 13.250.x.x \| Domain: brewlite.coffee]* |
 | **Hệ điều hành máy chủ** | `<<e>>` *(Execution Env)* | `Ubuntu 22.04 LTS` *(khung lồng bên trong EC2)* |
-| **Cổng đón Reverse Proxy** | **Component** *(2 mấu)* | `Nginx Web Server (SSL/TLS 1.3 Termination, Ports 80 & 443)` |
+| **Cổng đón Reverse Proxy** | **Component** *(2 mấu)* | `Nginx Web Server (SSL/TLS 1.3 Termination, Ports 80 & 443)`<br/>*(Đặt trong `<<executionEnvironment>> Ubuntu 22.04 LTS`, nằm phía trên và bên ngoài khối Docker Engine để làm Gateway đón luồng HTTPS 443)* |
 | **Engine chạy Container** | `<<e>>` *(Execution Env)* | `Docker Container Runtime Engine (Docker Compose)` |
 | **Container Frontend** | `<<e>>` *(Execution Env)* | `Container: Frontend (web)` chứa Component `Next.js Node Server [Port 3000]` |
 | **Container Backend** | `<<e>>` *(Execution Env)* | `Container: Backend API (api)` chứa Component `NestJS REST API Service [Port 3001]`, `Health Probe`, `Logger` |
