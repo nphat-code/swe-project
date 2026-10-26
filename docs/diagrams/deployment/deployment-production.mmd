@@ -1,0 +1,72 @@
+flowchart TB
+    %% ==========================================
+    %% UML DEPLOYMENT DIAGRAM - PRODUCTION & ENV BOUNDARIES
+    %% ==========================================
+
+    subgraph BoundaryUser ["📱 LỚP THIẾT BỊ NGƯỜI DÙNG (CLIENT TIER)"]
+        MobileClient["📱 Thiết bị di động (Smartphone / Tablet)<br/><b>Mobile Browser / PWA Installed</b><br/>• LocalStorage: Zustand Cart, JWT<br/>• Service Worker: Cache Asset tĩnh"]
+        DesktopClient["💻 Thiết bị máy tính (Desktop / POS)<br/><b>Web Browser (Chrome / Safari / Edge)</b><br/>• Quầy Barista & Khách hàng"]
+    end
+
+    subgraph BoundaryCI ["⚙️ RANH GIỚI CI/CD & REGISTRY (GITHUB ECOSYSTEM)"]
+        direction TB
+        GHA["🐙 <b>GitHub Actions CI/CD Runner</b><br/>(ubuntu-latest)<br/>• Lint & Type Check<br/>• Jest Unit & Integration Tests<br/>• Build Docker Multi-stage"]
+        GHCR["📦 <b>GitHub Packages (GHCR)</b><br/><code>ghcr.io/nphat-code/api:latest</code><br/>Container Image Registry"]
+        GHSecret["🔐 <b>GitHub Secrets Storage</b><br/>• RENDER_DEPLOY_HOOK<br/>• DATABASE_URL_PROD<br/>• JWT_SECRET_PROD"]
+        GHSecret -.->|"Inject Secrets"| GHA
+        GHA -->|"Push Docker Image"| GHCR
+    end
+
+    subgraph BoundaryProd ["☁️ RANH GIỚI MÔI TRƯỜNG PRODUCTION (CLOUD HOSTING)"]
+        direction TB
+
+        subgraph TierCDN ["🌐 Vercel Global Edge Network (CDN)"]
+            VercelEdge["⚡ <b>Vercel Edge CDN & Serverless Node</b><br/>Domain: <code>brewlite.vercel.app</code><br/>• SSL/TLS 1.3 Termination (Port 443)<br/>• Next.js App Router (RSC + SSR)<br/>• Static Assets Cache (JS/CSS/WebP)"]
+        end
+
+        subgraph TierAPI ["🚀 Render Cloud Web Service (PaaS Platform)"]
+            direction TB
+            RenderLB["🛡️ <b>Render Cloud Load Balancer / Reverse Proxy</b><br/>• HTTPS/TLS 1.3 Termination (Port 443)<br/>• DDoS Protection & SSL Certificate"]
+            
+            subgraph ContainerInstance ["🐳 Docker Container Instance (Node.js 20 Alpine)"]
+                NestApp["⚙️ <b>NestJS REST API Service</b><br/>Port: <code>3001 (Internal)</code><br/>• AppModule, AuthModule, OrdersModule<br/>• Prisma Client with Connection Pool<br/>• State Machine & Optimistic Locking"]
+                HealthProbe["🩺 <b>Health Check Probe</b><br/>Endpoint: <code>GET /health</code><br/>(Every 30s, timeout 5s)"]
+                Logger["📝 <b>Structured Logger</b><br/>Stdout JSON Log Stream<br/>(Correlation ID Tracing)"]
+            end
+
+            RenderLB -->|"Reverse Proxy (HTTP:3001)"| NestApp
+            RenderLB -.->|"Poll Health (200 OK)"| HealthProbe
+        end
+
+        subgraph TierData ["🗄️ Neon Serverless PostgreSQL (Database Tier)"]
+            NeonPooler["🔄 <b>Connection Pooler (PgBouncer)</b><br/>Port: <code>6543 (SSL Required)</code><br/>• Max 100 concurrent pool connections"]
+            NeonEngine["🐘 <b>PostgreSQL 16 Engine</b><br/>Port: <code>5432 (SSL Required)</code><br/>• Prisma Schema & Migrations<br/>• ACID Transactions ($transaction)"]
+            PersistentVol[("💾 <b>Persistent Storage</b><br/>Cloud SSD Volume (Multi-AZ)<br/>• Daily Automated Backups<br/>• Point-in-time Recovery")]
+
+            NeonPooler -->|"Internal Connection"| NeonEngine
+            NeonEngine --- PersistentVol
+        end
+
+        subgraph TierExternal ["💳 External Payment Gateway Service"]
+            MockPaymentGW["🌐 <b>Mock Payment Gateway Service</b><br/>Domain: <code>api.brewlite.com/mock-pay</code><br/>• Simulated MoMo / VNPay / Visa<br/>• Idempotency-Key Validation<br/>• Webhook / Instant Callback"]
+        end
+    end
+
+    subgraph BoundaryLocal ["💻 RANH GIỚI MÔI TRƯỜNG LOCAL (DEVELOPMENT MACHINE)"]
+        DockerCompose["🐳 <b>Docker Compose Orchestration</b><br/><code>docker-compose.yml</code><br/>• <b>web:</b> Next.js (:3000)<br/>• <b>api:</b> NestJS (:3001)<br/>• <b>postgres:</b> PostgreSQL 16 (:5432)<br/>• Shared Volume: <code>postgres_data</code>"]
+    end
+
+    %% ==========================================
+    %% CONNECTORS & NETWORK PROTOCOLS
+    %% ==========================================
+    MobileClient -->|"1. HTTPS / TLS 1.3 (Port 443)"| VercelEdge
+    DesktopClient -->|"1. HTTPS / TLS 1.3 (Port 443)"| VercelEdge
+
+    MobileClient -.->|"2. Direct API Fetch: HTTPS (Port 443)"| RenderLB
+    VercelEdge -->|"2. SSR / Server Action Fetch: HTTPS (Port 443)"| RenderLB
+
+    NestApp -->|"3. TCP + TLS Encrypted (Port 6543)"| NeonPooler
+    NestApp -->|"4. HTTPS Outbound REST (Port 443)"| MockPaymentGW
+
+    GHA -.->|"Deploy Webhook: HTTPS"| RenderLB
+    GHA -.->|"Deploy Trigger: Git Push"| VercelEdge

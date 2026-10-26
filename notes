@@ -18,10 +18,15 @@ yeu cau:
 + sprint plan
 
 - khuyen khich AWS or Azure
++ tai khoan aws
++ thue tai nguyen
++ cai he dieu hanh (khuyen khich ubuntu)
++ lay src code dua vao server (push len git, pull ve server)
++ ket noi voi aws (login): ssh -i -IP (command line)
 
 - sequence diagram
 
-- so do class (dua vao sequence diagram), co mo t
+- so do class (dua vao sequence diagram), co mo ta:
 + ten class
 + ten thuoc tinh
 + ten phuong thuc
