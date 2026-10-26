@@ -100,21 +100,26 @@ Tài liệu này dùng làm căn cứ chuẩn mực khi nhóm tự kéo thả tr
 
 ### 6.1. Bảng tra cứu ký hiệu chuẩn UML 2.0 (Toolbox Palette)
 * **`<<d>>` (Device):** Khối hộp 3D có nhãn `<<device>>`. Dùng đại diện cho thiết bị phần cứng vật lý (Client Smartphone/Laptop, DevOps PC).
-* **Hộp 3D trơn (Node):** Dùng cho máy chủ ảo tổng thể đám mây (`AWS EC2 Virtual Machine Instance`).
+* **Hộp 3D trơn (Node):** Dùng cho máy chủ ảo tổng thể đám mây (`AWS EC2 Virtual Machine Instance`) hoặc các nền tảng dịch vụ đám mây ngoại vi (`<<cloud service>>`).
 * **`<<e>>` (Execution Environment):** Khối hộp 3D có nhãn `<<execution environment>>`. Dùng cho hệ điều hành, runtime hoặc container (`Ubuntu 22.04 LTS`, `Docker Engine`, các `Docker Containers`).
 * **Component (Hình chữ nhật 2 mấu bên trái):** Thành phần phần mềm thực thi độc lập (`Next.js Server`, `NestJS API`, `Nginx Server`, `PostgreSQL 16 Engine`).
-* **`<<a>>` (Artifact):** Biểu tượng trang giấy gấp góc có chữ `<<a>>`. Dùng cho tệp cấu hình triển khai (`.env`, `docker-compose.yml`, `nginx.conf`).
+* **`<<a>>` (Artifact):** Biểu tượng trang giấy gấp góc có chữ `<<a>>`. Dùng cho tệp cấu hình triển khai (`.env`, `docker-compose.yml`, `nginx.conf`) hoặc kho lưu trữ tệp mã nguồn (`Git Repository`).
+* **Cylinder Database (Hình trụ CSDL):** Ký hiệu hình trụ lấy từ nút `+ Shapes...` $\rightarrow$ tìm `Database`. Dùng biểu diễn phân vùng ổ đĩa/CSDL lưu trữ bền vững (`Persistent EBS SSD Volume`).
+* **Lưu ý về `<ds>` (Deployment Specification):** Ký hiệu `<ds>` trên palette là đặc tả tham số triển khai (tham số cấu hình), không dùng làm ký hiệu lưu trữ CSDL.
 * **Đường nét liền (Communication Path):** Đường truyền vật lý/mạng giữa các Node (ghi nhãn cổng `HTTPS : 443`, `SSH : 22`, `TCP : 5432`).
 * **Mũi tên nét đứt `..>` (Dependency / Manifest):** Thể hiện sự phụ thuộc hoặc nạp cấu hình (`UI ..> API Client`, `Git pull ..> config`).
 
 ### 6.2. Bảng phân công ký hiệu (Mapping Table) cho hệ thống BrewLite
-| Thành phần hệ thống | Ký hiệu trong Palette | Nhãn hiển thị trên sơ đồ |
+| Thành phần hệ thống | Ký hiệu trong Palette | Cách vẽ \& Nhãn hiển thị trên sơ đồ |
 | :--- | :---: | :--- |
 | **Thiết bị người dùng** | `<<d>>` *(Device)* | `Client Device (Mobile / Desktop)` |
 | **Trình duyệt web** | `<<e>>` *(Execution Env)* | `Web Browser (Chrome / Safari / PWA)` |
-| **Mã nguồn giao diện & API** | **Component** *(2 mấu)* | `User Interface (Next.js)` và `API Client (Fetch/Axios)` |
+| **Mã nguồn giao diện & API** | **Component** *(2 mấu)* | `User Interface (Next.js)` và `API Client (Fetch/Axios)` (lồng trong Browser) |
 | **Máy trạm kỹ sư** | `<<d>>` *(Device)* | `DevOps Workstation (Admin Machine)` |
-| **Công cụ Terminal & Git** | **Component** *(2 mấu)* | `SSH Client (Terminal)` và `Git Client` |
+| **Công cụ Terminal & Git** | **Component** *(2 mấu)* | `SSH Client (Terminal)` và `Git Client` (lồng trong DevOps Station) |
+| **Dịch vụ tên miền DNS** | **Hộp 3D trơn** *(Node)* hoặc **Cloud** | **Khung ngoài:** Node `<<cloud service>> DNS Provider (Cloudflare / Route 53)`<br/>**Bên trong:** Component hoặc Text: `DNS A-Record: brewlite.coffee -> Elastic IP` |
+| **Kho mã nguồn GitHub** | **Hộp 3D trơn** *(Node)* hoặc **Cloud** | **Khung ngoài:** Node `<<cloud service>> GitHub Platform`<br/>**Bên trong:** `<<a>>` (Artifact): `Git Repository (origin/main)` |
+| **Cổng thanh toán giả lập** | **Hộp 3D trơn** *(Node)* | `<<external service>> Mock Payment Gateway (MoMo / VNPay / Visa Webhook)` |
 | **Máy chủ đám mây** | **Hộp 3D trơn** *(Node)* | `AWS EC2 Virtual Machine Instance (Ubuntu 22.04 LTS)`<br/>*[Elastic IP: 13.250.x.x \| Domain: brewlite.coffee]* |
 | **Hệ điều hành máy chủ** | `<<e>>` *(Execution Env)* | `Ubuntu 22.04 LTS` *(khung lồng bên trong EC2)* |
 | **Cổng đón Reverse Proxy** | **Component** *(2 mấu)* | `Nginx Web Server (SSL/TLS 1.3 Termination, Ports 80 & 443)` |
@@ -122,11 +127,8 @@ Tài liệu này dùng làm căn cứ chuẩn mực khi nhóm tự kéo thả tr
 | **Container Frontend** | `<<e>>` *(Execution Env)* | `Container: Frontend (web)` chứa Component `Next.js Node Server [Port 3000]` |
 | **Container Backend** | `<<e>>` *(Execution Env)* | `Container: Backend API (api)` chứa Component `NestJS REST API Service [Port 3001]`, `Health Probe`, `Logger` |
 | **Container CSDL** | `<<e>>` *(Execution Env)* | `Container: Database (db)` chứa Component `PostgreSQL 16 Engine [Port 5432]` |
-| **Ổ đĩa lưu trữ ngoài** | **Storage / Database** | `Mounted AWS EBS SSD Volume (/var/lib/postgresql/data - Persistent)` |
-| **Tệp cấu hình & Biến MT** | `<<a>>` *(Artifact)* | `Configuration & Secrets (.env, nginx.conf, docker-compose.yml)` |
-| **Dịch vụ tên miền DNS** | **Cloud / Node** | `DNS A-Record (brewlite.coffee -> Elastic IP)` |
-| **Kho mã nguồn Git** | **Cloud / Node** | `GitHub Remote Repository (origin/main)` |
-| **Cổng thanh toán giả lập** | **Node / Component** | `Mock Payment Gateway (MoMo / VNPay / Visa Webhook)` |
+| **Ổ đĩa lưu trữ ngoài** | **Hình trụ Database** *(Cylinder)* | Lồng dưới PostgreSQL: `Mounted AWS EBS SSD Volume (/var/lib/postgresql/data - Persistent)` |
+| **Tệp cấu hình & Biến MT** | `<<a>>` *(Artifact)* | `<<a>> Configuration & Secrets (.env, nginx.conf, docker-compose.yml)` |
 
 ### 6.3. Bố cục 3 tầng không bị đè chéo dây nối (3-Tier Layout)
 ```plaintext
