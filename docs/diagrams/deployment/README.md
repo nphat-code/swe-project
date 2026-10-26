@@ -91,3 +91,91 @@ Toàn bộ hệ thống chạy khép kín trong mạng nội bộ Docker:
    - Mở tệp [`deployment-diagram.puml`](deployment-diagram.puml) và nhấn tổ hợp phím `Alt + D` để xem bản vẽ trực quan.
 2. **Xuất sang ảnh chất lượng cao (PNG / SVG):**
    - Click chuột phải vào mã nguồn `deployment-diagram.puml` $\rightarrow$ Chọn `PlantUML: Export Current Diagram` $\rightarrow$ Chọn định dạng `png` hoặc `svg` để đính kèm vào báo cáo Word/PDF.
+
+---
+
+## 6. HƯỚNG DẪN TỰ VẼ TRÊN VISUAL PARADIGM ONLINE (BẢNG KÝ HIỆU & BỐ CỤC)
+
+Tài liệu này dùng làm căn cứ chuẩn mực khi nhóm tự kéo thả trên giao diện vẽ trực quan (Visual Paradigm Online / Draw.io).
+
+### 6.1. Bảng tra cứu ký hiệu chuẩn UML 2.0 (Toolbox Palette)
+* **`<<d>>` (Device):** Khối hộp 3D có nhãn `<<device>>`. Dùng đại diện cho thiết bị phần cứng vật lý (Client Smartphone/Laptop, DevOps PC).
+* **Hộp 3D trơn (Node):** Dùng cho máy chủ ảo tổng thể đám mây (`AWS EC2 Virtual Machine Instance`).
+* **`<<e>>` (Execution Environment):** Khối hộp 3D có nhãn `<<execution environment>>`. Dùng cho hệ điều hành, runtime hoặc container (`Ubuntu 22.04 LTS`, `Docker Engine`, các `Docker Containers`).
+* **Component (Hình chữ nhật 2 mấu bên trái):** Thành phần phần mềm thực thi độc lập (`Next.js Server`, `NestJS API`, `Nginx Server`, `PostgreSQL 16 Engine`).
+* **`<<a>>` (Artifact):** Biểu tượng trang giấy gấp góc có chữ `<<a>>`. Dùng cho tệp cấu hình triển khai (`.env`, `docker-compose.yml`, `nginx.conf`).
+* **Đường nét liền (Communication Path):** Đường truyền vật lý/mạng giữa các Node (ghi nhãn cổng `HTTPS : 443`, `SSH : 22`, `TCP : 5432`).
+* **Mũi tên nét đứt `..>` (Dependency / Manifest):** Thể hiện sự phụ thuộc hoặc nạp cấu hình (`UI ..> API Client`, `Git pull ..> config`).
+
+### 6.2. Bảng phân công ký hiệu (Mapping Table) cho hệ thống BrewLite
+| Thành phần hệ thống | Ký hiệu trong Palette | Nhãn hiển thị trên sơ đồ |
+| :--- | :---: | :--- |
+| **Thiết bị người dùng** | `<<d>>` *(Device)* | `Client Device (Mobile / Desktop)` |
+| **Trình duyệt web** | `<<e>>` *(Execution Env)* | `Web Browser (Chrome / Safari / PWA)` |
+| **Mã nguồn giao diện & API** | **Component** *(2 mấu)* | `User Interface (Next.js)` và `API Client (Fetch/Axios)` |
+| **Máy trạm kỹ sư** | `<<d>>` *(Device)* | `DevOps Workstation (Admin Machine)` |
+| **Công cụ Terminal & Git** | **Component** *(2 mấu)* | `SSH Client (Terminal)` và `Git Client` |
+| **Máy chủ đám mây** | **Hộp 3D trơn** *(Node)* | `AWS EC2 Virtual Machine Instance (Ubuntu 22.04 LTS)`<br/>*[Elastic IP: 13.250.x.x \| Domain: brewlite.coffee]* |
+| **Hệ điều hành máy chủ** | `<<e>>` *(Execution Env)* | `Ubuntu 22.04 LTS` *(khung lồng bên trong EC2)* |
+| **Cổng đón Reverse Proxy** | **Component** *(2 mấu)* | `Nginx Web Server (SSL/TLS 1.3 Termination, Ports 80 & 443)` |
+| **Engine chạy Container** | `<<e>>` *(Execution Env)* | `Docker Container Runtime Engine (Docker Compose)` |
+| **Container Frontend** | `<<e>>` *(Execution Env)* | `Container: Frontend (web)` chứa Component `Next.js Node Server [Port 3000]` |
+| **Container Backend** | `<<e>>` *(Execution Env)* | `Container: Backend API (api)` chứa Component `NestJS REST API Service [Port 3001]`, `Health Probe`, `Logger` |
+| **Container CSDL** | `<<e>>` *(Execution Env)* | `Container: Database (db)` chứa Component `PostgreSQL 16 Engine [Port 5432]` |
+| **Ổ đĩa lưu trữ ngoài** | **Storage / Database** | `Mounted AWS EBS SSD Volume (/var/lib/postgresql/data - Persistent)` |
+| **Tệp cấu hình & Biến MT** | `<<a>>` *(Artifact)* | `Configuration & Secrets (.env, nginx.conf, docker-compose.yml)` |
+| **Dịch vụ tên miền DNS** | **Cloud / Node** | `DNS A-Record (brewlite.coffee -> Elastic IP)` |
+| **Kho mã nguồn Git** | **Cloud / Node** | `GitHub Remote Repository (origin/main)` |
+| **Cổng thanh toán giả lập** | **Node / Component** | `Mock Payment Gateway (MoMo / VNPay / Visa Webhook)` |
+
+### 6.3. Bố cục 3 tầng không bị đè chéo dây nối (3-Tier Layout)
+```plaintext
++-------------------------------------------------------------------------------------------------+
+| [TẦNG 1: THIẾT BỊ ĐẦU CUỐI & QUẢN TRỊ]                                                          |
+|  +--------------------------------+                         +---------------------------------+ |
+|  | <<device>> Client Device       |                         | <<device>> DevOps Workstation   | |
+|  |  +-- <<e>> Web Browser ------+ |                         |  - Terminal SSH Client (Port 22)| |
+|  |  |  - User Interface (UI)    | |                         |  - Git CLI                      | |
+|  |  |  - API Client             | |                         +---------------------------------+ |
+|  |  +---------------------------+ |                                          |                  |
+|  +--------------------------------+                                          |                  |
++------------------------------------------------------------------------------|------------------+
+                               |                                               |
+                               v                                               v
++-------------------------------------------------------------------------------------------------+
+| [TẦNG 2: MẠNG TRUNG GIAN & NGOẠI VI]                                                            |
+|  (Cloud) DNS: brewlite.coffee -> Elastic IP             (Cloud) GitHub Repository (origin/main) |
++-------------------------------------------------------------------------------------------------+
+                               |                                               |
+                               v                                               v
++-------------------------------------------------------------------------------------------------+
+| [TẦNG 3: MÁY CHỦ AWS EC2 UBUNTU]                                                                |
+|  +--------------------------------------------------------------------------------------------+ |
+|  | Node: AWS EC2 Instance [Elastic Public IP: 13.250.x.x | Domain: brewlite.coffee]           | |
+|  |  +-- <<e>> Ubuntu 22.04 LTS -------------------------------------------------------------+ | |
+|  |  |  - OpenSSH Server (sshd) [Port 22] <------------------- [Nối từ DevOps SSH Client]     | | |
+|  |  |  - Git Runner [git pull] <----------------------------- [Nối từ GitHub Repository]     | | |
+|  |  |  - Configuration Artifact (.env, nginx.conf)                                         | | |
+|  |  |  - Nginx Reverse Proxy (Ports 80 & 443) <------------- [Nối từ Client HTTPS]          | | |
+|  |  |                                                                                       | | |
+|  |  |  +-- <<e>> Docker Compose Runtime Engine -------------------------------------------+ | | |
+|  |  |  |  +---------------------+  +----------------------+  +-------------------------+  | | | |
+|  |  |  |  | <<e>> Container web |  | <<e>> Container api  |  | <<e>> Container db      |  | | | |
+|  |  |  |  |  - Next.js (:3000)  |  |  - NestJS API (:3001)|  |  - PostgreSQL (:5432)   |  | | | |
+|  |  |  |  |                     |  |  - Health Probe      |  |  - Mounted EBS SSD Vol  |  | | | |
+|  |  |  |  +---------------------+  +----------------------+  +-------------------------+  | | | |
+|  |  |  +----------------------------------------------------------------------------------+ | | |
+|  |  +---------------------------------------------------------------------------------------+ | |
+|  +--------------------------------------------------------------------------------------------+ |
++-------------------------------------------------------------------------------------------------+
+```
+
+### 6.4. Quy tắc kẻ dây nối (Connectors) chuyên nghiệp
+1. **Dây HTTPS (Port 443):** Nối từ `Client Device` $\rightarrow$ xuyên qua `DNS/Internet` $\rightarrow$ cắm vào đỉnh `Nginx Reverse Proxy`. Ghi nhãn: `HTTPS : 443 (Pages & API)`.
+2. **Dây SSH (Port 22):** Nối từ `DevOps Workstation` (bên phải) $\rightarrow$ cắm vào `OpenSSH (sshd)`. Ghi nhãn: `SSH : 22 (ssh -i key.pem ubuntu@IP)`.
+3. **Dây Git Sync:** Nối từ `DevOps Git` $\rightarrow$ `GitHub Repo` $\rightarrow$ `Server Git Runner`. Ghi nhãn: `git push` và `git pull`.
+4. **Dây nội bộ Docker:**
+   - Từ `Nginx` rẽ 2 nhánh: xuống `Container web (HTTP : 3000)` và `Container api (HTTP : 3001)`.
+   - Từ `NestJS API` nối ngang sang `PostgreSQL (TCP : 5432)`.
+   - Từ `NestJS API` nối ra ngoài sang `Mock Payment Gateway (HTTPS Outbound)`.
+
