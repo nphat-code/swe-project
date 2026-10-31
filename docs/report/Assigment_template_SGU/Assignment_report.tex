@@ -1,6 +1,11 @@
 \documentclass[a4paper,12pt]{article}
-\usepackage{fontspec}
-\usepackage[vietnamese]{babel}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[utf8]{vietnam}
+\else
+  \usepackage{fontspec}
+  \usepackage[vietnamese]{babel}
+\fi
 \usepackage{a4wide,amssymb,latexsym,multicol,array,hhline,fancyhdr}
 \usepackage{booktabs}
 \usepackage{amsmath}
