@@ -64,10 +64,10 @@ Theo yêu cầu bắt buộc của Task 2.1 trong đề bài, sơ đồ mô hìn
 ## 4. CƠ CHẾ XỬ LÝ SONG SONG (FORK / JOIN) & CỖ MÁY TRẠNG THÁI
 
 Sau khi đơn hàng đạt trạng thái `PAID`, sơ đồ kích hoạt thanh phân nhánh song song **Fork** chia thành 2 luồng độc lập:
-* **Luồng Khách hàng:** Client xóa giỏ hàng, hiển thị Modal xác nhận kèm Mã lấy nước to rõ (mã đơn hàng), điểm tích lũy và thời gian dự kiến (5-7 phút). Khách hàng di chuyển đến quầy chờ.
-* **Luồng Quầy Barista:** Màn hình vận hành của nhân viên Barista tức thì nhận thông báo đơn hàng mới. Barista bấm nhận đơn (`PREPARING`), tiến hành pha chế đúng Size/Topping, khi xong bấm chuyển sang `READY` và gọi mã tại quầy.
+* **Luồng Dữ liệu & Khách hàng:** Backend tự động tích lũy điểm thưởng thành viên (`total / 10000`), Giao diện Web dọn sạch giỏ hàng và lưu lịch sử đơn. Khách hàng nhận màn hình xác nhận đơn thành công và theo dõi trạng thái tại chỗ.
+* **Luồng Quầy Barista:** Màn hình KDS của Barista tức thì nhận thông báo đơn mới. Barista bấm nhận đơn (`PREPARING`), tiến hành pha chế đúng Size/Topping, khi xong bấm chuyển sang `READY` và kích hoạt thông báo / gọi mã đơn tại quầy.
 
-Tại thanh kết hợp **Join**, hai luồng đồng bộ gặp nhau: Khách hàng đối chiếu mã đơn hàng, Barista trao đồ uống và xác nhận hoàn tất $\rightarrow$ Đơn hàng chuyển sang trạng thái kết thúc `COMPLETED`.
+Tại thanh kết hợp **Join**, hai luồng đồng bộ gặp nhau: Giao diện Web nhận tín hiệu WebSocket hiển thị thông báo món đã sẵn sàng, Khách hàng di chuyển đến quầy đối chiếu mã đơn, Barista trao đồ uống và xác nhận hoàn tất $\rightarrow$ Đơn hàng chuyển sang trạng thái kết thúc `COMPLETED`.
 
 ---
 

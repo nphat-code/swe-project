@@ -108,27 +108,29 @@ else ([Khóa Idempotent mới])
         :Phản hồi SUCCESS kèm transactionId;
         |Backend API & CSDL\n(NestJS & PostgreSQL)|
         :Database Transaction:\nChuyển Order sang PAID & Trừ tồn kho;
-        :Tự động tích lũy điểm thưởng:\ntotal / 10000;
     endif
 endif
 
 |Backend API & CSDL\n(NestJS & PostgreSQL)|
 fork
+    :Tự động tích lũy điểm thưởng:\ntotal / 10000;
     |Giao diện Web\n(Next.js Client)|
     :Nhận 200 OK & Dọn sạch giỏ hàng\n(Lưu đơn vào Lịch sử đơn hàng);
     |Khách hàng\n(Customer / Member)|
-    :Màn hình xác nhận: Hiển thị mã đơn hàng\n& Thời gian chờ 5-7 phút;
-    :Di chuyển đến quầy nhận đồ uống;
+    :Màn hình xác nhận đơn thành công\n& Chờ thông báo tại chỗ;
 fork again
     |Quầy pha chế\n(Nhân viên Barista)|
     :Màn hình quầy nhận thông báo đơn mới;
     :Bấm nhận đơn: Trạng thái sang PREPARING;
     :Pha chế đồ uống theo đúng Size, Topping & Ghi chú;
-    :Pha chế xong: Trạng thái sang READY\n& Gọi mã đơn hàng tại quầy;
+    :Pha chế xong: Trạng thái sang READY\n& Kích hoạt thông báo / gọi mã đơn;
 end fork
 
+|Giao diện Web\n(Next.js Client)|
+:Nhận tín hiệu WebSocket:\nHiển thị thông báo món đã sẵn sàng;
+
 |Khách hàng\n(Customer / Member)|
-:Đối chiếu mã đơn hàng với nhân viên Barista;
+:Di chuyển đến quầy & Đối chiếu mã đơn;
 
 |Quầy pha chế\n(Nhân viên Barista)|
 :Trao đồ uống cho khách & Bấm hoàn tất;
