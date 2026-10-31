@@ -3,7 +3,8 @@
 > **Căn cứ đề bài:** Mục 5.2 (Task 3.2 - 2.0 điểm) trong tệp đặc tả gốc [`docs/DE_BAI_ASSIGNMENT_2_GOC.md`](../../docs/DE_BAI_ASSIGNMENT_2_GOC.md).  
 > **Căn cứ chỉ dẫn giảng viên:** Ghi chú thực thi hạ tầng đám mây tại [`notes`](../../../notes) *(AWS EC2, Ubuntu OS, SSH login qua IP, Git pull, gán tên miền & IP tĩnh)*.  
 > **Ngôn ngữ mô hình hóa:** PlantUML / UML 2.0 (Monochrome, Black & White).  
-> **Tệp mã nguồn sơ đồ chính thức:** [`deployment-diagram.puml`](deployment-diagram.puml)
+> **Tệp mã nguồn sơ đồ chính thức:** [`deployment-diagram.puml`](deployment-diagram.puml)  
+> **Tệp xuất đồ họa vector (SVG đã xóa watermark logo):** [`deployment-diagram.svg`](deployment-diagram.svg) / [`Deployment Diagram-Page-1.svg`](Deployment%20Diagram-Page-1.svg)
 
 ---
 
