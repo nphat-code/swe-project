@@ -4,7 +4,7 @@
 > **Căn cứ chỉ dẫn giảng viên:** Ghi chú thực thi hạ tầng đám mây tại [`notes`](../../../notes) *(AWS EC2, Ubuntu OS, SSH login qua IP, Git pull, gán tên miền & IP tĩnh)*.  
 > **Ngôn ngữ mô hình hóa:** PlantUML / UML 2.0 (Monochrome, Black & White).  
 > **Tệp mã nguồn sơ đồ chính thức:** [`deployment-diagram.puml`](deployment-diagram.puml)  
-> **Tệp xuất đồ họa vector (SVG đã xóa watermark logo):** [`deployment-diagram.svg`](deployment-diagram.svg) / [`Deployment Diagram-Page-1.svg`](Deployment%20Diagram-Page-1.svg)
+> **Tệp ảnh sơ đồ chất lượng cao (PNG không logo):** [`deployment-diagram.png`](deployment-diagram.png)
 
 ---
 
@@ -28,7 +28,9 @@ Sơ đồ Triển khai (Deployment Diagram) thể hiện kiến trúc phần c�
 
 ---
 
-## 2. NỘI DUNG MÃ NGUỒN SƠ ĐỒ PLANTUML
+## 2. NỘI DUNG SƠ ĐỒ TRIỂN KHAI & MÃ NGUỒN PLANTUML
+
+![UML Deployment Diagram](deployment-diagram.png)
 
 Mã nguồn sơ đồ được lưu trữ độc lập tại tệp [`deployment-diagram.puml`](deployment-diagram.puml).
 

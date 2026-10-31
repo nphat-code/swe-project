@@ -130,7 +130,7 @@
       * `docs/architecture/adr/005-cloud-deployment-strategy.md`: Quyết định nền tảng triển khai Cloud.
 
 - [ ] **Task 3.2: Sơ đồ Triển khai (Deployment Diagram)**
-  * **File dự kiến:** `docs/deployment.md`, `docs/diagrams/deployment/deployment-diagram.puml` & `.svg`
+  * **File dự kiến:** `docs/deployment.md`, `docs/diagrams/deployment/deployment-diagram.puml` & `.png`
   * **Tiêu chí bắt buộc:**
     * Sơ đồ UML Deployment Diagram cho môi trường Production thực tế.
     * Thể hiện: Thiết bị người dùng (Browser/PWA), Dịch vụ CDN phục vụ Next.js, Container chạy NestJS API, PostgreSQL có persistent storage, Container Registry.
