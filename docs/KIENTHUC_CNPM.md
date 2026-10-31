@@ -111,8 +111,8 @@ Quy tắc đặt tên commit giúp lịch sử Git rõ ràng, chuyên nghiệp:
 | **Product Owner (PO)** | Người quyết định yêu cầu sản phẩm và độ ưu tiên các tính năng. |
 | **Scrum Master (SM)** | Người điều phối, đảm bảo nhóm tuân thủ đúng quy trình Scrum và tháo gỡ rào cản. |
 | **Development Team** | Các thành viên trực tiếp thiết kế, lập trình và kiểm thử. |
-| **Product Backlog** | Danh sách 10 Task của dự án BrewLite, sắp xếp theo thứ tự giá trị nghiệp vụ. |
-| **Sprint Backlog** | Các Task được chọn để hoàn thành trong 1 Sprint (Sprint 1 gồm Task 1, 2, 3, 4). |
+| **Product Backlog** | Danh sách các hạng mục kỹ thuật (Product Backlog Items - PBI) của dự án BrewLite, ánh xạ trực tiếp với 12 yêu cầu chức năng (`FR-01` $\rightarrow$ `FR-12`). |
+| **Sprint Backlog** | Các hạng mục kỹ thuật được cam kết hoàn thành trong 1 Sprint (Sprint 1: Nền tảng & MVP Menu; Sprint 2: Luồng Checkout End-to-End, Testing & CD). |
 | **Increment** | Bản sản phẩm tăng trưởng chạy được thực tế sau mỗi Sprint. |
 | **Definition of Done (DoD)** | Tiêu chuẩn để nghiệm thu một task: Code chạy được, không lỗi build, có commit Git, có validation, có test. |
 | **Burndown Chart** | Biểu đồ theo dõi số lượng Story Points còn lại giảm dần theo từng ngày làm việc. |

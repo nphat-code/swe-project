@@ -17,9 +17,9 @@
   * 📋 [Task 1.2: Danh mục yêu cầu FR/NFR & Sơ đồ Use Case tổng quát](docs/requirements/system-requirements-matrix.md)
   * 📋 [Task 1.3: Đặc tả Use Case trọng tâm (Đặt hàng & Thanh toán)](docs/requirements/core-use-case-specification.md)
 * 📊 **Tài liệu Task 2 — Mô hình hóa Hệ thống (2.0đ):**
-  * 🔄 [Sơ đồ Hoạt động (Activity Diagram)](docs/diagrams/activity/activity-flow.puml) *(Swimlane, Fork/Join, Không Yes/No)*
-  * ⏱️ Sơ đồ Tuần tự (Sequence Diagram) — `docs/diagrams/sequence/sequence-checkout.puml`
-  * 🏛️ Sơ đồ Lớp Domain (Class Diagram) — `docs/diagrams/class/class-domain.puml`
+  * 🔄 [Sơ đồ Hoạt động (Activity Diagram)](docs/diagrams/activity/README.md) *(Swimlane, Fork/Join, Không Yes/No)*
+  * ⏱️ [Sơ đồ Tuần tự (Sequence Diagram)](docs/diagrams/sequence/README.md) *(5 Lifelines, alt/opt/loop, Idempotent)*
+  * 🏛️ [Sơ đồ Lớp Domain (Class Diagram)](docs/diagrams/class/README.md) *(7 Lớp Domain, Multiplicity, Enums)*
 * 🏗️ **Tài liệu Task 3 — Thiết kế Kiến trúc (2.0đ):**
   * 🏛️ [Tài liệu Kiến trúc C4 / Phân lớp](docs/architecture/architecture-description.md) & Các bản ghi ADR (`docs/architecture/adr/`)
   * ☁️ [Sơ đồ Triển khai Production (Deployment Diagram)](docs/diagrams/deployment/README.md)
