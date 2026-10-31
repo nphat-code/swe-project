@@ -5,7 +5,7 @@
 > **Môn học:** Công nghệ Phần mềm (Software Engineering) — ĐH Sài Gòn  
 > **Dự án:** BrewLite — Hệ thống đặt đồ uống không dùng tiền mặt (Cashless Coffee Ordering System)  
 > **Căn cứ pháp lý & kỹ thuật:** [Yêu cầu Đề Bài Gốc Assignment 2 (Single Source of Truth)](docs/DE_BAI_ASSIGNMENT_2_GOC.md)  
-> **Trạng thái tổng thể:** 🟢 **Task 1: ĐÃ HOÀN THÀNH (2.0/2.0 Điểm)** | 🟡 **Task 2: ĐANG THỰC HIỆN (0.0/2.0 Điểm)**
+> **Trạng thái tổng thể:** 🟢 **Task 1, 2, 3: ĐÃ HOÀN THÀNH (6.0/10.0 Điểm)** | 🟡 **Task 4: ĐANG THỰC HIỆN (0.0/2.0 Điểm)**
 
 ---
 
@@ -34,7 +34,7 @@
 | **Task 1** | **Khai thác & đặc tả yêu cầu** | `context-and-scope.md`, `system-requirements-matrix.md`, `core-use-case-specification.md`, `use-case-system.png/mmd`, `use-case-checkout.mmd` | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
 | **Task 2** | **Mô hình hóa hệ thống** | Activity Diagram (`.puml` / `.png`), Sequence Diagram (`.mmd` / `.png`), Domain Class Diagram (`.mmd` / `.drawio.png`) | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
 | **Task 3** | **Thiết kế kiến trúc & Triển khai** | `docs/architecture/architecture-description.md`, thư mục `docs/architecture/adr/`, `docs/deployment.md` | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
-| **Task 4** | **Triển khai Sprint 1** | Chuẩn hóa repo, MVP Menu duyệt đồ uống (Next.js + NestJS), `.github/workflows/ci.yml` | **2.0** | ⏳ Chờ thực hiện | **0%** |
+| **Task 4** | **Triển khai Sprint 1** | Chuẩn hóa repo, MVP Menu duyệt đồ uống (Next.js + NestJS), `.github/workflows/ci.yml` | **2.0** | 🟡 **ĐANG THỰC HIỆN** | **50%** |
 | **Task 5** | **Triển khai Sprint 2 & CI/CD** | MVP End-to-End, Bộ Test (Unit/Integration/E2E), `.github/workflows/cd.yml`, Triển khai Production HTTPS | **2.0** | ⏳ Chờ Task 4 | **0%** |
 | **TỔNG** | **TOÀN BỘ ASSIGNMENT 2** | **Hệ thống chạy thực tế, mã nguồn, tài liệu và pipeline CI/CD** | **10.0** | 🟢 **ĐÃ ĐẠT 6.0/10.0** | **60%** |
 
@@ -140,19 +140,20 @@
 
 ---
 
-### ⏳ TASK 4: TRIỂN KHAI SPRINT 1 (0.0 / 2.0 Điểm)
+### 🟡 TASK 4: TRIỂN KHAI SPRINT 1 (1.0 / 2.0 Điểm)
 
 > **Sprint Goal:** Tạo nền tảng kỹ thuật, tài liệu có kiểm soát phiên bản và một MVP đầu tiên chạy được cho luồng xem menu.
 
-- [ ] **Task 4.1: Chuẩn hóa Repository & Quy trình Agile**
+- [x] **Task 4.1: Chuẩn hóa Repository & Quy trình Agile**
   * Cấu trúc thư mục Monorepo chuẩn (`frontend/`, `backend/`, `docs/`, `tests/`).
-  * Chiến lược phân nhánh Git: `main` (Release), `develop` (Integration), `feature/*`.
+  * [`docs/sprint/branching-strategy.md`](docs/sprint/branching-strategy.md): Chiến lược phân nhánh Git (`main`, `develop`, `feature/*`), PR checklist & quy chuẩn Conventional Commits.
+  * [`docs/sprint/definition-of-done.md`](docs/sprint/definition-of-done.md): Thỏa thuận kỹ thuật 3 tầng (Story level, Sprint level, Release level).
+  * [`docs/sprint/product-backlog.md`](docs/sprint/product-backlog.md): Product Backlog 6 Epics, 15 User Stories, Fibonacci story points & ma trận FR traceability.
+  * [`docs/sprint/sprint-1-backlog.md`](docs/sprint/sprint-1-backlog.md): Sprint 1 Backlog 5 hạng mục (`SP1-01` -> `SP1-05`), Kanban board, Acceptance Criteria & Sprint Retrospective.
   * `README.md` cập nhật theo Assignment 2, `.gitignore` chặt chẽ, `.env.example`.
-  * Issue Board / Product Backlog theo dõi Sprint 1 và Sprint 2 trên GitHub Project.
-  * Quy ước commit (Conventional Commits) và Definition of Done (DoD).
-- [ ] **Task 4.2: Quản lý Tài liệu**
-  * Đưa toàn bộ tạo phẩm Task 1–3 vào thư mục `docs/`.
-  * Mọi thay đổi yêu cầu, sơ đồ phải đi qua Git commit/pull request và ghi rõ lý do.
+- [x] **Task 4.2: Quản lý Tài liệu**
+  * Toàn bộ tạo phẩm Task 1–3 lưu trữ bài bản trong thư mục `docs/` (`docs/requirements/`, `docs/diagrams/`, `docs/architecture/`, `docs/traceability-matrix.md`, `docs/deployment.md`).
+  * Mọi thay đổi yêu cầu, sơ đồ đi qua Git commit/pull request và ghi rõ lý do.
 - [ ] **Task 4.3: Hiện thực MVP Sprint 1 (Menu Browse Flow)**
   * Backend API: `GET /products` (lọc theo danh mục), `GET /products/:id`, `GET /products/categories`.
   * Frontend Web: Màn hình Menu Next.js Mobile-first, hiển thị Tabs danh mục, lưới sản phẩm sắc nét, giá VND (`35.000đ`).

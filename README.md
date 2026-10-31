@@ -23,6 +23,11 @@
 * 🏗️ **Tài liệu Task 3 — Thiết kế Kiến trúc (2.0đ):**
   * 🏛️ [Tài liệu Kiến trúc C4 / Phân lớp](docs/architecture/architecture-description.md) & Các bản ghi ADR (`docs/architecture/adr/`)
   * ☁️ [Sơ đồ Triển khai Production (Deployment Diagram)](docs/diagrams/deployment/README.md)
+* 🏃 **Tài liệu Task 4 — Triển khai Sprint 1 (2.0đ):**
+  * 🌿 [Chiến lược phân nhánh Git & Quy trình Pull Request](docs/sprint/branching-strategy.md)
+  * 🏁 [Định nghĩa Hoàn thành (Definition of Done - DoD)](docs/sprint/definition-of-done.md)
+  * 📋 [Product Backlog toàn diện (Sprint 1 & Sprint 2)](docs/sprint/product-backlog.md)
+  * 🏃 [Sprint 1 Backlog & Kế hoạch Thực thi](docs/sprint/sprint-1-backlog.md)
 * 🔗 **Mục 8 — Ma trận Truy vết Bắt buộc:**
   * 📊 [Ma trận Truy vết Yêu cầu (Traceability Matrix)](docs/traceability-matrix.md)
 
@@ -113,9 +118,9 @@ npm run dev:frontend
 | Task | Tên tác vụ | Phân bổ | Điểm | Trạng thái |
 | :---: | :--- | :---: | :---: | :---: |
 | **Task 1** | **Khai thác và đặc tả yêu cầu** (Context, FR/NFR, Core Use Case Spec) | Tuần 1 | **2.0** | 🟢 **Đã xong** |
-| **Task 2** | **Mô hình hóa hệ thống** (Activity, Sequence, Class Diagram) | Tuần 2 | **2.0** | 🟡 **Đang làm** |
-| **Task 3** | **Thiết kế kiến trúc** (C4/Layered, ADRs, Deployment Diagram) | Tuần 3 | **2.0** | ⏳ Chờ Task 2 |
-| **Task 4** | **Triển khai Sprint 1** (MVP Menu đồ uống, Seed DB, CI Pipeline) | Sprint 1 | **2.0** | ⏳ Chờ Task 3 |
+| **Task 2** | **Mô hình hóa hệ thống** (Activity, Sequence, Class Diagram) | Tuần 2 | **2.0** | 🟢 **Đã xong** |
+| **Task 3** | **Thiết kế kiến trúc** (C4/Layered, ADRs, Deployment Diagram) | Tuần 3 | **2.0** | 🟢 **Đã xong** |
+| **Task 4** | **Triển khai Sprint 1** (MVP Menu đồ uống, Seed DB, CI Pipeline) | Sprint 1 | **2.0** | 🟡 **Đang thực hiện** |
 | **Task 5** | **Triển khai Sprint 2, CI/CD & Delivery** (End-to-End, Tests, CD, Cloud Production) | Sprint 2 | **2.0** | ⏳ Chờ Task 4 |
 
 ---
