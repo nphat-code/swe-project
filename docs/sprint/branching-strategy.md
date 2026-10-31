@@ -50,7 +50,7 @@ gitGraph
 
 | Tiền tố | Cú pháp đặt tên | Nhánh gốc | Nhánh đích | Mục đích |
 | :--- | :--- | :---: | :---: | :--- |
-| **`feature/`** | `feature/<tên-tính-năng>` | `develop` | `develop` | Phát triển các tính năng theo User Story trong Sprint (ví dụ: `feature/menu-api`, `feature/cart-checkout`). |
+| **`feature/`** | `feature/<tên-tính-năng>` | `develop` | `develop` | Phát triển các tính năng theo Yêu cầu chức năng (FR) trong Sprint (ví dụ: `feature/menu-api`, `feature/cart-checkout`). |
 | **`bugfix/`** | `bugfix/<mô-tả-lỗi>` | `develop` | `develop` | Sửa chữa các lỗi phát hiện trong quá trình kiểm thử nội bộ Sprint. |
 | **`hotfix/`** | `hotfix/<phiên-bản-lỗi>` | `main` | `main` & `develop` | Xử lý khẩn cấp lỗi nghiêm trọng phát sinh trên môi trường Production. |
 
@@ -63,7 +63,7 @@ Mọi commit bắt buộc tuân thủ chuẩn **Conventional Commits 1.0.0**:
 $$\text{<type>(\text{scope}): <mô tả ngắn bằng chữ thường, không dấu chấm cuối>}$$
 
 ### 2.1 Các Type hợp lệ:
-* **`feat`:** Thêm một tính năng mới cho ứng dụng (User Story).
+* **`feat`:** Thêm một tính năng mới cho ứng dụng (Yêu cầu chức năng FR).
 * **`fix`:** Sửa lỗi mã nguồn hoặc logic nghiệp vụ.
 * **`docs`:** Thêm mới hoặc chỉnh sửa tài liệu (`README.md`, tài liệu `docs/`, LaTeX report).
 * **`style`:** Thay đổi định dạng mã không làm thay đổi ngữ nghĩa code (Prettier, khoảng trắng, dấu phẩy).

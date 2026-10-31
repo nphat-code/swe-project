@@ -21,7 +21,7 @@ Hiện thực và bàn giao thành công phiên bản khả dụng đầu tiên 
 
 ## 2. BẢNG KANBAN SPRINT 1 (SPRINT 1 BACKLOG ITEMS)
 
-| Mã Task | Hạng mục công việc (User Story / Task) | Gán cho | Story Points | Trạng thái | Mã FR / NFR |
+| Mã Task | Hạng mục kỹ thuật / Task | Gán cho | Story Points | Trạng thái | Mã FR / NFR |
 | :---: | :--- | :---: | :---: | :---: | :---: |
 | **SP1-01** | Thiết lập cấu trúc Monorepo, Docker Compose & Prisma schema | Backend | 5 SP | 🟢 **DONE** | `FR-12` |
 | **SP1-02** | Hiện thực Products API (`GET /products`, `GET /products/:id`, `categories`) | Backend | 3 SP | 🟢 **DONE** | `FR-01` |

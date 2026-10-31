@@ -8,7 +8,7 @@
 
 ## 1. MỤC TIÊU & Ý NGHĨA
 
-Định nghĩa hoàn thành (Definition of Done - DoD) là một thỏa thuận kỹ thuật minh bạch giữa toàn bộ thành viên trong nhóm phát triển. Một tính năng, một User Story hoặc một phiên bản Sprint chỉ được công nhận là **Hoàn thành (Done)** khi đáp ứng đầy đủ tất cả các tiêu chí định lượng bên dưới.
+Định nghĩa hoàn thành (Definition of Done - DoD) là một thỏa thuận kỹ thuật minh bạch giữa toàn bộ thành viên trong nhóm phát triển. Một tính năng, một hạng mục công việc (Backlog Item) hoặc một phiên bản Sprint chỉ được công nhận là **Hoàn thành (Done)** khi đáp ứng đầy đủ tất cả các tiêu chí định lượng bên dưới.
 
 Không chấp nhận bất kỳ mã nguồn nào ở trạng thái "gần xong", "chạy được trên máy cá nhân nhưng lỗi trên CI", hoặc "thiếu kiểm thử tự động".
 
@@ -16,9 +16,9 @@ Không chấp nhận bất kỳ mã nguồn nào ở trạng thái "gần xong",
 
 ## 2. TIÊU CHUẨN HOÀN THÀNH Ở 3 CẤP ĐỘ
 
-### 2.1 Cấp độ 1: User Story / Feature Level (Mức Tính năng cốt lõi)
+### 2.1 Cấp độ 1: Backlog Item / Feature Level (Mức Tính năng kỹ thuật FR)
 
-Mỗi User Story được gắn trạng thái **DONE** khi đáp ứng toàn bộ các điều kiện:
+Mỗi Hạng mục tính năng (PBI / FR) được gắn trạng thái **DONE** khi đáp ứng toàn bộ các điều kiện:
 
 - [ ] **Hiện thực chức năng:** Mã nguồn hiện thực chính xác các tiêu chí chấp nhận (Acceptance Criteria) trong bản đặc tả Use Case và SRS.
 - [ ] **Tuân thủ quy tắc viết mã ([`AGENTS.md`](../../AGENTS.md)):**
