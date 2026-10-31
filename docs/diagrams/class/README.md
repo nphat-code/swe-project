@@ -3,8 +3,10 @@
 > **Căn cứ đề bài:** Mục 4.3 (Task 2.3 - 2.0 điểm) trong tệp đặc tả gốc [`docs/DE_BAI_ASSIGNMENT_2_GOC.md`](../../docs/DE_BAI_ASSIGNMENT_2_GOC.md).  
 > **Tiêu chí nghiệm thu:** Sơ đồ mức domain mô hình hóa tối thiểu 7 thực thể: `User`, `Product`, `Order`, `OrderItem`, `Payment`, `Promotion`, `LoyaltyTransaction` cùng đầy đủ thuộc tính, kiểu dữ liệu, quan hệ, multiplicity và enum trạng thái; đảm bảo không mâu thuẫn với SRS và Sequence Diagram.  
 > **Tệp mã nguồn Mermaid:** [`class-domain.mmd`](class-domain.mmd)  
-> **Tệp xuất đồ họa vector (SVG):** [`class-domain.svg`](class-domain.svg) | [`ClassDiagram.drawio.svg`](ClassDiagram.drawio.svg)  
-> **Tệp ảnh chất lượng cao (PNG):** [`class-domain.png`](class-domain.png) | [`ClassDiagram.drawio.png`](ClassDiagram.drawio.png)
+> **Tệp xuất đồ họa vector (SVG):** [`ClassDiagram.drawio.svg`](ClassDiagram.drawio.svg)  
+> **Tệp ảnh chất lượng cao (PNG):** [`ClassDiagram.drawio.png`](ClassDiagram.drawio.png)  
+
+![Sơ đồ lớp mức Domain - BrewLite](ClassDiagram.drawio.png)
 
 ---
 
