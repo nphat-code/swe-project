@@ -3,8 +3,8 @@
 > **Căn cứ đề bài:** Mục 4.3 (Task 2.3 - 2.0 điểm) trong tệp đặc tả gốc [`docs/DE_BAI_ASSIGNMENT_2_GOC.md`](../../docs/DE_BAI_ASSIGNMENT_2_GOC.md).  
 > **Tiêu chí nghiệm thu:** Sơ đồ mức domain mô hình hóa tối thiểu 7 thực thể: `User`, `Product`, `Order`, `OrderItem`, `Payment`, `Promotion`, `LoyaltyTransaction` cùng đầy đủ thuộc tính, kiểu dữ liệu, quan hệ, multiplicity và enum trạng thái; đảm bảo không mâu thuẫn với SRS và Sequence Diagram.  
 > **Tệp mã nguồn Mermaid:** [`class-domain.mmd`](class-domain.mmd)  
-> **Tệp xuất đồ họa vector (SVG):** [`class-domain.svg`](class-domain.svg)  
-> **Tệp ảnh chất lượng cao (PNG):** [`class-domain.png`](class-domain.png)
+> **Tệp xuất đồ họa vector (SVG):** [`class-domain.svg`](class-domain.svg) | [`ClassDiagram.drawio.svg`](ClassDiagram.drawio.svg)  
+> **Tệp ảnh chất lượng cao (PNG):** [`class-domain.png`](class-domain.png) | [`ClassDiagram.drawio.png`](ClassDiagram.drawio.png)
 
 ---
 
@@ -174,30 +174,26 @@ classDiagram
         +DateTime createdAt
     }
 
-    class Role {
-        <<enumeration>>
+    class Role["«enumeration»<br/>Role"] {
         CUSTOMER
         BARISTA
         ADMIN
     }
 
-    class ProductCategory {
-        <<enumeration>>
+    class ProductCategory["«enumeration»<br/>ProductCategory"] {
         COFFEE
         TEA
         FREEZE
         PASTRY
     }
 
-    class Size {
-        <<enumeration>>
+    class Size["«enumeration»<br/>Size"] {
         SMALL
         MEDIUM
         LARGE
     }
 
-    class OrderStatus {
-        <<enumeration>>
+    class OrderStatus["«enumeration»<br/>OrderStatus"] {
         PENDING
         PAID
         PAYMENT_FAILED
@@ -207,8 +203,7 @@ classDiagram
         CANCELLED
     }
 
-    class PaymentMethod {
-        <<enumeration>>
+    class PaymentMethod["«enumeration»<br/>PaymentMethod"] {
         MOMO
         VNPAY
         ZALOPAY
@@ -216,15 +211,13 @@ classDiagram
         CASH
     }
 
-    class PaymentStatus {
-        <<enumeration>>
+    class PaymentStatus["«enumeration»<br/>PaymentStatus"] {
         PENDING
         SUCCESS
         FAILED
     }
 
-    class LoyaltyType {
-        <<enumeration>>
+    class LoyaltyType["«enumeration»<br/>LoyaltyType"] {
         EARN
         REDEEM
         EXPIRE

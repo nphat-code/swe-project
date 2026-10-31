@@ -102,30 +102,26 @@ classDiagram
         +DateTime createdAt
     }
 
-    class Role {
-        <<enumeration>>
+    class Role["«enumeration»<br/>Role"] {
         CUSTOMER
         BARISTA
         ADMIN
     }
 
-    class ProductCategory {
-        <<enumeration>>
+    class ProductCategory["«enumeration»<br/>ProductCategory"] {
         COFFEE
         TEA
         FREEZE
         PASTRY
     }
 
-    class Size {
-        <<enumeration>>
+    class Size["«enumeration»<br/>Size"] {
         SMALL
         MEDIUM
         LARGE
     }
 
-    class OrderStatus {
-        <<enumeration>>
+    class OrderStatus["«enumeration»<br/>OrderStatus"] {
         PENDING
         PAID
         PAYMENT_FAILED
@@ -135,8 +131,7 @@ classDiagram
         CANCELLED
     }
 
-    class PaymentMethod {
-        <<enumeration>>
+    class PaymentMethod["«enumeration»<br/>PaymentMethod"] {
         MOMO
         VNPAY
         ZALOPAY
@@ -144,15 +139,13 @@ classDiagram
         CASH
     }
 
-    class PaymentStatus {
-        <<enumeration>>
+    class PaymentStatus["«enumeration»<br/>PaymentStatus"] {
         PENDING
         SUCCESS
         FAILED
     }
 
-    class LoyaltyType {
-        <<enumeration>>
+    class LoyaltyType["«enumeration»<br/>LoyaltyType"] {
         EARN
         REDEEM
         EXPIRE
