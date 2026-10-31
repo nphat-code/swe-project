@@ -22,22 +22,21 @@
 4. **Chỉ đạo của Giảng viên ([GHI_CHU_GIANG_VIEN.md](GHI_CHU_GIANG_VIEN.md) & [notes](notes)):**
    * **Thay thế User Story bằng Sơ đồ UML:** Không viết User Story văn bản dài dòng; thay thế bằng sơ đồ UML trực quan (Use Case, Activity, Sequence, Class), chỉ giữ bảng mã `FR` tinh gọn để truy vết.
    * **Sơ đồ Activity:** Điều kiện rẽ nhánh **không dùng Yes/No**, phải có hành động/trạng thái cụ thể; có **Fork**, **Join**, xử lý đầy đủ: hết hàng, chưa đăng nhập, thanh toán thất bại.
-   * **Sơ đồ Sequence:** Đủ 5 lifeline (`Customer -> Next.js UI -> NestJS API -> Database -> Payment Service`), kiểm tra JWT, transaction tạo đơn & trừ kho, Idempotency-Key, nhánh alt.
    * **Sơ đồ Class:** Mức Domain cho tối thiểu 7 lớp (`User`, `Product`, `Order`, `OrderItem`, `Payment`, `Promotion`, `LoyaltyTransaction`) kèm thuộc tính, phương thức, quan hệ, multiplicity và enum trạng thái.
-   * **Kiến trúc & Triển khai:** Sơ đồ Deployment phản ánh đúng hạ tầng thực tế (Render / Railway / Vercel + Neon PostgreSQL / AWS / Azure).
+   * **Kiến trúc & Triển khai:** Sơ đồ Deployment phản ánh đúng hạ tầng thực tế (AWS EC2 Ubuntu, Nginx SSL, Docker Compose).
 
 ---
 
 ## 📊 TIẾN ĐỘ TỔNG QUAN 5 TASK (PROGRESS DASHBOARD)
 
 | Task | Giai đoạn | Tạo phẩm chính | Điểm | Trạng thái | Tiến độ |
-| :---: | :--- | :--- | :---: | :---: | :---: |
+| :---: | :--- | :--- | :--- | :---: | :---: |
 | **Task 1** | **Khai thác & đặc tả yêu cầu** | `context-and-scope.md`, `system-requirements-matrix.md`, `core-use-case-specification.md`, `use-case-system.png/mmd`, `use-case-checkout.mmd` | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
-| **Task 2** | **Mô hình hóa hệ thống** | Activity Diagram (`.puml` / `.svg`), Sequence Diagram (`.puml` / `.svg`), Domain Class Diagram (`.puml` / `.svg`) | **2.0** | 🟡 **ĐANG LÀM** | **20%** |
-| **Task 3** | **Thiết kế kiến trúc** | `docs/architecture/architecture-description.md`, thư mục `docs/architecture/adr/`, `docs/deployment.md` | **2.0** | ⏳ Chờ Task 2 | **0%** |
-| **Task 4** | **Triển khai Sprint 1** | Chuẩn hóa repo, MVP Menu duyệt đồ uống (Next.js + NestJS), `.github/workflows/ci.yml` | **2.0** | ⏳ Chờ Task 3 | **0%** |
+| **Task 2** | **Mô hình hóa hệ thống** | Activity Diagram (`.puml` / `.png`), Sequence Diagram (`.mmd` / `.png`), Domain Class Diagram (`.mmd` / `.drawio.png`) | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
+| **Task 3** | **Thiết kế kiến trúc & Triển khai** | `docs/architecture/architecture-description.md`, thư mục `docs/architecture/adr/`, `docs/deployment.md` | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
+| **Task 4** | **Triển khai Sprint 1** | Chuẩn hóa repo, MVP Menu duyệt đồ uống (Next.js + NestJS), `.github/workflows/ci.yml` | **2.0** | ⏳ Chờ thực hiện | **0%** |
 | **Task 5** | **Triển khai Sprint 2 & CI/CD** | MVP End-to-End, Bộ Test (Unit/Integration/E2E), `.github/workflows/cd.yml`, Triển khai Production HTTPS | **2.0** | ⏳ Chờ Task 4 | **0%** |
-| **TỔNG** | **TOÀN BỘ ASSIGNMENT 2** | **Hệ thống chạy thực tế, mã nguồn, tài liệu và pipeline CI/CD** | **10.0** | | **24%** |
+| **TỔNG** | **TOÀN BỘ ASSIGNMENT 2** | **Hệ thống chạy thực tế, mã nguồn, tài liệu và pipeline CI/CD** | **10.0** | 🟢 **ĐÃ ĐẠT 6.0/10.0** | **60%** |
 
 ---
 
@@ -74,21 +73,21 @@
 
 ---
 
-### 🟡 TASK 2: MÔ HÌNH HÓA HỆ THỐNG (0.0 / 2.0 Điểm) — [TIẾP THEO]
+### 🟢 TASK 2: MÔ HÌNH HÓA HỆ THỐNG (2.0 / 2.0 Điểm) — [ĐÃ XONG 100%]
 
 > **Yêu cầu kỹ thuật:** Bắt buộc lưu cả tệp mã nguồn (`.puml` / `.mmd`) và ảnh kết xuất trực quan (`.svg` hoặc `.png`). Cả 3 sơ đồ không mâu thuẫn với SRS, Use Case hoặc CSDL.
 
-- [ ] **Task 2.1: Sơ đồ Hoạt động (Activity Diagram)**
-  * **File dự kiến:** `docs/diagrams/activity/activity-flow.puml` & `docs/diagrams/activity/activity-flow.svg` (kèm `.mmd`)
+- [x] **Task 2.1: Sơ đồ Hoạt động (Activity Diagram)**
+  * **File:** [`docs/diagrams/activity/activity-flow.puml`](docs/diagrams/activity/activity-flow.puml), [`activity-flow.svg`](docs/diagrams/activity/activity-flow.svg), [`activity-flow.png`](docs/diagrams/activity/activity-flow.png)
   * **Tiêu chí bắt buộc:**
     * Luồng End-to-End: Duyệt Menu $\rightarrow$ Tùy biến món $\rightarrow$ Giỏ hàng $\rightarrow$ Đặt đơn $\rightarrow$ Thanh toán $\rightarrow$ Nhận đồ uống.
-    * 4 Swimlane rõ ràng: Khách hàng (Customer), Giao diện Web (Next.js UI), Máy chủ Backend (NestJS API), Cổng thanh toán (Payment Gateway).
-    * **Điều kiện rẽ nhánh (Guard condition):** **Tuyệt đối không dùng Yes/No**, phải dùng hành động cụ thể (`[Còn tồn kho]`, `[Món ăn hết hàng]`, `[Đã đăng nhập thành viên]`, `[Khách vãng lai]`, `[Thanh toán thành công]`, `[Thanh toán thất bại]`).
-    * Có sử dụng **Fork** (tách luồng song song) và **Join** (đồng bộ luồng).
+    * 5 Swimlane rõ ràng: Khách hàng (Customer / Member), Giao diện Web (Next.js Client), Backend API & CSDL (NestJS & PostgreSQL), Cổng thanh toán (Payment Gateway Mock), Quầy pha chế (Nhân viên Barista).
+    * **Điều kiện rẽ nhánh (Guard condition):** **Tuyệt đối không dùng Yes/No**, dùng hành động cụ thể (`[Chưa đăng nhập]`, `[Đã có JWT hợp lệ]`, `[Hết hàng / Xung đột version]`, `[Đủ hàng & Hợp lệ]`, `[Thanh toán thành công]`, `[Thanh toán thất bại / Hủy]`).
+    * Có sử dụng **Fork** (tách luồng song song Barista và tích điểm) và **Join** (đồng bộ luồng).
     * Xử lý đủ 3 trường hợp ngoại lệ: Hết hàng, Chưa đăng nhập, Thanh toán thất bại.
 
-- [ ] **Task 2.2: Sơ đồ Tuần tự (Sequence Diagram)**
-  * **File dự kiến:** `docs/diagrams/sequence/sequence-checkout.puml` & `docs/diagrams/sequence/sequence-checkout.svg` (kèm `.mmd`)
+- [x] **Task 2.2: Sơ đồ Tuần tự (Sequence Diagram)**
+  * **File:** [`docs/diagrams/sequence/sequence-checkout.mmd`](docs/diagrams/sequence/sequence-checkout.mmd), [`sequence-checkout.svg`](docs/diagrams/sequence/sequence-checkout.svg), [`sequence-checkout.png`](docs/diagrams/sequence/sequence-checkout.png)
   * **Tiêu chí bắt buộc:**
     * Đặc tả chi tiết cho Use Case trọng tâm ở Task 1.3 (Đặt & Thanh toán đơn hàng).
     * 5 Lifeline tối thiểu: `Customer -> Next.js UI -> NestJS API -> Database -> Payment Service`.
@@ -97,45 +96,47 @@
     * Mở Database Transaction khi tạo đơn hàng (`PENDING`) và cập nhật kiểm tra tồn kho.
     * Xử lý cơ chế lũy thừa `Idempotency-Key` khi client gửi lặp lại yêu cầu thanh toán.
     * Nhánh rẽ `alt` cho 2 kịch bản: Thanh toán thành công (`PAID`, trừ stock, tích điểm) và Thất bại (`PAYMENT_FAILED`, giữ giỏ hàng).
-    * Thông báo kết quả cuối cùng cho người dùng.
+    * Cân bằng toàn diện Activation Bars và đường sống nét đứt (`dashed stroke`).
 
-- [ ] **Task 2.3: Sơ đồ Lớp (Class Diagram mức Domain)**
-  * **File dự kiến:** `docs/diagrams/class/class-domain.puml` & `docs/diagrams/class/class-domain.svg` (kèm `.mmd`)
+- [x] **Task 2.3: Sơ đồ Lớp (Class Diagram mức Domain)**
+  * **File:** [`docs/diagrams/class/class-domain.mmd`](docs/diagrams/class/class-domain.mmd), [`ClassDiagram.drawio.svg`](docs/diagrams/class/ClassDiagram.drawio.svg), [`ClassDiagram.drawio.png`](docs/diagrams/class/ClassDiagram.drawio.png)
   * **Tiêu chí bắt buộc:**
     * Xây dựng ở mức Domain dựa trên các thực thể tham gia trong Sequence Diagram.
     * Tối thiểu 7 lớp cốt lõi: `User`, `Product`, `Order`, `OrderItem`, `Payment`, `Promotion`, `LoyaltyTransaction`.
     * Mỗi lớp mô tả đủ 3 thành phần: **Tên class**, **Tên thuộc tính (Attributes + Kiểu dữ liệu)**, **Tên phương thức (Methods + Kiểu trả về/Tham số)**.
     * Thể hiện mối quan hệ chính xác: Association, Composition, Generalization và Multiplicity (`1`, `0..*`, `1..*`).
-    * Thể hiện các enum trạng thái: `Role`, `OrderStatus`, `PaymentStatus`.
+    * Thể hiện 7 enum trạng thái chuẩn hóa, hiển thị hoàn hảo trên cả Draw.io và Visual Paradigm: `Role`, `ProductCategory`, `Size`, `OrderStatus`, `PaymentMethod`, `PaymentStatus`, `LoyaltyType`.
 
 ---
 
-### ⏳ TASK 3: THIẾT KẾ KIẾN TRÚC HỆ THỐNG (0.0 / 2.0 Điểm)
+### 🟢 TASK 3: THIẾT KẾ KIẾN TRÚC HỆ THỐNG (2.0 / 2.0 Điểm) — [ĐÃ XONG 100%]
 
-- [ ] **Task 3.1: Phương pháp và Quyết định kiến trúc (Architecture & ADRs)**
-  * **File dự kiến:** `docs/architecture/architecture-description.md` và thư mục `docs/architecture/adr/`
+- [x] **Task 3.1: Phương pháp và Quyết định kiến trúc (Architecture & ADRs)**
+  * **File:** [`docs/architecture/architecture-description.md`](docs/architecture/architecture-description.md) và thư mục [`docs/architecture/adr/`](docs/architecture/adr/)
   * **Tiêu chí bắt buộc:**
-    * Trình bày kiến trúc theo mô hình C4 (System Context, Container, Component) hoặc Kiến trúc phân lớp:
-      * Frontend Next.js App Router (Server Components + Client Components, PWA).
-      * Backend NestJS theo Module/Domain (`ProductsModule`, `OrdersModule`, `PaymentsModule`, `AuthModule`).
-      * PostgreSQL + Prisma ORM + cơ chế Migration.
-      * Mock Payment Service.
+    * Trình bày kiến trúc theo mô hình C4 (System Context, Container, Component) kết hợp Kiến trúc phân lớp hướng Module (Modular Monolith):
+      * Frontend Next.js 15 App Router (Server Components + Client Components, PWA, Zustand).
+      * Backend NestJS theo Module/Domain (`AuthModule`, `ProductsModule`, `OrdersModule`, `PaymentsModule`, `LoyaltyModule`, `HealthModule`).
+      * PostgreSQL 16 + Prisma ORM + cơ chế Migration.
+      * Mock Payment Service tích hợp chống trừ tiền lặp `Idempotency-Key`.
       * Logging, Health Check endpoint (`GET /health`) và Quản lý biến môi trường (`ConfigService`).
-      * Lý do chọn kiến trúc, ưu điểm, hạn chế và trade-offs.
-    * 5 Bản ghi quyết định kiến trúc quan trọng (ADR):
-      * `docs/architecture/adr/001-monorepo-structure.md`: Kiến trúc Monorepo frontend/backend.
-      * `docs/architecture/adr/002-order-state-machine.md`: Cỗ máy trạng thái đơn hàng.
-      * `docs/architecture/adr/003-optimistic-locking-concurrency.md`: Kiểm soát bán hàng đồng thời bằng version.
-      * `docs/architecture/adr/004-idempotency-key-payment.md`: Thiết kế chống trừ tiền trùng lặp.
-      * `docs/architecture/adr/005-cloud-deployment-strategy.md`: Quyết định nền tảng triển khai Cloud.
+      * Lý do chọn kiến trúc, ưu điểm, hạn chế và bảng phân tích đánh đổi (trade-offs).
+    * 6 Bản ghi quyết định kiến trúc quan trọng (ADR):
+      * [`001-monorepo-structure.md`](docs/architecture/adr/001-monorepo-structure.md): Kiến trúc Monorepo frontend/backend.
+      * [`002-frontend-nextjs-pwa.md`](docs/architecture/adr/002-frontend-nextjs-pwa.md): Frontend Next.js PWA & Zustand.
+      * [`003-backend-nestjs-modular.md`](docs/architecture/adr/003-backend-nestjs-modular.md): Backend NestJS Modular & Domain-Driven Design.
+      * [`004-postgresql-and-prisma-orm.md`](docs/architecture/adr/004-postgresql-and-prisma-orm.md): PostgreSQL & Prisma Migration Workflow.
+      * [`005-payment-idempotency-and-mock-gateway.md`](docs/architecture/adr/005-payment-idempotency-and-mock-gateway.md): Idempotency Key & Mock Payment Gateway.
+      * [`006-logging-and-health-monitoring.md`](docs/architecture/adr/006-logging-and-health-monitoring.md): Structured Logging & Health Check.
 
-- [ ] **Task 3.2: Sơ đồ Triển khai (Deployment Diagram)**
-  * **File dự kiến:** `docs/deployment.md`, `docs/diagrams/deployment/deployment-diagram.puml` & `.png`
+- [x] **Task 3.2: Sơ đồ Triển khai (Deployment Diagram) & Hướng dẫn triển khai**
+  * **File:** [`docs/deployment.md`](docs/deployment.md), [`docs/diagrams/deployment/deployment-diagram.puml`](docs/diagrams/deployment/deployment-diagram.puml) & [`deployment-diagram.png`](docs/diagrams/deployment/deployment-diagram.png)
   * **Tiêu chí bắt buộc:**
-    * Sơ đồ UML Deployment Diagram cho môi trường Production thực tế.
-    * Thể hiện: Thiết bị người dùng (Browser/PWA), Dịch vụ CDN phục vụ Next.js, Container chạy NestJS API, PostgreSQL có persistent storage, Container Registry.
+    * Sơ đồ UML Deployment Diagram cho môi trường Production thực tế (AWS EC2 Ubuntu 22.04 LTS).
+    * Thể hiện: Thiết bị người dùng (Browser/PWA), Nginx Reverse Proxy & SSL Let's Encrypt, Container Next.js, Container NestJS API, PostgreSQL có persistent volume (AWS EBS SSD), Container Registry.
     * Giao thức HTTPS, kết nối nội bộ, cổng mạng, secrets/environment variables, health check và logging.
-    * Phân định rõ 3 ranh giới: **Local Development** (Docker Compose) $\rightarrow$ **CI Environment** (GitHub Actions) $\rightarrow$ **Production Environment** (Cloud).
+    * Phân định rõ 3 ranh giới môi trường: **Local Development** (Docker Compose) $\rightarrow$ **CI Environment** (GitHub Actions) $\rightarrow$ **Production Environment** (AWS Cloud).
+    * Hướng dẫn triển khai chi tiết từng bước, cấu hình biến môi trường, migration, seeding, health check và rollback.
 
 ---
 
