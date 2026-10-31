@@ -27,7 +27,7 @@ Hiện thực và bàn giao thành công phiên bản khả dụng đầu tiên 
 | **SP1-02** | Hiện thực Products API (`GET /products`, `GET /products/:id`, `categories`) | Backend | 3 SP | 🟢 **DONE** | `FR-01` |
 | **SP1-03** | Viết script Database Seed khởi tạo dữ liệu thực đơn mẫu | Backend | 2 SP | 🟢 **DONE** | `FR-01` |
 | **SP1-04** | Hiện thực Giao diện Web Menu Mobile-First (Tabs, Cards, Skeleton) | Frontend | 5 SP | 🟢 **DONE** | `FR-01`, `NFR-03` |
-| **SP1-05** | Thiết lập Pipeline CI tự động bằng GitHub Actions (`ci.yml`) | DevOps | 3 SP | 🟡 **IN PROGRESS** | `NFR-08` |
+| **SP1-05** | Thiết lập Pipeline CI tự động bằng GitHub Actions (`ci.yml`) | DevOps | 3 SP | 🟢 **DONE** | `NFR-08` |
 
 ---
 

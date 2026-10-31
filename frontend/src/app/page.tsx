@@ -192,13 +192,16 @@ export default function Home() {
           )}
         </section>
 
-        <ProductDetailModal
-          product={selectedProduct}
-          allToppings={toppings}
-          isOpen={!!selectedProduct}
-          onClose={() => setSelectedProduct(null)}
-          onAddToCart={handleAddToCart}
-        />
+        {selectedProduct && (
+          <ProductDetailModal
+            key={selectedProduct.id}
+            product={selectedProduct}
+            allToppings={toppings}
+            isOpen={true}
+            onClose={() => setSelectedProduct(null)}
+            onAddToCart={handleAddToCart}
+          />
+        )}
       </main>
 
       <footer className="border-t border-stone-200/80 bg-[#f2f0eb]/60 py-6 mt-10 text-center text-xs text-[#595959]">

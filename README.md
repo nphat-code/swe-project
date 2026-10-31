@@ -120,8 +120,8 @@ npm run dev:frontend
 | **Task 1** | **Khai thác và đặc tả yêu cầu** (Context, FR/NFR, Core Use Case Spec) | Tuần 1 | **2.0** | 🟢 **Đã xong** |
 | **Task 2** | **Mô hình hóa hệ thống** (Activity, Sequence, Class Diagram) | Tuần 2 | **2.0** | 🟢 **Đã xong** |
 | **Task 3** | **Thiết kế kiến trúc** (C4/Layered, ADRs, Deployment Diagram) | Tuần 3 | **2.0** | 🟢 **Đã xong** |
-| **Task 4** | **Triển khai Sprint 1** (MVP Menu đồ uống, Seed DB, CI Pipeline) | Sprint 1 | **2.0** | 🟡 **Đang thực hiện** |
-| **Task 5** | **Triển khai Sprint 2, CI/CD & Delivery** (End-to-End, Tests, CD, Cloud Production) | Sprint 2 | **2.0** | ⏳ Chờ Task 4 |
+| **Task 4** | **Triển khai Sprint 1** (MVP Menu đồ uống, Seed DB, CI Pipeline) | Sprint 1 | **2.0** | 🟢 **Đã xong** |
+| **Task 5** | **Triển khai Sprint 2, CI/CD & Delivery** (End-to-End, Tests, CD, Cloud Production) | Sprint 2 | **2.0** | ⏳ Chờ triển khai |
 
 ---
 

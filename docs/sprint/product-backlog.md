@@ -31,7 +31,7 @@ Product Backlog của BrewLite được quản lý theo mô hình Agile Scrum, c
 | **US-02** | Xây dựng Backend Products API (`GET /products`, `GET /products/:id`) | Epic 1 | `FR-01` | Must | 3 | Sprint 1 | 🟢 Done |
 | **US-03** | Khởi tạo dữ liệu mẫu (Database Seeding) cho đồ uống & topping | Epic 1 | `FR-01` | Must | 2 | Sprint 1 | 🟢 Done |
 | **US-04** | Xây dựng Giao diện Menu Mobile-First với Tabs danh mục | Epic 1 | `FR-01` | Must | 5 | Sprint 1 | 🟢 Done |
-| **US-05** | Thiết lập Pipeline CI tự động kiểm tra Lint, Test & Build | Epic 2 | `NFR-08` | Must | 3 | Sprint 1 | 🟡 Đang làm |
+| **US-05** | Thiết lập Pipeline CI tự động kiểm tra Lint, Test & Build | Epic 2 | `NFR-08` | Must | 3 | Sprint 1 | 🟢 Done |
 | **US-06** | Quản lý Giỏ hàng Client bằng Zustand & LocalStorage đồng bộ | Epic 3 | `FR-03` | Must | 5 | Sprint 2 | ⏳ Chờ làm |
 | **US-07** | Modal Tùy biến món: Chọn kích cỡ (S/M/L) và đa topping kèm giá động | Epic 3 | `FR-02` | Must | 5 | Sprint 2 | ⏳ Chờ làm |
 | **US-08** | Xác thực tài khoản Khách hàng / Nhân viên bằng JWT & bcrypt | Epic 4 | `FR-04` | Must | 3 | Sprint 2 | ⏳ Chờ làm |

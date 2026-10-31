@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
-import { X, Plus, Minus, Check, Sparkles } from 'lucide-react';
+import { X, Plus, Minus, Check } from 'lucide-react';
 import { Product, ProductSize, Topping, CustomOrderItem } from '../types';
 import { formatCurrency } from '../lib/api';
 
@@ -21,26 +21,30 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   onClose,
   onAddToCart,
 }) => {
-  const [selectedSize, setSelectedSize] = useState<ProductSize | null>(null);
+  const [prevProduct, setPrevProduct] = useState<Product | null>(product);
+  const [selectedSize, setSelectedSize] = useState<ProductSize | null>(() => {
+    if (product?.sizes && product.sizes.length > 0) {
+      return product.sizes.find((s) => s.extraPrice === 0) || product.sizes[0];
+    }
+    return null;
+  });
   const [selectedToppings, setSelectedToppings] = useState<Topping[]>([]);
   const [quantity, setQuantity] = useState<number>(1);
   const [note, setNote] = useState<string>('');
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (product) {
-      if (product.sizes && product.sizes.length > 0) {
-        const defaultSize = product.sizes.find((s) => s.extraPrice === 0) || product.sizes[0];
-        setSelectedSize(defaultSize);
-      } else {
-        setSelectedSize(null);
-      }
-      setSelectedToppings([]);
-      setQuantity(1);
-      setNote('');
-      setIsSuccess(false);
+  if (product !== prevProduct) {
+    setPrevProduct(product);
+    if (product?.sizes && product.sizes.length > 0) {
+      setSelectedSize(product.sizes.find((s) => s.extraPrice === 0) || product.sizes[0]);
+    } else {
+      setSelectedSize(null);
     }
-  }, [product]);
+    setSelectedToppings([]);
+    setQuantity(1);
+    setNote('');
+    setIsSuccess(false);
+  }
 
   useEffect(() => {
     if (isOpen) {
