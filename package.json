@@ -3,12 +3,8 @@
   "version": "1.0.0",
   "description": "BrewLite - Cashless Coffee Ordering Application (Agile Scrum)",
   "private": true,
-  "workspaces": [
-    "backend",
-    "frontend"
-  ],
   "scripts": {
-    "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"cyan,magenta\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev": "node scripts/dev.mjs",
     "dev:backend": "npm --prefix backend run start:dev",
     "dev:frontend": "npm --prefix frontend run dev",
     "build": "npm run build:backend && npm run build:frontend",
@@ -28,8 +24,5 @@
     "scrum"
   ],
   "author": "SWE Project Team",
-  "license": "UNLICENSED",
-  "devDependencies": {
-    "concurrently": "^10.0.5"
-  }
+  "license": "UNLICENSED"
 }
