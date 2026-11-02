@@ -79,6 +79,11 @@ export default function Home() {
     );
   }, [products, searchQuery]);
 
+  const totalProductsCount = useMemo(() => {
+    const sum = categories.reduce((acc, cat) => acc + (cat._count?.products ?? 0), 0);
+    return sum > 0 ? sum : products.length;
+  }, [categories, products.length]);
+
   const currentCategoryName = useMemo(() => {
     if (selectedCategory === 'all') return 'Tất cả đồ uống';
     const found = categories.find((c) => c.slug === selectedCategory);
@@ -146,7 +151,7 @@ export default function Home() {
             categories={categories}
             selectedCategory={selectedCategory}
             onSelectCategory={handleSelectCategory}
-            totalProductsCount={products.length}
+            totalProductsCount={totalProductsCount}
           />
         </section>
 
