@@ -8,4 +8,12 @@ export class AppService {
       version: '1.0.0',
     };
   }
+
+  getHealth(): { status: string; uptime: number; timestamp: string } {
+    return {
+      status: 'ok',
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString(),
+    };
+  }
 }
