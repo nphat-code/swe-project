@@ -26,25 +26,25 @@ export default function Home() {
     return cartItems.reduce((sum, item) => sum + item.quantity, 0);
   }, [cartItems]);
 
-  useEffect(() => {
-    async function loadInitialData() {
-      setIsLoading(true);
-      try {
-        const [catsData, prodsData, topsData] = await Promise.all([
-          fetchCategories(),
-          fetchProducts(),
-          fetchToppings(),
-        ]);
-        setCategories(catsData);
-        setProducts(prodsData);
-        setToppings(topsData);
-      } catch (err) {
-        console.error('Lỗi khi tải dữ liệu khởi tạo:', err);
-      } finally {
-        setIsLoading(false);
-      }
+  const loadInitialData = async () => {
+    setIsLoading(true);
+    try {
+      const [catsData, prodsData, topsData] = await Promise.all([
+        fetchCategories(),
+        fetchProducts(),
+        fetchToppings(),
+      ]);
+      setCategories(catsData);
+      setProducts(prodsData);
+      setToppings(topsData);
+    } catch (err) {
+      console.error('Lỗi khi tải dữ liệu khởi tạo:', err);
+    } finally {
+      setIsLoading(false);
     }
+  };
 
+  useEffect(() => {
     loadInitialData();
   }, []);
 
@@ -171,11 +171,17 @@ export default function Home() {
               message={
                 searchQuery
                   ? `Không có đồ uống nào khớp với từ khóa "${searchQuery}". Hãy thử tìm món khác!`
+                  : products.length === 0
+                  ? 'Chưa kết nối được danh sách đồ uống từ máy chủ. Bấm Thử lại để tải dữ liệu.'
                   : 'Danh mục này hiện chưa có món nào sẵn sàng phục vụ.'
               }
               onReset={() => {
                 setSearchQuery('');
-                handleSelectCategory('all');
+                if (products.length === 0) {
+                  loadInitialData();
+                } else {
+                  handleSelectCategory('all');
+                }
               }}
             />
           ) : (

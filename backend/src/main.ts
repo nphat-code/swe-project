@@ -12,7 +12,16 @@ async function bootstrap() {
   ];
 
   app.enableCors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      if (!origin || /^http:\/\/(localhost|127\.0\.0\.1)(:[0-9]+)?$/.test(origin)) {
+        return callback(null, true);
+      }
+      const allowed = process.env.FRONTEND_URL;
+      if (allowed && origin === allowed) {
+        return callback(null, true);
+      }
+      callback(null, true);
+    },
     credentials: true,
   });
 
@@ -25,7 +34,7 @@ async function bootstrap() {
   );
 
   const port = process.env.PORT || 3001;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
   console.log(`🚀 BrewLite Backend running on: http://localhost:${port}`);
 }
 

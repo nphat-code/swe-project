@@ -2,19 +2,19 @@ import { Product, Category, Topping } from '../types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
-async function fetchWithRetry(input: string, init?: RequestInit, maxRetries = 2): Promise<Response> {
+async function fetchWithRetry(input: string, init?: RequestInit, maxRetries = 4): Promise<Response> {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       const response = await fetch(input, init);
       if (response.ok || attempt === maxRetries || response.status < 500) {
         return response;
       }
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     } catch (error) {
       if (attempt === maxRetries) {
         throw error;
       }
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
   return fetch(input, init);
