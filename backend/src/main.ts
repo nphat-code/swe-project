@@ -38,9 +38,6 @@ async function bootstrap() {
     .setTitle('BrewLite API')
     .setDescription('BrewLite Cashless Coffee Ordering System - REST API Documentation')
     .setVersion('1.0')
-    .addTag('products')
-    .addTag('system')
-    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
