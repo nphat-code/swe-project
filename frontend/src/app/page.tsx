@@ -5,6 +5,7 @@ import { Header } from '../components/Header';
 import { CategoryFilter } from '../components/CategoryFilter';
 import { ProductCard } from '../components/ProductCard';
 import { ProductSkeleton } from '../components/ProductSkeleton';
+import { ErrorState } from '../components/ErrorState';
 import { EmptyState } from '../components/EmptyState';
 import { ProductDetailModal } from '../components/ProductDetailModal';
 import { Product, Category, Topping, CustomOrderItem } from '../types';
@@ -18,6 +19,7 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [hasError, setHasError] = useState<boolean>(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [cartItems, setCartItems] = useState<CustomOrderItem[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -28,6 +30,7 @@ export default function Home() {
 
   const loadInitialData = async () => {
     setIsLoading(true);
+    setHasError(false);
     try {
       const [catsData, prodsData, topsData] = await Promise.all([
         fetchCategories(),
@@ -37,8 +40,12 @@ export default function Home() {
       setCategories(catsData);
       setProducts(prodsData);
       setToppings(topsData);
+      if (catsData.length === 0 && prodsData.length === 0) {
+        setHasError(true);
+      }
     } catch (err) {
       console.error('Lỗi khi tải dữ liệu khởi tạo:', err);
+      setHasError(true);
     } finally {
       setIsLoading(false);
     }
@@ -166,22 +173,21 @@ export default function Home() {
                 <ProductSkeleton key={index} />
               ))}
             </div>
+          ) : hasError && products.length === 0 ? (
+            <ErrorState
+              message="Không thể kết nối đến máy chủ BrewLite. Vui lòng đảm bảo backend đang hoạt động và nhấn thử lại."
+              onRetry={loadInitialData}
+            />
           ) : filteredProducts.length === 0 ? (
             <EmptyState
               message={
                 searchQuery
                   ? `Không có đồ uống nào khớp với từ khóa "${searchQuery}". Hãy thử tìm món khác!`
-                  : products.length === 0
-                  ? 'Chưa kết nối được danh sách đồ uống từ máy chủ. Bấm Thử lại để tải dữ liệu.'
                   : 'Danh mục này hiện chưa có món nào sẵn sàng phục vụ.'
               }
               onReset={() => {
                 setSearchQuery('');
-                if (products.length === 0) {
-                  loadInitialData();
-                } else {
-                  handleSelectCategory('all');
-                }
+                handleSelectCategory('all');
               }}
             />
           ) : (
