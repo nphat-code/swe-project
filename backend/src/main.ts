@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -33,9 +34,22 @@ async function bootstrap() {
     }),
   );
 
+  const config = new DocumentBuilder()
+    .setTitle('BrewLite API')
+    .setDescription('BrewLite Cashless Coffee Ordering System - REST API Documentation')
+    .setVersion('1.0')
+    .addTag('products', 'Đồ uống, danh mục và topping')
+    .addTag('system', 'Giám sát hệ thống')
+    .addBearerAuth()
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
   const port = process.env.PORT || 3001;
   await app.listen(port, '0.0.0.0');
   console.log(`🚀 BrewLite Backend running on: http://localhost:${port}`);
+  console.log(`📑 Swagger Documentation available at: http://localhost:${port}/api`);
 }
 
 bootstrap();
