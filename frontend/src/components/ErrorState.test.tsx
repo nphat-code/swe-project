@@ -14,20 +14,27 @@ describe('ErrorState Component', () => {
 
     const button = screen.getByRole('button', { name: /thử lại kết nối/i });
     expect(button).toBeInTheDocument();
+    expect(button).toHaveAttribute('type', 'button');
 
     fireEvent.click(button);
     expect(handleRetry).toHaveBeenCalledTimes(1);
   });
 
-  it('renders custom error message', () => {
+  it('renders custom error message and triggers onRetry', () => {
     const handleRetry = jest.fn();
     render(
       <ErrorState
-        message="Máy chủ bảo trì tạm thời"
+        message="Không thể kết nối đến máy chủ BrewLite. Vui lòng đảm bảo backend đang hoạt động."
         onRetry={handleRetry}
       />
     );
 
-    expect(screen.getByText('Máy chủ bảo trì tạm thời')).toBeInTheDocument();
+    expect(
+      screen.getByText('Không thể kết nối đến máy chủ BrewLite. Vui lòng đảm bảo backend đang hoạt động.')
+    ).toBeInTheDocument();
+
+    const button = screen.getByRole('button', { name: /thử lại kết nối/i });
+    fireEvent.click(button);
+    expect(handleRetry).toHaveBeenCalledTimes(1);
   });
 });
