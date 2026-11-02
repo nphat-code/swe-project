@@ -25,22 +25,51 @@ const mockProduct: Product = {
 };
 
 describe('ProductCard Component', () => {
-  it('renders product information accurately', () => {
+  it('renders complete product info including image, name, description, category badge, and formatted price', () => {
     const handleSelect = jest.fn();
     render(<ProductCard product={mockProduct} onSelectProduct={handleSelect} />);
 
+    const image = screen.getByAltText('Cà Phê Sữa Đá Sài Gòn');
+    expect(image).toBeInTheDocument();
+
     expect(screen.getByText('Cà Phê Sữa Đá Sài Gòn')).toBeInTheDocument();
+    expect(screen.getByText('Cà phê phin truyền thống thơm ngon đậm đà')).toBeInTheDocument();
     expect(screen.getByText('Cà phê Việt Nam')).toBeInTheDocument();
     expect(screen.getByText(/32\.000/)).toBeInTheDocument();
   });
 
-  it('calls onSelectProduct when clicking card or button', () => {
+  it('triggers onSelectProduct when clicking the select button and includes proper aria-label', () => {
     const handleSelect = jest.fn();
     render(<ProductCard product={mockProduct} onSelectProduct={handleSelect} />);
 
-    const button = screen.getByRole('button', { name: /chọn món/i });
-    fireEvent.click(button);
+    const button = screen.getByRole('button', { name: /chọn món cà phê sữa đá sài gòn/i });
+    expect(button).toBeInTheDocument();
+    expect(button).toHaveAttribute('type', 'button');
 
+    fireEvent.click(button);
+    expect(handleSelect).toHaveBeenCalledTimes(1);
     expect(handleSelect).toHaveBeenCalledWith(mockProduct);
+  });
+
+  it('triggers onSelectProduct when clicking the card container', () => {
+    const handleSelect = jest.fn();
+    render(<ProductCard product={mockProduct} onSelectProduct={handleSelect} />);
+
+    const cardHeading = screen.getByText('Cà Phê Sữa Đá Sài Gòn');
+    fireEvent.click(cardHeading);
+
+    expect(handleSelect).toHaveBeenCalledTimes(1);
+    expect(handleSelect).toHaveBeenCalledWith(mockProduct);
+  });
+
+  it('renders correctly without category badge when category is undefined', () => {
+    const productWithoutCategory: Product = {
+      ...mockProduct,
+      category: undefined,
+    };
+    render(<ProductCard product={productWithoutCategory} onSelectProduct={jest.fn()} />);
+
+    expect(screen.getByText('Cà Phê Sữa Đá Sài Gòn')).toBeInTheDocument();
+    expect(screen.queryByText('Cà phê Việt Nam')).not.toBeInTheDocument();
   });
 });
