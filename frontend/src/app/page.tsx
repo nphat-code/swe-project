@@ -55,29 +55,24 @@ export default function Home() {
     loadInitialData();
   }, []);
 
-  const handleSelectCategory = async (slug: string) => {
+  const handleSelectCategory = (slug: string) => {
     setSelectedCategory(slug);
-    setIsLoading(true);
-    try {
-      const data = await fetchProducts(slug);
-      setProducts(data);
-    } catch (err) {
-      console.error(`Lỗi khi lọc danh mục ${slug}:`, err);
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   const filteredProducts = useMemo(() => {
-    if (!searchQuery.trim()) return products;
+    let result = products;
+    if (selectedCategory !== 'all') {
+      result = result.filter((p) => p.category?.slug === selectedCategory);
+    }
+    if (!searchQuery.trim()) return result;
     const query = searchQuery.toLowerCase().trim();
-    return products.filter(
+    return result.filter(
       (p) =>
         p.name.toLowerCase().includes(query) ||
         p.description?.toLowerCase().includes(query) ||
         p.category?.name.toLowerCase().includes(query)
     );
-  }, [products, searchQuery]);
+  }, [products, selectedCategory, searchQuery]);
 
   const totalProductsCount = useMemo(() => {
     const sum = categories.reduce((acc, cat) => acc + (cat._count?.products ?? 0), 0);
