@@ -1,4 +1,5 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
+import { ApiQuery } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 
 @Controller('products')
@@ -6,6 +7,7 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
+  @ApiQuery({ name: 'category', required: false })
   async getProducts(@Query('category') categorySlug?: string) {
     return this.productsService.findAll(categorySlug);
   }
