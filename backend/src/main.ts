@@ -34,6 +34,8 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('auth', 'Đăng ký, đăng nhập và xác thực JWT')
     .addTag('products', 'Quản lý đồ uống, danh mục và topping')
+    .addTag('vouchers', 'Kiểm tra và áp dụng mã khuyến mãi')
+    .addTag('orders', 'Khởi tạo và tra cứu lịch sử đơn hàng')
     .addTag('system', 'Giám sát hệ thống')
     .addBearerAuth()
     .build();

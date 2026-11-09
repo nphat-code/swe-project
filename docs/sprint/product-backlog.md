@@ -35,12 +35,12 @@ Product Backlog của BrewLite được quản lý theo mô hình Agile Scrum, t
 | **PBI-05** | Thiết lập Pipeline CI tự động kiểm tra Lint, Test & Build | Epic 2 | `NFR-08` | DevOps | Must | 3 | Sprint 1 | 🟢 Done |
 | **PBI-06** | Quản lý Giỏ hàng Client bằng Zustand & LocalStorage đồng bộ | Epic 3 | `FR-03` | `UC04` | Must | 5 | Sprint 2 | 🟢 Done |
 | **PBI-07** | Modal Tùy biến món: Chọn kích cỡ (S/M/L) và đa topping kèm giá động | Epic 1 | `FR-02` | `UC02`, `UC03` | Must | 5 | Sprint 1 | 🟢 Done |
-| **PBI-08** | Xác thực tài khoản Khách hàng / Nhân viên bằng JWT & bcrypt | Epic 4 | `FR-04` | `UC09`, `UC10` | Must | 3 | Sprint 2 | 🟡 Xong Auth BE+FE (Chờ Guard Orders) |
-| **PBI-09** | Khởi tạo đơn hàng với Prisma Transaction & Optimistic Locking (`version`) | Epic 5 | `FR-05`, `FR-06` | `UC05` | Must | 5 | Sprint 2 | ⏳ Chờ làm |
+| **PBI-08** | Xác thực tài khoản Khách hàng / Nhân viên bằng JWT & bcrypt | Epic 4 | `FR-04` | `UC09`, `UC10` | Must | 3 | Sprint 2 | 🟢 Done |
+| **PBI-09** | Khởi tạo đơn hàng với Prisma Transaction & Optimistic Locking (`version`) | Epic 5 | `FR-05`, `FR-06` | `UC05` | Must | 5 | Sprint 2 | 🟡 Đang làm (Xong `POST /orders`; chờ Payment & Locking Bước 3.2) |
 | **PBI-10** | Tích hợp Cổng thanh toán mô phỏng MoMo/VNPay bảo vệ Idempotent | Epic 5 | `FR-07` | `UC06` | Must | 5 | Sprint 2 | ⏳ Chờ làm |
-| **PBI-11** | Cỗ máy trạng thái đơn hàng nghiêm ngặt (`assertTransition`) | Epic 5 | `FR-08` | `UC07`, `UC13` | Must | 3 | Sprint 2 | ⏳ Chờ làm |
+| **PBI-11** | Cỗ máy trạng thái đơn hàng nghiêm ngặt (`assertTransition`) | Epic 5 | `FR-08` | `UC07`, `UC13` | Must | 3 | Sprint 2 | 🟡 Đang làm (Xong `assertTransition` & test; chờ endpoint Bước 3.1) |
 | **PBI-12** | Tự động tích lũy điểm thưởng thành viên Loyalty (`total / 10000`) | Epic 6 | `FR-09` | `UC08` | Should | 2 | Sprint 2 | ⏳ Chờ làm |
-| **PBI-13** | Xem lịch sử đơn hàng cá nhân của tài khoản đã đăng nhập | Epic 4 | `FR-10` | `UC11` | Must | 2 | Sprint 2 | ⏳ Chờ làm |
+| **PBI-13** | Xem lịch sử đơn hàng cá nhân của tài khoản đã đăng nhập | Epic 4 | `FR-10` | `UC11` | Must | 2 | Sprint 2 | 🟡 Đang làm (Xong Backend `GET /orders/me`; chờ UI Bước 4.2) |
 | **PBI-14** | Thiết lập Continuous Delivery (CD) tự động triển khai máy chủ đám mây | Epic 6 | `NFR-08` | DevOps | Must | 3 | Sprint 2 | ⏳ Chờ làm |
 | **PBI-15** | Bộ kiểm thử tự động toàn diện 3 tầng (Unit, Integration, E2E) | Epic 6 | `NFR-04` | QA | Must | 5 | Sprint 2 | ⏳ Chờ làm |
 

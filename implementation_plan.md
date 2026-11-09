@@ -6,8 +6,8 @@
 > **Đề bài gốc Assignment 1:** [`docs/DE_BAI_ASSIGNMENT_1_GOC.md`](docs/DE_BAI_ASSIGNMENT_1_GOC.md) *(10 Tasks x 1.0đ = 10.0 Điểm)*  
 > **Đề bài gốc Assignment 2:** [`docs/DE_BAI_ASSIGNMENT_2_GOC.md`](docs/DE_BAI_ASSIGNMENT_2_GOC.md) *(5 Tasks x 2.0đ = 10.0 Điểm)*  
 > **Trạng thái hiện tại:**
-> * **Assignment 1 (10 Tasks Scrum):** 🟢 **Đã xong Task 1, 2, 3, 4 (Sprint 1 — 4.0/10.0đ)** | ⏳ **Chờ triển khai Task 5 $\rightarrow$ 10 (Sprint 2 & Sprint 3 — 6.0/10.0đ)**
-> * **Assignment 2 (5 Tasks tuần tự):** 🟢 **Đã xong Task 1, 2, 3, 4 (8.0/10.0đ)** | ⏳ **Chờ triển khai Task 5 (Sprint 2 & CI/CD — 2.0/10.0đ)**
+> * **Assignment 1 (10 Tasks Scrum):** 🟢 **Đã xong Task 1 $\rightarrow$ 7 (Sprint 1 & 2 — 7.0/10.0đ)** | 🟡 **Đang làm Task 9 (~35%) & Task 10 (~25%)** | ⏳ **Chờ Task 8 (Sprint 3)**
+> * **Assignment 2 (5 Tasks tuần tự):** 🟢 **Đã xong Task 1, 2, 3, 4 (8.0/10.0đ)** | 🟡 **Đang triển khai Task 5 (Hoàn tất Giai đoạn 1 & Giai đoạn 2 / 5 Giai đoạn)**
 
 ---
 
@@ -39,11 +39,11 @@
 | **Task 3** | Sprint 1 | **Trang Menu (Frontend)** | Next.js gọi `/products`, render lưới sản phẩm, có loading/empty/error state | **1.0** | 🟢 **Đã xong (100%)** | Đã có `page.tsx`, `ProductCard.tsx`, `CategoryFilter.tsx`, `ProductSkeleton.tsx`, `EmptyState.tsx`, `ErrorState.tsx`. |
 | **Task 4** | Sprint 1 | **Chi tiết và tùy chọn sản phẩm** | Màn hình chi tiết: chọn size (S/M/L) và topping; tự tính giá theo tùy chọn | **1.0** | 🟢 **Đã xong (100%)** | Đã hoàn thiện `ProductDetailModal.tsx` (chọn Size S/M/L, đa Topping, ghi chú, số lượng, tính giá động, chuẩn ARIA/Escape/chống double-submit) kèm unit tests (`ProductDetailModal.test.tsx`, `page.test.tsx`, `api.test.ts`) và CI Pipeline pass 100%. Sẵn sàng nối Zustand Store ở Task 5. |
 | **Task 5** | Sprint 2 | **Giỏ hàng (Cart)** | Thêm/sửa số lượng/xóa; lưu state (Zustand/Context); tự tính tổng tiền; badge số lượng | **1.0** | 🟢 **Đã xong (100%)** | Đã hoàn tất `useCartStore.ts` (Zustand + `localStorage`, gộp món trùng size/topping/note, áp mã giảm giá, tính tổng), `CartDrawer.tsx`, tích hợp `Header.tsx` & `page.tsx` (không còn `alert()`) kèm unit tests (`useCartStore.test.ts`, `CartDrawer.test.tsx`, `page.test.tsx`). |
-| **Task 6** | Sprint 2 | **API tạo đơn hàng** | NestJS `POST /orders` nhận giỏ hàng, validate (`class-validator`), lưu đơn trạng thái `PENDING`, trả mã đơn | **1.0** | 🔴 **Chưa làm (0%)** | Mới có model `Order` & `OrderItem` trong `schema.prisma`. **Cần làm:** `OrdersModule`, `OrdersController`, `OrdersService`, DTOs. |
-| **Task 7** | Sprint 2 | **Đăng ký / Đăng nhập (JWT)** | `POST /auth/register`, `/auth/login`; băm mật khẩu (`bcrypt`); phát JWT; guard bảo vệ route đặt đơn | **1.0** | 🟡 **Đang làm (~90%)** | Đã xong Backend `AuthModule` + Frontend `useAuthStore.ts`, `AuthModal.tsx`, `Header.tsx` user badge (`AuthModal.test.tsx`, `useAuthStore.test.ts`). **Cần làm:** Gắn `JwtAuthGuard` bảo vệ `POST /orders` ở Bước 2.3. |
-| **Task 8** | Sprint 3 | **Thanh toán không tiền mặt** | Tích hợp mock payment: chọn Ví/Thẻ, gọi `POST /payments`; đơn chuyển `PAID` khi thành công, `PAYMENT_FAILED` khi lỗi | **1.0** | 🔴 **Chưa làm (0%)** | **Cần làm:** Bổ sung model `Payment` vào `schema.prisma`, xây dựng `PaymentsModule` (`POST /payments`) và giao diện `CheckoutModal.tsx`. |
-| **Task 9** | Sprint 3 | **Xác nhận, lịch sử đơn & bàn giao** | Màn hình xác nhận (mã đơn, trạng thái) & `GET /orders/me`; `docker-compose` chạy cả 3 (FE, BE, DB); `README` | **1.0** | 🟡 **Mới làm ~20%** | Đã có `README.md`, nhưng `docker-compose.yml` mới có `postgres`. **Cần làm:** Màn hình xác nhận đơn, `GET /orders/me`, trang Lịch sử đơn, Dockerfile FE/BE + `docker-compose.yml` 3 services. |
-| **Task 10** | Sprint 3 | **Nghiệp vụ backend** | (1) State Machine `assertTransition`, (2) Thanh toán `Idempotency-Key`, (3) Tồn kho đồng thời (Transaction + Optimistic Locking), (4) Khuyến mãi/Loyalty + **Bộ Test (a)(b)(c)** | **1.0** | 🔴 **Chưa làm (0%)** | Đã có trường `stock`, `version`, `loyaltyPoints`, `Voucher` trong `schema.prisma`. **Cần làm:** Hiện thực 4 nghiệp vụ lõi và bộ Unit/Integration Tests chứng minh (a), (b), (c). |
+| **Task 6** | Sprint 2 | **API tạo đơn hàng** | NestJS `POST /orders` nhận giỏ hàng, validate (`class-validator`), lưu đơn trạng thái `PENDING`, trả mã đơn | **1.0** | 🟢 **Đã xong (100%)** | Đã hoàn tất `OrdersModule`, `OrdersController`, `OrdersService`, `CreateOrderDto`, `VouchersModule` (`POST /orders`, `GET /vouchers/validate`), tính giá server-side, kiểm tra tồn kho gộp & unit tests (`orders.*.spec.ts`, `vouchers.*.spec.ts`). |
+| **Task 7** | Sprint 2 | **Đăng ký / Đăng nhập (JWT)** | `POST /auth/register`, `/auth/login`; băm mật khẩu (`bcrypt`); phát JWT; guard bảo vệ route đặt đơn | **1.0** | 🟢 **Đã xong (100%)** | Đã hoàn tất Backend `AuthModule` + `JwtAuthGuard` bảo vệ `POST /orders`, `GET /orders/me`, `GET /orders/:id` + Frontend `useAuthStore.ts`, `AuthModal.tsx`, `Header.tsx` kèm unit tests đầy đủ. |
+| **Task 8** | Sprint 3 | **Thanh toán không tiền mặt** | Tích hợp mock payment: chọn Ví/Thẻ, gọi `POST /payments`; đơn chuyển `PAID` khi thành công, `PAYMENT_FAILED` khi lỗi | **1.0** | 🔴 **Chưa làm (0%)** | **Cần làm:** Xây dựng `PaymentsModule` (`POST /payments`) ở Bước 3.2 và giao diện `CheckoutModal.tsx` ở Bước 4.2. |
+| **Task 9** | Sprint 3 | **Xác nhận, lịch sử đơn & bàn giao** | Màn hình xác nhận (mã đơn, trạng thái) & `GET /orders/me`; `docker-compose` chạy cả 3 (FE, BE, DB); `README` | **1.0** | 🟡 **Đang làm (~35%)** | Đã xong Backend `GET /orders/me`, `GET /orders/:id` (kiểm tra quyền sở hữu) và `README.md`. **Cần làm:** Màn hình xác nhận đơn, trang/modal Lịch sử đơn (Bước 4.2), Dockerfile FE/BE + `docker-compose.yml` 3 services (Bước 5). |
+| **Task 10** | Sprint 3 | **Nghiệp vụ backend** | (1) State Machine `assertTransition`, (2) Thanh toán `Idempotency-Key`, (3) Tồn kho đồng thời (Transaction + Optimistic Locking), (4) Khuyến mãi/Loyalty + **Bộ Test (a)(b)(c)** | **1.0** | 🟡 **Đang làm (~25%)** | Đã có `order-state-machine.ts` (`assertTransition` + `order-state-machine.spec.ts`) và `VouchersService` áp mã giảm giá server-side. **Cần làm:** `PATCH /orders/:id/status` (Bước 3.1), `PaymentsModule` Idempotent + Optimistic Locking `version` + Loyalty (Bước 3.2) và bộ test tích hợp (Bước 4.1). |
 
 ---
 
@@ -67,12 +67,12 @@
   * Tạo `frontend/src/store/useAuthStore.ts` và `frontend/src/lib/useHasHydrated.ts` lưu JWT token & thông tin user an toàn SSR/hydration.
   * Xây dựng `frontend/src/components/CartDrawer.tsx` và `frontend/src/components/AuthModal.tsx`, tích hợp vào `Header.tsx` và `page.tsx`.
   * Kiểm tra lint/typecheck/test (`11 suites / 45 tests passed`) & `next build`, commit & push ngay.
-- [ ] **Bước 2.3 (Task 6 & Task 10.3/10.4 - Backend Tạo đơn hàng):**
+- [x] **Bước 2.3 (Task 6 & Task 10.3/10.4 - Backend Tạo đơn hàng):**
+  * Tạo `backend/src/vouchers/` (`vouchers.module.ts`, `vouchers.controller.ts`, `vouchers.service.ts`) cung cấp endpoint `GET /vouchers/validate?code=...&subtotal=...` và `applyVoucherDiscount()`.
   * Tạo `backend/src/orders/` (`orders.module.ts`, `orders.controller.ts`, `orders.service.ts`, `order-state-machine.ts`, `dto/create-order.dto.ts`).
-  * Hiện thực `POST /orders` (bảo vệ bằng `JwtAuthGuard`, validate bằng `class-validator`), tính lại giá từ CSDL, kiểm tra & áp mã `Voucher` (Task 10.4), kiểm tra tồn kho và tạo đơn ở trạng thái `PENDING`.
-  * Hiện thực `GET /orders/me` (Task 9) trả về danh sách lịch sử đơn hàng của user đang đăng nhập.
-  * Hiện thực endpoint `GET /vouchers/validate?code=...` để Frontend kiểm tra mã khuyến mãi trực tiếp.
-  * Commit & push ngay.
+  * Hiện thực `POST /orders` (bảo vệ bằng `JwtAuthGuard`, validate bằng `class-validator` + chặn client giả mạo giá), tính lại giá từ CSDL (`Product`/`SizeOption`/`Topping`), kiểm tra & áp mã `Voucher` (Task 10.4), kiểm tra tồn kho gộp theo sản phẩm và tạo đơn ở trạng thái `PENDING` / `UNPAID`.
+  * Hiện thực `GET /orders/me` (Task 9) và `GET /orders/:id` (kiểm tra quyền sở hữu `CUSTOMER`) trả về danh sách/chi tiết đơn hàng.
+  * Viết bộ unit tests (`vouchers.*.spec.ts`, `orders.*.spec.ts`, `order-state-machine.spec.ts`), chạy smoke test HTTP thực tế với Neon DB, commit & push ngay.
 
 #### 🔹 Giai đoạn 3: Triển khai Sprint 3 (Phần 1) — Nghiệp vụ Backend (Task 10) & Thanh toán (Task 8)
 - [ ] **Bước 3.1 (Task 10.1 - Order State Machine):**
@@ -122,5 +122,5 @@
 | **Task 2** | **Mô hình hóa hệ thống** | Activity Diagram (`.puml` / `.png`), Sequence Diagram (`.mmd` / `.png`), Domain Class Diagram (`.mmd` / `.drawio.png`) | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
 | **Task 3** | **Thiết kế kiến trúc & Triển khai** | `docs/architecture/architecture-description.md`, thư mục `docs/architecture/adr/`, `docs/deployment.md` | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
 | **Task 4** | **Triển khai Sprint 1** | Chuẩn hóa repo, MVP Menu duyệt đồ uống (Next.js + NestJS), `.github/workflows/ci.yml` | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
-| **Task 5** | **Triển khai Sprint 2 & CI/CD** | MVP End-to-End (Task 5..10 của Assignment 1), Bộ Test (Unit/Integration/E2E), `.github/workflows/cd.yml`, Triển khai Production HTTPS | **2.0** | ⏳ **Chuẩn bị thực thi theo 5 Giai đoạn trên** | **0%** |
-| **TỔNG** | **TOÀN BỘ ASSIGNMENT 2** | **Hệ thống chạy thực tế, mã nguồn, tài liệu và pipeline CI/CD** | **10.0** | 🟢 **ĐÃ ĐẠT 8.0/10.0** | **80%** |
+| **Task 5** | **Triển khai Sprint 2 & CI/CD** | MVP End-to-End (Task 5..10 của Assignment 1), Bộ Test (Unit/Integration/E2E), `.github/workflows/cd.yml`, Triển khai Production HTTPS | **2.0** | 🟡 **Đang triển khai (Xong Giai đoạn 1 & 2 / 5)** | **40%** |
+| **TỔNG** | **TOÀN BỘ ASSIGNMENT 2** | **Hệ thống chạy thực tế, mã nguồn, tài liệu và pipeline CI/CD** | **10.0** | 🟢 **ĐÃ ĐẠT 8.0/10.0 (+ Task 5: 40%)** | **88%** |
