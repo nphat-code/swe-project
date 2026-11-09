@@ -44,7 +44,8 @@ docs/
 │   ├── branching-strategy.md    # Task 4.1: Chiến lược phân nhánh GitFlow & Quy trình Pull Request
 │   ├── definition-of-done.md    # Task 4.1: Tiêu chuẩn hoàn thành 3 cấp (Story, Sprint, Release)
 │   ├── product-backlog.md       # Task 4.1: Product Backlog 6 Epics, 15 User Stories
-│   └── sprint-1-backlog.md      # Task 4.1: Sprint 1 Backlog 5 tasks kèm Acceptance Criteria
+│   ├── sprint-1-backlog.md      # Task 4.1: Sprint 1 Backlog 6 tasks kèm Acceptance Criteria
+│   └── ci-evidence/             # Task 4.4: Ảnh minh chứng GitHub Actions CI (lỗi & thành công)
 │
 └── report/                      # BÁO CÁO HỌC THUẬT LATEX & XUẤT BẢN PDF
     └── figures/                 # Toàn bộ hình ảnh sơ đồ độ phân giải cao phục vụ báo cáo
@@ -77,4 +78,5 @@ Tuân thủ nghiêm ngặt yêu cầu của Mục 6.2 đề tài Assignment 2:
 | **v1.4** | Tuần 3 | Task 3 | `docs/architecture/*`, `docs/deployment.md` | Hoàn thiện tài liệu kiến trúc C4, 6 bản ghi ADRs và Sơ đồ Triển khai hạ tầng Production AWS EC2. | `c37d22b` |
 | **v1.5** | Sprint 1 | Task 4.1 | `docs/sprint/*` | Bổ sung hồ sơ quy trình Agile: Branching Strategy, Definition of Done, Product Backlog, Sprint 1 Backlog. | `8b9d6af` |
 | **v1.6** | Sprint 1 | Task 4.3 & 4.4 | `.github/workflows/ci.yml`, `docs/sprint/*` | Hoàn thiện MVP Sprint 1, 14 unit tests, pipeline CI tự động và cập nhật trạng thái Backlog DONE. | `faa86ba` |
-| **v1.7** | Sprint 1 | Task 4 (Hoàn thiện) | `ProductDetailModal.tsx`, `*.test.tsx`, `.github/workflows/ci.yml`, `docs/sprint/*`, `docs/traceability-matrix.md` | Hoàn tất 100% Task 4: chuẩn hóa ARIA/tùy chọn món, bổ sung unit/flow tests FE & BE (16 BE + 31 FE), sửa CI đa nền tảng & đồng bộ Backlog/Traceability. | *Task 4 Final* |
+| **v1.7** | Sprint 1 | Task 4 (Hoàn thiện) | `ProductDetailModal.tsx`, `*.test.tsx`, `.github/workflows/ci.yml`, `docs/sprint/*`, `docs/traceability-matrix.md` | Hoàn tất 100% Task 4: chuẩn hóa ARIA/tùy chọn món, bổ sung unit/flow tests FE & BE (16 BE + 31 FE), sửa CI đa nền tảng & đồng bộ Backlog/Traceability. | `5f1af24` |
+| **v1.8** | Sprint 1 | Task 4.4 (Minh chứng CI) | `docs/sprint/ci-evidence/*`, `docs/sprint/sprint-1-backlog.md` | Lưu ảnh minh chứng CI phát hiện lỗi (Run `#24` / `5f1af24`) và CI pass toàn bộ (Run `#25` / `82f60b4`). | *Latest* |

@@ -67,6 +67,7 @@ Hiện thực và bàn giao thành công phiên bản khả dụng đầu tiên 
 - **Tiêu chí chấp nhận (AC):**
   - Chạy tự động khi Push hoặc mở Pull Request vào `main` hoặc `develop`.
   - Vượt qua 5 bước cho cả Backend và Frontend: Cài đặt thư viện (`npm ci`) $\rightarrow$ Kiểm tra Lint $\rightarrow$ Static TypeCheck $\rightarrow$ Chạy Unit Test kèm Coverage $\rightarrow$ Build ứng dụng.
+  - Minh chứng thực tế (1 lần phát hiện lỗi Run `#24` & 1 lần chạy xanh Run `#25`): [`docs/sprint/ci-evidence/README.md`](ci-evidence/README.md).
 
 ### 3.6 SP1-06: Modal Tùy biến món & Bộ kiểm thử Unit/Flow (5 SP)
 - **Mô tả:** Hoàn thiện `ProductDetailModal.tsx` (Task 4 Assignment 1 / `FR-02`) và bộ kiểm thử tự động cho API, Component và luồng chính Sprint 1.
