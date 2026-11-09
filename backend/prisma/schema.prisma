@@ -118,10 +118,27 @@ model Order {
   finalAmount    Int
   idempotencyKey String?       @unique
   items          OrderItem[]
+  payments       Payment[]
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
   @@map("orders")
+}
+
+model Payment {
+  id             String        @id @default(uuid())
+  orderId        String
+  order          Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  idempotencyKey String        @unique
+  amount         Int
+  method         String
+  status         PaymentStatus @default(UNPAID)
+  transactionId  String?
+  paidAt         DateTime?
+  createdAt      DateTime      @default(now())
+
+  @@index([orderId])
+  @@map("payments")
 }
 
 model OrderItem {

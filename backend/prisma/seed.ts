@@ -1,4 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Role } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 import process from 'node:process';
 
 const prisma = new PrismaClient();
@@ -6,6 +7,7 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Starting BrewLite database seeding...');
 
+  await prisma.payment.deleteMany();
   await prisma.orderItem.deleteMany();
   await prisma.order.deleteMany();
   await prisma.sizeOption.deleteMany();
@@ -13,6 +15,40 @@ async function main() {
   await prisma.category.deleteMany();
   await prisma.topping.deleteMany();
   await prisma.voucher.deleteMany();
+
+  const demoPasswordHash = await bcrypt.hash('BrewLite@2026', 10);
+  const demoUsers = [
+    {
+      email: 'customer@brewlite.vn',
+      password: demoPasswordHash,
+      fullName: 'Nguyễn Minh Khách',
+      phone: '0901234567',
+      role: Role.CUSTOMER,
+      loyaltyPoints: 25,
+    },
+    {
+      email: 'barista@brewlite.vn',
+      password: demoPasswordHash,
+      fullName: 'Trần Pha Chế',
+      phone: '0909876543',
+      role: Role.STAFF,
+      loyaltyPoints: 0,
+    },
+  ];
+
+  for (const user of demoUsers) {
+    await prisma.user.upsert({
+      where: { email: user.email },
+      update: {
+        password: user.password,
+        fullName: user.fullName,
+        phone: user.phone,
+        role: user.role,
+      },
+      create: user,
+    });
+  }
+  console.log(`✅ Seeded ${demoUsers.length} demo accounts`);
 
   const toppingsData = [
     { name: 'Trân châu hoàng kim', price: 8000 },

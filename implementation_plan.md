@@ -50,11 +50,11 @@
 ### 1.2 Lộ trình 5 Giai đoạn (Phases) hoàn thiện Task 5 $\rightarrow$ Task 10 (Đồng bộ với Task 5 Assignment 2)
 
 #### 🔹 Giai đoạn 1: Chuẩn hóa Prisma Schema & Thực thể tối thiểu (Mục 12.2 PDF)
-- [ ] **Bước 1.1:** Cập nhật `backend/prisma/schema.prisma` bổ sung model `Payment`:
-  * Trường: `id`, `orderId`, `idempotencyKey (@unique)`, `amount`, `method`, `status`, `createdAt`, liên kết với `Order`.
+- [x] **Bước 1.1:** Cập nhật `backend/prisma/schema.prisma` bổ sung model `Payment`:
+  * Trường: `id`, `orderId`, `idempotencyKey (@unique)`, `amount`, `method`, `status`, `createdAt` (kèm `transactionId`, `paidAt`), liên kết với `Order` và khởi tạo baseline migration `0001_init`.
   * Kiểm tra các thực thể bắt buộc Mục 12.2: `Product(id, name, basePrice, imageUrl, stock, version)`, `User(id, email, password, loyaltyPoints)`, `Order`, `OrderItem`, `Payment`, `Voucher`.
-- [ ] **Bước 1.2:** Cập nhật `backend/prisma/seed.ts` (nếu cần seed sẵn tài khoản mẫu khách hàng/barista và làm sạch bảng `Payment` khi seed), chạy `npx prisma generate`.
-- [ ] **Bước 1.3:** Commit & push ngay (`feat(prisma): add Payment model and align schema with Assignment 1`).
+- [x] **Bước 1.2:** Cập nhật `backend/prisma/seed.ts` (seed sẵn 2 tài khoản mẫu `customer@brewlite.vn` & `barista@brewlite.vn` và làm sạch bảng `Payment` khi seed), chạy `npx prisma db push`, `npx prisma generate` & `npx prisma db seed`.
+- [x] **Bước 1.3:** Commit & push ngay (`feat(prisma): add Payment model and align schema with Assignment 1`).
 
 #### 🔹 Giai đoạn 2: Triển khai Sprint 2 — Auth JWT (Task 7), Giỏ hàng Zustand (Task 5) & API Tạo đơn (Task 6)
 - [ ] **Bước 2.1 (Task 7 - Backend Auth):**
