@@ -21,6 +21,9 @@ jobs:
   backend-ci:
     name: Backend CI (NestJS + Prisma)
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
 
     steps:
       - name: Checkout Source Code
@@ -34,23 +37,29 @@ jobs:
           cache-dependency-path: 'backend/package-lock.json'
 
       - name: Install Backend Dependencies
-        run: npm --prefix backend ci
+        run: npm ci
 
       - name: Generate Prisma Client
-        run: npx --prefix backend prisma generate
+        run: npx prisma generate
+
+      - name: Run ESLint Quality Check
+        run: npm run lint
 
       - name: Static TypeCheck
-        run: npm --prefix backend run typecheck
+        run: npm run typecheck
 
       - name: Run Backend Unit Tests & Coverage
-        run: npm --prefix backend run test:cov
+        run: npm run test:cov
 
       - name: Build Backend Production Artifact
-        run: npm --prefix backend run build
+        run: npm run build
 
   frontend-ci:
-    name: Frontend CI (Next.js 15 App Router)
+    name: Frontend CI (Next.js App Router)
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
 
     steps:
       - name: Checkout Source Code
@@ -64,12 +73,18 @@ jobs:
           cache-dependency-path: 'frontend/package-lock.json'
 
       - name: Install Frontend Dependencies
-        run: npm --prefix frontend ci
+        run: npm ci
 
       - name: Run ESLint Quality Check
-        run: npm --prefix frontend run lint
+        run: npm run lint
+
+      - name: Static TypeCheck
+        run: npm run typecheck
+
+      - name: Run Frontend Unit Tests & Coverage
+        run: npm run test -- --ci --coverage
 
       - name: Build Next.js Production Bundle
-        run: npm --prefix frontend run build
+        run: npm run build
         env:
           NEXT_PUBLIC_API_URL: https://api.brewlite.nphat.dev
