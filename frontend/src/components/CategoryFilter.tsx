@@ -25,6 +25,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
         return <Flame className="w-4 h-4" />;
       case 'tra-trai-cay':
         return <Sparkles className="w-4 h-4" />;
+      case 'da-xay':
       case 'tra-sua-da-xay':
         return <CupSoda className="w-4 h-4" />;
       case 'banh-ngot':
@@ -38,6 +39,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
     <div className="w-full overflow-x-auto no-scrollbar py-1">
       <div className="flex items-center gap-2 min-w-max pb-1">
         <button
+          type="button"
           onClick={() => onSelectCategory('all')}
           className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 border ${
             selectedCategory === 'all'
@@ -65,6 +67,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
           return (
             <button
               key={cat.id}
+              type="button"
               onClick={() => onSelectCategory(cat.slug)}
               className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 border ${
                 isSelected

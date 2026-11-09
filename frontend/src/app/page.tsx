@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Header } from '../components/Header';
 import { CategoryFilter } from '../components/CategoryFilter';
 import { ProductCard } from '../components/ProductCard';
@@ -23,6 +23,7 @@ export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [cartItems, setCartItems] = useState<CustomOrderItem[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const cartCount = useMemo(() => {
     return cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -53,6 +54,11 @@ export default function Home() {
 
   useEffect(() => {
     loadInitialData();
+    return () => {
+      if (toastTimeoutRef.current) {
+        clearTimeout(toastTimeoutRef.current);
+      }
+    };
   }, []);
 
   const handleSelectCategory = (slug: string) => {
@@ -92,7 +98,10 @@ export default function Home() {
   const handleAddToCart = (customItem: CustomOrderItem) => {
     setCartItems((prev) => [...prev, customItem]);
     setToastMessage(`Đã thêm ${customItem.quantity}x ${customItem.productName} (${customItem.selectedSize.name}) vào giỏ hàng!`);
-    setTimeout(() => {
+    if (toastTimeoutRef.current) {
+      clearTimeout(toastTimeoutRef.current);
+    }
+    toastTimeoutRef.current = setTimeout(() => {
       setToastMessage(null);
     }, 3200);
   };

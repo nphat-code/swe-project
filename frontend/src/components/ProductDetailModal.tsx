@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Image from 'next/image';
 import { X, Plus, Minus, Check } from 'lucide-react';
 import { Product, ProductSize, Topping, CustomOrderItem } from '../types';
@@ -32,6 +32,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const [quantity, setQuantity] = useState<number>(1);
   const [note, setNote] = useState<string>('');
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const submitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   if (product !== prevProduct) {
     setPrevProduct(product);
@@ -52,10 +53,27 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     } else {
       document.body.style.overflow = 'unset';
     }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
     return () => {
       document.body.style.overflow = 'unset';
+      window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen]);
+  }, [isOpen, onClose]);
+
+  useEffect(() => {
+    return () => {
+      if (submitTimerRef.current) {
+        clearTimeout(submitTimerRef.current);
+      }
+    };
+  }, []);
 
   const availableToppings = useMemo(() => {
     if (product?.availableToppings && product.availableToppings.length > 0) {
@@ -97,6 +115,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   };
 
   const handleConfirmAddToCart = () => {
+    if (isSuccess) return;
     if (!selectedSize && product.sizes && product.sizes.length > 0) {
       alert('Vui lòng chọn kích cỡ đồ uống!');
       return;
@@ -117,7 +136,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     };
 
     setIsSuccess(true);
-    setTimeout(() => {
+    submitTimerRef.current = setTimeout(() => {
       onAddToCart(customItem);
       onClose();
     }, 450);
@@ -129,6 +148,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
       onClick={onClose}
     >
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={product.name}
         className="w-full sm:max-w-lg bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col max-h-[90vh] sm:max-h-[85vh] overflow-hidden transition-all duration-300 transform animate-in slide-in-from-bottom-6"
         onClick={(e) => e.stopPropagation()}
       >
@@ -195,6 +217,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     <button
                       key={size.id}
                       type="button"
+                      aria-pressed={isSelected}
                       onClick={() => setSelectedSize(size)}
                       className={`flex flex-col items-center justify-center py-2.5 px-1.5 sm:p-3 rounded-2xl border text-center transition-all duration-150 ${
                         isSelected
@@ -244,10 +267,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 {availableToppings.map((topping) => {
                   const isChecked = selectedToppings.some((t) => t.id === topping.id);
                   return (
-                    <label
+                    <button
                       key={topping.id}
+                      type="button"
+                      role="checkbox"
+                      aria-checked={isChecked}
                       onClick={() => handleToggleTopping(topping)}
-                      className={`flex items-center justify-between p-3 rounded-2xl border cursor-pointer transition-all duration-150 ${
+                      className={`w-full text-left flex items-center justify-between p-3 rounded-2xl border cursor-pointer transition-all duration-150 ${
                         isChecked
                           ? 'border-[#006241] bg-[#d4e9e2]/20'
                           : 'border-stone-200 hover:border-stone-300 bg-white hover:bg-stone-50'
@@ -270,7 +296,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       <span className="text-xs font-bold text-[#006241]">
                         + {formatCurrency(topping.price)}
                       </span>
-                    </label>
+                    </button>
                   );
                 })}
               </div>
@@ -295,6 +321,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             <div className="flex items-center gap-3 bg-[#f2f0eb] px-3 py-1.5 rounded-full">
               <button
                 type="button"
+                aria-label="Giảm số lượng"
                 onClick={handleDecreaseQuantity}
                 disabled={quantity <= 1}
                 className="w-7 h-7 rounded-full bg-white flex items-center justify-center text-[#1e3932] disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs hover:bg-[#d4e9e2] transition-colors active:scale-90"
@@ -306,6 +333,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               </span>
               <button
                 type="button"
+                aria-label="Tăng số lượng"
                 onClick={handleIncreaseQuantity}
                 className="w-7 h-7 rounded-full bg-white flex items-center justify-center text-[#1e3932] shadow-2xs hover:bg-[#d4e9e2] transition-colors active:scale-90"
               >
@@ -318,6 +346,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         <div className="p-4 pb-6 sm:p-5 bg-white border-t border-stone-100 shadow-lg">
           <button
             type="button"
+            disabled={isSuccess}
             onClick={handleConfirmAddToCart}
             className={`w-full py-3.5 rounded-full font-bold text-sm sm:text-base text-white flex items-center justify-center gap-2 shadow-md transition-all duration-200 active:scale-98 ${
               isSuccess
