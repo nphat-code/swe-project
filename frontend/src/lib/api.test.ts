@@ -1,9 +1,13 @@
 import {
   fetchCategories,
+  fetchCurrentUser,
   fetchProductById,
   fetchProducts,
   fetchToppings,
   formatCurrency,
+  loginUser,
+  registerUser,
+  validateVoucherCode,
 } from './api';
 
 describe('API Utils - formatCurrency', () => {
@@ -145,5 +149,102 @@ describe('API Client', () => {
     expect(global.fetch).toHaveBeenCalledTimes(5);
     expect(result).toEqual([]);
     consoleSpy.mockRestore();
+  });
+
+  it('loginUser posts credentials and surfaces backend error messages cleanly', async () => {
+    const authResponse = {
+      accessToken: 'jwt-123',
+      user: { id: 'u1', email: 'customer@brewlite.vn', fullName: 'Khách mẫu' },
+    };
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => authResponse,
+    });
+
+    const okResult = await loginUser({
+      email: ' customer@brewlite.vn ',
+      password: 'BrewLite@2026',
+    });
+    expect(global.fetch).toHaveBeenCalledWith('http://localhost:3001/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'customer@brewlite.vn', password: 'BrewLite@2026' }),
+    });
+    expect(okResult).toEqual(authResponse);
+
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: false,
+      status: 401,
+      json: async () => ({ message: 'Email hoặc mật khẩu không chính xác' }),
+    });
+
+    await expect(
+      loginUser({ email: 'customer@brewlite.vn', password: 'wrong' })
+    ).rejects.toThrow('Email hoặc mật khẩu không chính xác');
+  });
+
+  it('registerUser and fetchCurrentUser communicate with auth endpoints', async () => {
+    const authResponse = {
+      accessToken: 'jwt-new',
+      user: { id: 'u2', email: 'new@brewlite.vn', fullName: 'An Nguyễn' },
+    };
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      status: 201,
+      json: async () => authResponse,
+    });
+
+    const registered = await registerUser({
+      email: 'new@brewlite.vn',
+      password: 'BrewLite@2026',
+      fullName: 'An Nguyễn',
+      phone: '',
+    });
+    expect(global.fetch).toHaveBeenCalledWith('http://localhost:3001/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: 'new@brewlite.vn',
+        password: 'BrewLite@2026',
+        fullName: 'An Nguyễn',
+      }),
+    });
+    expect(registered).toEqual(authResponse);
+
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => authResponse.user,
+    });
+
+    const profile = await fetchCurrentUser('jwt-new');
+    expect(global.fetch).toHaveBeenCalledWith('http://localhost:3001/auth/me', {
+      headers: { Authorization: 'Bearer jwt-new' },
+      cache: 'no-store',
+    });
+    expect(profile).toEqual(authResponse.user);
+  });
+
+  it('validateVoucherCode uses server response or preview fallback when endpoint is missing', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: false,
+      status: 404,
+      json: async () => ({ message: 'Cannot GET /vouchers/validate?code=BREWLITEFIRST' }),
+    });
+
+    const fallbackVoucher = await validateVoucherCode('brewlitefirst', 60000);
+    expect(fallbackVoucher.code).toBe('BREWLITEFIRST');
+    expect(fallbackVoucher.discountPercent).toBe(20);
+
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: false,
+      status: 404,
+      json: async () => ({ message: 'Cannot GET /vouchers/validate?code=BREWLITEFIRST' }),
+    });
+
+    await expect(validateVoucherCode('BREWLITEFIRST', 25000)).rejects.toThrow(
+      /Đơn tối thiểu/i
+    );
   });
 });

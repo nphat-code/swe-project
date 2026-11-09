@@ -8,8 +8,13 @@ import { ProductSkeleton } from '../components/ProductSkeleton';
 import { ErrorState } from '../components/ErrorState';
 import { EmptyState } from '../components/EmptyState';
 import { ProductDetailModal } from '../components/ProductDetailModal';
-import { Product, Category, Topping, CustomOrderItem } from '../types';
-import { fetchProducts, fetchCategories, fetchToppings, formatCurrency } from '../lib/api';
+import { CartDrawer } from '../components/CartDrawer';
+import { AuthModal } from '../components/AuthModal';
+import { Product, Category, Topping, CustomOrderItem, AuthUser } from '../types';
+import { fetchProducts, fetchCategories, fetchToppings, fetchCurrentUser } from '../lib/api';
+import { useHasHydrated } from '../lib/useHasHydrated';
+import { useCartStore } from '../store/useCartStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { Search, X, CheckCircle2 } from 'lucide-react';
 
 export default function Home() {
@@ -21,13 +26,34 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasError, setHasError] = useState<boolean>(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [cartItems, setCartItems] = useState<CustomOrderItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
+  const [isAuthOpen, setIsAuthOpen] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const hasHydrated = useHasHydrated();
+  const cartItems = useCartStore((state) => state.items);
+  const addCartItem = useCartStore((state) => state.addItem);
+  const user = useAuthStore((state) => state.user);
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const setUser = useAuthStore((state) => state.setUser);
+  const logout = useAuthStore((state) => state.logout);
+
+  const displayUser = hasHydrated ? user : null;
   const cartCount = useMemo(() => {
+    if (!hasHydrated) return 0;
     return cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  }, [cartItems]);
+  }, [hasHydrated, cartItems]);
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    if (toastTimeoutRef.current) {
+      clearTimeout(toastTimeoutRef.current);
+    }
+    toastTimeoutRef.current = setTimeout(() => {
+      setToastMessage(null);
+    }, 3200);
+  };
 
   const applyMenuResult = (catsData: Category[], prodsData: Product[], topsData: Topping[]) => {
     setCategories(catsData);
@@ -84,6 +110,29 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!hasHydrated || !accessToken) {
+      return;
+    }
+
+    let isCancelled = false;
+    fetchCurrentUser(accessToken)
+      .then((freshUser) => {
+        if (!isCancelled) {
+          setUser(freshUser);
+        }
+      })
+      .catch(() => {
+        if (!isCancelled) {
+          logout();
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [hasHydrated, accessToken, setUser, logout]);
+
   const handleSelectCategory = (slug: string) => {
     setSelectedCategory(slug);
   };
@@ -119,33 +168,44 @@ export default function Home() {
   };
 
   const handleAddToCart = (customItem: CustomOrderItem) => {
-    setCartItems((prev) => [...prev, customItem]);
-    setToastMessage(`Đã thêm ${customItem.quantity}x ${customItem.productName} (${customItem.selectedSize.name}) vào giỏ hàng!`);
-    if (toastTimeoutRef.current) {
-      clearTimeout(toastTimeoutRef.current);
-    }
-    toastTimeoutRef.current = setTimeout(() => {
-      setToastMessage(null);
-    }, 3200);
+    addCartItem(customItem);
+    showToast(
+      `Đã thêm ${customItem.quantity}x ${customItem.productName} (${customItem.selectedSize.name}) vào giỏ hàng!`
+    );
+  };
+
+  const handleAuthSuccess = (authenticatedUser: AuthUser) => {
+    showToast(`Xin chào ${authenticatedUser.fullName}! Đã đăng nhập thành công.`);
+  };
+
+  const handleLogout = () => {
+    logout();
+    showToast('Bạn đã đăng xuất khỏi tài khoản BrewLite.');
+  };
+
+  const handleRequireAuthFromCart = () => {
+    setIsCartOpen(false);
+    setIsAuthOpen(true);
+  };
+
+  const handleProceedCheckout = () => {
+    setIsCartOpen(false);
+    showToast('Giỏ hàng đã sẵn sàng! Bước tạo đơn hàng & thanh toán sẽ được kết nối tiếp.');
   };
 
   return (
     <div className="min-h-screen bg-white text-[#212121] flex flex-col font-sans selection:bg-[#d4e9e2] selection:text-[#006241]">
       <Header
         cartCount={cartCount}
-        onOpenCart={() => {
-          if (cartItems.length === 0) {
-            alert('Giỏ hàng hiện đang trống. Hãy chọn món đồ uống yêu thích nhé!');
-          } else {
-            const total = cartItems.reduce((sum, item) => sum + item.totalPrice, 0);
-            alert(`🛒 Giỏ hàng có ${cartCount} ly nước (Tổng: ${formatCurrency(total)}).\nTính năng Quản lý giỏ hàng chi tiết sẽ ra mắt ở Task 5!`);
-          }
-        }}
+        onOpenCart={() => setIsCartOpen(true)}
+        user={displayUser}
+        onOpenAuth={() => setIsAuthOpen(true)}
+        onLogout={handleLogout}
       />
 
       {toastMessage && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#006241] text-white px-4 py-2.5 rounded-full shadow-xl flex items-center gap-2 text-xs sm:text-sm font-bold animate-in fade-in slide-in-from-top-4 duration-200">
-          <CheckCircle2 className="w-4 h-4 text-emerald-300" />
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#006241] text-white px-4 py-2.5 rounded-full shadow-xl flex items-center gap-2 text-xs sm:text-sm font-bold animate-in fade-in slide-in-from-top-4 duration-200 max-w-[92vw] text-center">
+          <CheckCircle2 className="w-4 h-4 text-emerald-300 flex-shrink-0" />
           <span>{toastMessage}</span>
         </div>
       )}
@@ -244,6 +304,24 @@ export default function Home() {
             isOpen={true}
             onClose={() => setSelectedProduct(null)}
             onAddToCart={handleAddToCart}
+          />
+        )}
+
+        {isCartOpen && (
+          <CartDrawer
+            isOpen={true}
+            onClose={() => setIsCartOpen(false)}
+            isAuthenticated={Boolean(displayUser && accessToken)}
+            onRequireAuth={handleRequireAuthFromCart}
+            onProceedCheckout={handleProceedCheckout}
+          />
+        )}
+
+        {isAuthOpen && (
+          <AuthModal
+            isOpen={true}
+            onClose={() => setIsAuthOpen(false)}
+            onSuccess={handleAuthSuccess}
           />
         )}
       </main>

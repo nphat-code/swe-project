@@ -2,6 +2,8 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import Home from './page';
 import * as api from '../lib/api';
+import { useAuthStore } from '../store/useAuthStore';
+import { useCartStore } from '../store/useCartStore';
 import { Category, Product, Topping } from '../types';
 
 jest.mock('../lib/api', () => {
@@ -11,6 +13,8 @@ jest.mock('../lib/api', () => {
     fetchCategories: jest.fn(),
     fetchProducts: jest.fn(),
     fetchToppings: jest.fn(),
+    loginUser: jest.fn(),
+    fetchCurrentUser: jest.fn(),
   };
 });
 
@@ -56,8 +60,11 @@ const mockToppings: Topping[] = [
   { id: 'top-1', name: 'Trân châu hoàng kim', price: 8000, isAvailable: true },
 ];
 
-describe('Home Page (Sprint 1 Core Flow)', () => {
+describe('Home Page (Sprint 1 + Sprint 2 Cart & Auth Flow)', () => {
   beforeEach(() => {
+    localStorage.clear();
+    useCartStore.getState().clearCart();
+    useAuthStore.getState().logout();
     jest.clearAllMocks();
   });
 
@@ -110,7 +117,7 @@ describe('Home Page (Sprint 1 Core Flow)', () => {
     expect(await screen.findByText('Cà Phê Sữa Đá Sài Gòn')).toBeInTheDocument();
   });
 
-  it('opens ProductDetailModal, customizes drink options, and updates cart badge', async () => {
+  it('opens ProductDetailModal, updates Zustand cart badge, and manages items in CartDrawer', async () => {
     jest.useFakeTimers();
     (api.fetchCategories as jest.Mock).mockResolvedValue(mockCategories);
     (api.fetchProducts as jest.Mock).mockResolvedValue(mockProducts);
@@ -145,7 +152,51 @@ describe('Home Page (Sprint 1 Core Flow)', () => {
     const cartButton = screen.getByRole('button', { name: 'Giỏ hàng' });
     expect(cartButton).toHaveTextContent('2');
 
+    fireEvent.click(cartButton);
+    expect(screen.getByRole('dialog', { name: 'Giỏ hàng của bạn' })).toBeInTheDocument();
+    expect(screen.getByText('Size: Vừa (M)')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /Tăng số lượng Cà Phê Sữa Đá Sài Gòn/i }));
+    expect(cartButton).toHaveTextContent('3');
+
     jest.useRealTimers();
   });
-});
 
+  it('opens AuthModal from Header, logs in, renders user profile badge, and logs out', async () => {
+    const authResponse = {
+      accessToken: 'jwt-demo-token',
+      user: {
+        id: 'user-1',
+        email: 'customer@brewlite.vn',
+        fullName: 'Nguyễn Minh Khách',
+        phone: '0901234567',
+        role: 'CUSTOMER' as const,
+        loyaltyPoints: 25,
+        createdAt: '2026-11-09T03:00:00.000Z',
+      },
+    };
+
+    (api.fetchCategories as jest.Mock).mockResolvedValue(mockCategories);
+    (api.fetchProducts as jest.Mock).mockResolvedValue(mockProducts);
+    (api.fetchToppings as jest.Mock).mockResolvedValue(mockToppings);
+    (api.loginUser as jest.Mock).mockResolvedValue(authResponse);
+    (api.fetchCurrentUser as jest.Mock).mockResolvedValue(authResponse.user);
+
+    render(<Home />);
+    expect(await screen.findByText('Cà Phê Sữa Đá Sài Gòn')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Đăng nhập' }));
+    expect(screen.getByRole('dialog', { name: 'Đăng nhập BrewLite' })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /Điền nhanh tài khoản mẫu/i }));
+    const loginButtons = screen.getAllByRole('button', { name: 'Đăng nhập' });
+    fireEvent.click(loginButtons[loginButtons.length - 1]);
+
+    expect(await screen.findByText('Nguyễn Minh Khách')).toBeInTheDocument();
+    expect(screen.getByText('25 điểm')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Đăng xuất' }));
+    expect(screen.queryByText('Nguyễn Minh Khách')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Đăng nhập' })).toBeInTheDocument();
+  });
+});

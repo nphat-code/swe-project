@@ -33,9 +33,9 @@ Product Backlog của BrewLite được quản lý theo mô hình Agile Scrum, t
 | **PBI-03** | Khởi tạo dữ liệu mẫu (Database Seeding) cho đồ uống & topping | Epic 1 | `FR-01` | `UC01` | Must | 2 | Sprint 1 | 🟢 Done |
 | **PBI-04** | Xây dựng Giao diện Menu Mobile-First với Tabs danh mục | Epic 1 | `FR-01` | `UC01` | Must | 5 | Sprint 1 | 🟢 Done |
 | **PBI-05** | Thiết lập Pipeline CI tự động kiểm tra Lint, Test & Build | Epic 2 | `NFR-08` | DevOps | Must | 3 | Sprint 1 | 🟢 Done |
-| **PBI-06** | Quản lý Giỏ hàng Client bằng Zustand & LocalStorage đồng bộ | Epic 3 | `FR-03` | `UC04` | Must | 5 | Sprint 2 | ⏳ Chờ làm |
+| **PBI-06** | Quản lý Giỏ hàng Client bằng Zustand & LocalStorage đồng bộ | Epic 3 | `FR-03` | `UC04` | Must | 5 | Sprint 2 | 🟢 Done |
 | **PBI-07** | Modal Tùy biến món: Chọn kích cỡ (S/M/L) và đa topping kèm giá động | Epic 1 | `FR-02` | `UC02`, `UC03` | Must | 5 | Sprint 1 | 🟢 Done |
-| **PBI-08** | Xác thực tài khoản Khách hàng / Nhân viên bằng JWT & bcrypt | Epic 4 | `FR-04` | `UC09`, `UC10` | Must | 3 | Sprint 2 | 🟡 Đang làm (Xong Backend) |
+| **PBI-08** | Xác thực tài khoản Khách hàng / Nhân viên bằng JWT & bcrypt | Epic 4 | `FR-04` | `UC09`, `UC10` | Must | 3 | Sprint 2 | 🟡 Xong Auth BE+FE (Chờ Guard Orders) |
 | **PBI-09** | Khởi tạo đơn hàng với Prisma Transaction & Optimistic Locking (`version`) | Epic 5 | `FR-05`, `FR-06` | `UC05` | Must | 5 | Sprint 2 | ⏳ Chờ làm |
 | **PBI-10** | Tích hợp Cổng thanh toán mô phỏng MoMo/VNPay bảo vệ Idempotent | Epic 5 | `FR-07` | `UC06` | Must | 5 | Sprint 2 | ⏳ Chờ làm |
 | **PBI-11** | Cỗ máy trạng thái đơn hàng nghiêm ngặt (`assertTransition`) | Epic 5 | `FR-08` | `UC07`, `UC13` | Must | 3 | Sprint 2 | ⏳ Chờ làm |

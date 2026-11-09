@@ -58,3 +58,44 @@ export interface CustomOrderItem {
   unitPrice: number;
   totalPrice: number;
 }
+
+export interface CartItem extends CustomOrderItem {
+  cartItemId: string;
+}
+
+export interface AppliedVoucher {
+  code: string;
+  description: string;
+  discountPercent: number;
+  maxDiscount: number;
+  minOrderAmount: number;
+}
+
+export type UserRole = 'CUSTOMER' | 'STAFF' | 'ADMIN';
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  fullName: string;
+  phone: string | null;
+  role: UserRole;
+  loyaltyPoints: number;
+  createdAt: string;
+}
+
+export interface AuthResponse {
+  accessToken: string;
+  user: AuthUser;
+}
+
+export interface RegisterPayload {
+  email: string;
+  password: string;
+  fullName: string;
+  phone?: string;
+}
+
+export interface LoginPayload {
+  email: string;
+  password: string;
+}
