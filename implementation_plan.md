@@ -6,8 +6,8 @@
 > **Đề bài gốc Assignment 1:** [`docs/DE_BAI_ASSIGNMENT_1_GOC.md`](docs/DE_BAI_ASSIGNMENT_1_GOC.md) *(10 Tasks x 1.0đ = 10.0 Điểm)*  
 > **Đề bài gốc Assignment 2:** [`docs/DE_BAI_ASSIGNMENT_2_GOC.md`](docs/DE_BAI_ASSIGNMENT_2_GOC.md) *(5 Tasks x 2.0đ = 10.0 Điểm)*  
 > **Trạng thái hiện tại:**
-> * **Assignment 1 (10 Tasks Scrum):** 🟢 **Đã xong Task 1 $\rightarrow$ 7 & Task 10 (Sprint 1, 2 & Backend Task 10 — 8.0/10.0đ)** | 🟡 **Đang làm Task 8 (~55%) & Task 9 (~35%)**
-> * **Assignment 2 (5 Tasks tuần tự):** 🟢 **Đã xong Task 1, 2, 3, 4 (8.0/10.0đ)** | 🟡 **Đang triển khai Task 5 (Hoàn tất Giai đoạn 1, 2, 3 & Bước 4.1 / 5 Giai đoạn)**
+> * **Assignment 1 (10 Tasks Scrum):** 🟢 **Đã xong Task 1 $\rightarrow$ 8 & Task 10 (Sprint 1, 2 & Checkout/Payment — 9.0/10.0đ)** | 🟡 **Đang làm Task 9 (~65% — xong Xác nhận & Lịch sử đơn, chờ Docker Compose 3 services Bước 5)**
+> * **Assignment 2 (5 Tasks tuần tự):** 🟢 **Đã xong Task 1, 2, 3, 4 (8.0/10.0đ)** | 🟡 **Đang triển khai Task 5 (Hoàn tất Giai đoạn 1 $\rightarrow$ 4 / 5 Giai đoạn)**
 
 ---
 
@@ -41,8 +41,8 @@
 | **Task 5** | Sprint 2 | **Giỏ hàng (Cart)** | Thêm/sửa số lượng/xóa; lưu state (Zustand/Context); tự tính tổng tiền; badge số lượng | **1.0** | 🟢 **Đã xong (100%)** | Đã hoàn tất `useCartStore.ts` (Zustand + `localStorage`, gộp món trùng size/topping/note, áp mã giảm giá, tính tổng), `CartDrawer.tsx`, tích hợp `Header.tsx` & `page.tsx` (không còn `alert()`) kèm unit tests (`useCartStore.test.ts`, `CartDrawer.test.tsx`, `page.test.tsx`). |
 | **Task 6** | Sprint 2 | **API tạo đơn hàng** | NestJS `POST /orders` nhận giỏ hàng, validate (`class-validator`), lưu đơn trạng thái `PENDING`, trả mã đơn | **1.0** | 🟢 **Đã xong (100%)** | Đã hoàn tất `OrdersModule`, `OrdersController`, `OrdersService`, `CreateOrderDto`, `VouchersModule` (`POST /orders`, `GET /vouchers/validate`), tính giá server-side, kiểm tra tồn kho gộp & unit tests (`orders.*.spec.ts`, `vouchers.*.spec.ts`). |
 | **Task 7** | Sprint 2 | **Đăng ký / Đăng nhập (JWT)** | `POST /auth/register`, `/auth/login`; băm mật khẩu (`bcrypt`); phát JWT; guard bảo vệ route đặt đơn | **1.0** | 🟢 **Đã xong (100%)** | Đã hoàn tất Backend `AuthModule` + `JwtAuthGuard` bảo vệ `POST /orders`, `GET /orders/me`, `GET /orders/:id` + Frontend `useAuthStore.ts`, `AuthModal.tsx`, `Header.tsx` kèm unit tests đầy đủ. |
-| **Task 8** | Sprint 3 | **Thanh toán không tiền mặt** | Tích hợp mock payment: chọn Ví/Thẻ, gọi `POST /payments`; đơn chuyển `PAID` khi thành công, `PAYMENT_FAILED` khi lỗi | **1.0** | 🟡 **Đang làm (~55%)** | Đã hoàn tất Backend `PaymentsModule` (`POST /payments` hỗ trợ `WALLET`/`CARD`/`MOCK_*`, `simulateFailure`, retry `PAYMENT_FAILED`, unit tests & live smoke test). **Cần làm:** Giao diện `CheckoutModal.tsx` ở Bước 4.2. |
-| **Task 9** | Sprint 3 | **Xác nhận, lịch sử đơn & bàn giao** | Màn hình xác nhận (mã đơn, trạng thái) & `GET /orders/me`; `docker-compose` chạy cả 3 (FE, BE, DB); `README` | **1.0** | 🟡 **Đang làm (~35%)** | Đã xong Backend `GET /orders/me`, `GET /orders/:id` (kiểm tra quyền sở hữu) và `README.md`. **Cần làm:** Màn hình xác nhận đơn, trang/modal Lịch sử đơn (Bước 4.2), Dockerfile FE/BE + `docker-compose.yml` 3 services (Bước 5). |
+| **Task 8** | Sprint 3 | **Thanh toán không tiền mặt** | Tích hợp mock payment: chọn Ví/Thẻ, gọi `POST /payments`; đơn chuyển `PAID` khi thành công, `PAYMENT_FAILED` khi lỗi | **1.0** | 🟢 **Đã xong (100%)** | Đã hoàn tất Backend `PaymentsModule` (`POST /payments` Ví/Thẻ, `simulateFailure`, retry `PAYMENT_FAILED`) và Frontend `CheckoutModal.tsx` (chọn `Ví điện tử` / `Thẻ ngân hàng`, áp voucher, mô phỏng lỗi/thành công giữ giỏ hàng, tự sinh `Idempotency-Key` + `CheckoutModal.test.tsx`). |
+| **Task 9** | Sprint 3 | **Xác nhận, lịch sử đơn & bàn giao** | Màn hình xác nhận (mã đơn, trạng thái) & `GET /orders/me`; `docker-compose` chạy cả 3 (FE, BE, DB); `README` | **1.0** | 🟡 **Đang làm (~65%)** | Đã xong Backend `GET /orders/me`, `GET /orders/:id`, `README.md` và giao diện `OrderConfirmationModal.tsx` (mã đơn động `#xxxxxx`, `PAID`, điểm thưởng) + `OrderHistoryModal.tsx` (`GET /orders/me`, thanh toán lại / hủy đơn) kèm unit tests. **Cần làm:** `GET /health`, Dockerfile FE/BE + `docker-compose.yml` 3 services & tài liệu bàn giao ở Bước 5. |
 | **Task 10** | Sprint 3 | **Nghiệp vụ backend** | (1) State Machine `assertTransition`, (2) Thanh toán `Idempotency-Key`, (3) Tồn kho đồng thời (Transaction + Optimistic Locking), (4) Khuyến mãi/Loyalty + **Bộ Test (a)(b)(c)** | **1.0** | 🟢 **Đã xong (100%)** | Đã hoàn tất cả 4 nghiệp vụ lõi ở Backend & bộ kiểm thử chứng minh 3 tiêu chí Mục 9: **(a)** `order-state-machine.spec.ts` (ma trận 7x7), **(b)** `payments.service.spec.ts` + `concurrency-inventory.spec.ts` (5-way parallel + replay `Idempotency-Key`), **(c)** `concurrency-inventory.spec.ts` (8-luồng đồng thời + rollback đa món; tổng Backend 17 suites / 88 tests pass 100%). |
 
 ---
@@ -100,10 +100,10 @@
   * **(b) Test Thanh toán Idempotent (`payments.service.spec.ts` & `concurrency-inventory.spec.ts`):** Chứng minh gửi 2 lần (tuần tự & 5-way `Promise.all`) cùng `Idempotency-Key` chỉ tạo 1 bản ghi thanh toán / xử lý đơn 1 lần duy nhất; đồng thời chặn double-charge nếu cùng 1 đơn bị gọi song song với 2 key khác nhau.
   * **(c) Test Đặt hàng / Thanh toán đồng thời (`concurrency-inventory.spec.ts`):** Chứng minh khi nhiều khách đặt cùng lúc (`Promise.all` / `Promise.allSettled`) vượt số lượng `stock` còn lại, cơ chế Transaction + Optimistic Locking (`version`) chặn chính xác các đơn vượt tồn kho, không bao giờ để `stock < 0` và rollback toàn phần nếu món sau hết hàng.
   * Commit & push ngay.
-- [ ] **Bước 4.2 (Task 8 & Task 9 - Frontend Checkout, Màn hình Xác nhận `#1042` & Lịch sử đơn):**
-  * Xây dựng `CheckoutModal.tsx`: chọn phương thức `Ví điện tử` / `Thẻ ngân hàng`, nhập mã giảm giá (`BREWLITEFIRST` / `COFFEELOVER`), tùy chọn mô phỏng thanh toán Thành công / Thất bại, tự sinh `Idempotency-Key` khi gọi `POST /payments`.
-  * Xây dựng `OrderConfirmationModal.tsx`: hiển thị xác nhận đặt hàng thành công, mã đơn (ví dụ `#1042`), trạng thái `PAID`, điểm thưởng tích lũy và lời nhắc tới quầy nhận nước (bám sát wireframe Mục 7).
-  * Xây dựng `OrderHistoryModal.tsx` (hoặc trang `/orders`): gọi `GET /orders/me` hiển thị lịch sử đơn hàng, trạng thái đơn và cho phép thanh toán lại nếu đơn ở trạng thái `PAYMENT_FAILED`.
+- [x] **Bước 4.2 (Task 8 & Task 9 - Frontend Checkout, Màn hình Xác nhận `#1042` & Lịch sử đơn):**
+  * Xây dựng `CheckoutModal.tsx`: chọn phương thức `Ví điện tử` / `Thẻ ngân hàng`, nhập mã giảm giá (`BREWLITEFIRST` / `COFFEELOVER`), tùy chọn mô phỏng thanh toán Thành công / Thất bại (giữ nguyên giỏ hàng khi lỗi và tái sử dụng đơn để retry), tự sinh `Idempotency-Key` khi gọi `POST /payments`.
+  * Xây dựng `OrderConfirmationModal.tsx`: hiển thị xác nhận đặt hàng thành công, mã đơn động từ backend (`orderNumber`), trạng thái `PAID`, điểm thưởng tích lũy và lời nhắc tới quầy nhận nước (bám sát wireframe Mục 7).
+  * Xây dựng `OrderHistoryModal.tsx` (kèm nút `Đơn hàng` trên `Header.tsx`): gọi `GET /orders/me` hiển thị lịch sử đơn hàng, cho phép hủy đơn (`PATCH /orders/:id/status`) và thanh toán lại nếu đơn ở trạng thái `PAYMENT_FAILED` / `PENDING` (Frontend 14 suites / 53 tests pass 100%).
   * Commit & push ngay.
 
 #### 🔹 Giai đoạn 5: Docker Compose 3 Services, Health Check & Bàn giao (Task 9 & Task 5.2/5.3 Assignment 2)
@@ -123,5 +123,5 @@
 | **Task 2** | **Mô hình hóa hệ thống** | Activity Diagram (`.puml` / `.png`), Sequence Diagram (`.mmd` / `.png`), Domain Class Diagram (`.mmd` / `.drawio.png`) | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
 | **Task 3** | **Thiết kế kiến trúc & Triển khai** | `docs/architecture/architecture-description.md`, thư mục `docs/architecture/adr/`, `docs/deployment.md` | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
 | **Task 4** | **Triển khai Sprint 1** | Chuẩn hóa repo, MVP Menu duyệt đồ uống (Next.js + NestJS), `.github/workflows/ci.yml` | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
-| **Task 5** | **Triển khai Sprint 2 & CI/CD** | MVP End-to-End (Task 5..10 của Assignment 1), Bộ Test (Unit/Integration/E2E), `.github/workflows/cd.yml`, Triển khai Production HTTPS | **2.0** | 🟡 **Đang triển khai (Xong Giai đoạn 1, 2, 3 & Bước 4.1 / 5)** | **65%** |
-| **TỔNG** | **TOÀN BỘ ASSIGNMENT 2** | **Hệ thống chạy thực tế, mã nguồn, tài liệu và pipeline CI/CD** | **10.0** | 🟢 **ĐÃ ĐẠT 8.0/10.0 (+ Task 5: 65%)** | **93%** |
+| **Task 5** | **Triển khai Sprint 2 & CI/CD** | MVP End-to-End (Task 5..10 của Assignment 1), Bộ Test (Unit/Integration/E2E), `.github/workflows/cd.yml`, Triển khai Production HTTPS | **2.0** | 🟡 **Đang triển khai (Xong Giai đoạn 1 $\rightarrow$ 4 / 5)** | **80%** |
+| **TỔNG** | **TOÀN BỘ ASSIGNMENT 2** | **Hệ thống chạy thực tế, mã nguồn, tài liệu và pipeline CI/CD** | **10.0** | 🟢 **ĐÃ ĐẠT 8.0/10.0 (+ Task 5: 80%)** | **96%** |

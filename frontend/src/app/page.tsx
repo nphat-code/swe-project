@@ -10,7 +10,18 @@ import { EmptyState } from '../components/EmptyState';
 import { ProductDetailModal } from '../components/ProductDetailModal';
 import { CartDrawer } from '../components/CartDrawer';
 import { AuthModal } from '../components/AuthModal';
-import { Product, Category, Topping, CustomOrderItem, AuthUser } from '../types';
+import { CheckoutModal } from '../components/CheckoutModal';
+import { OrderConfirmationModal } from '../components/OrderConfirmationModal';
+import { OrderHistoryModal } from '../components/OrderHistoryModal';
+import {
+  AuthUser,
+  Category,
+  CustomOrderItem,
+  OrderRecord,
+  ProcessPaymentResponse,
+  Product,
+  Topping,
+} from '../types';
 import { fetchProducts, fetchCategories, fetchToppings, fetchCurrentUser } from '../lib/api';
 import { useHasHydrated } from '../lib/useHasHydrated';
 import { useCartStore } from '../store/useCartStore';
@@ -28,6 +39,10 @@ export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const [isAuthOpen, setIsAuthOpen] = useState<boolean>(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState<boolean>(false);
+  const [retryOrder, setRetryOrder] = useState<OrderRecord | null>(null);
+  const [confirmationResult, setConfirmationResult] = useState<ProcessPaymentResponse | null>(null);
+  const [isOrderHistoryOpen, setIsOrderHistoryOpen] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -180,6 +195,10 @@ export default function Home() {
 
   const handleLogout = () => {
     logout();
+    setIsCheckoutOpen(false);
+    setRetryOrder(null);
+    setConfirmationResult(null);
+    setIsOrderHistoryOpen(false);
     showToast('Bạn đã đăng xuất khỏi tài khoản BrewLite.');
   };
 
@@ -189,8 +208,45 @@ export default function Home() {
   };
 
   const handleProceedCheckout = () => {
+    if (!displayUser || !accessToken) {
+      handleRequireAuthFromCart();
+      return;
+    }
     setIsCartOpen(false);
-    showToast('Giỏ hàng đã sẵn sàng! Bước tạo đơn hàng & thanh toán sẽ được kết nối tiếp.');
+    setRetryOrder(null);
+    setIsCheckoutOpen(true);
+  };
+
+  const handlePaymentSuccess = (result: ProcessPaymentResponse) => {
+    setIsCheckoutOpen(false);
+    setRetryOrder(null);
+    if (displayUser && result.loyaltyPointsBalance !== null) {
+      setUser({
+        ...displayUser,
+        loyaltyPoints: result.loyaltyPointsBalance,
+      });
+    }
+    setConfirmationResult(result);
+    showToast(`Thanh toán thành công đơn ${result.order.orderNumber}!`);
+  };
+
+  const handlePaymentFailed = (failedOrder: OrderRecord) => {
+    showToast(`Đơn ${failedOrder.orderNumber} đang ở trạng thái PAYMENT_FAILED.`);
+  };
+
+  const handleViewHistoryFromConfirmation = () => {
+    setConfirmationResult(null);
+    setIsOrderHistoryOpen(true);
+  };
+
+  const handleRetryPaymentFromHistory = (order: OrderRecord) => {
+    setIsOrderHistoryOpen(false);
+    setRetryOrder(order);
+    setIsCheckoutOpen(true);
+  };
+
+  const handleOrderUpdatedFromHistory = (order: OrderRecord) => {
+    showToast(`Đơn ${order.orderNumber} đã chuyển trạng thái sang ${order.status}.`);
   };
 
   return (
@@ -200,6 +256,7 @@ export default function Home() {
         onOpenCart={() => setIsCartOpen(true)}
         user={displayUser}
         onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenOrders={displayUser && accessToken ? () => setIsOrderHistoryOpen(true) : undefined}
         onLogout={handleLogout}
       />
 
@@ -322,6 +379,41 @@ export default function Home() {
             isOpen={true}
             onClose={() => setIsAuthOpen(false)}
             onSuccess={handleAuthSuccess}
+          />
+        )}
+
+        {isCheckoutOpen && displayUser && accessToken && (
+          <CheckoutModal
+            key={retryOrder ? retryOrder.id : 'cart-checkout'}
+            isOpen={true}
+            user={displayUser}
+            accessToken={accessToken}
+            retryOrder={retryOrder}
+            onClose={() => {
+              setIsCheckoutOpen(false);
+              setRetryOrder(null);
+            }}
+            onPaymentSuccess={handlePaymentSuccess}
+            onPaymentFailed={handlePaymentFailed}
+          />
+        )}
+
+        {confirmationResult && (
+          <OrderConfirmationModal
+            isOpen={true}
+            result={confirmationResult}
+            onClose={() => setConfirmationResult(null)}
+            onViewHistory={handleViewHistoryFromConfirmation}
+          />
+        )}
+
+        {isOrderHistoryOpen && accessToken && (
+          <OrderHistoryModal
+            isOpen={true}
+            accessToken={accessToken}
+            onClose={() => setIsOrderHistoryOpen(false)}
+            onRetryPayment={handleRetryPaymentFromHistory}
+            onOrderUpdated={handleOrderUpdatedFromHistory}
           />
         )}
       </main>

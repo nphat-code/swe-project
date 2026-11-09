@@ -99,3 +99,102 @@ export interface LoginPayload {
   email: string;
   password: string;
 }
+
+export type OrderStatus =
+  | 'PENDING'
+  | 'PAID'
+  | 'PREPARING'
+  | 'READY'
+  | 'COMPLETED'
+  | 'CANCELLED'
+  | 'PAYMENT_FAILED';
+
+export type PaymentStatus = 'UNPAID' | 'PAID' | 'FAILED';
+
+export type PaymentMethod = 'WALLET' | 'CARD' | 'MOCK_WALLET' | 'MOCK_MOMO' | 'MOCK_VNPAY';
+
+export interface OrderItemToppingSummary {
+  id?: string;
+  name: string;
+  price: number;
+}
+
+export interface OrderItemRecord {
+  id: string;
+  orderId: string;
+  productId: string;
+  productName: string;
+  sizeName: string;
+  unitPrice: number;
+  quantity: number;
+  subtotal: number;
+  toppings?: OrderItemToppingSummary[] | null;
+  createdAt: string;
+}
+
+export interface PaymentRecord {
+  id: string;
+  orderId: string;
+  idempotencyKey: string;
+  amount: number;
+  method: string;
+  status: PaymentStatus;
+  transactionId: string | null;
+  paidAt: string | null;
+  createdAt: string;
+}
+
+export interface OrderRecord {
+  id: string;
+  orderNumber: string;
+  userId: string | null;
+  customerName: string;
+  customerPhone: string;
+  note: string | null;
+  status: OrderStatus;
+  paymentStatus: PaymentStatus;
+  paymentMethod: string;
+  totalAmount: number;
+  discountAmount: number;
+  finalAmount: number;
+  idempotencyKey?: string | null;
+  items: OrderItemRecord[];
+  payments?: PaymentRecord[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateOrderItemPayload {
+  productId: string;
+  sizeId?: string;
+  sizeCode?: string;
+  toppingIds?: string[];
+  quantity: number;
+  note?: string;
+}
+
+export interface CreateOrderPayload {
+  items: CreateOrderItemPayload[];
+  voucherCode?: string;
+  customerName?: string;
+  customerPhone?: string;
+  paymentMethod?: PaymentMethod;
+  note?: string;
+}
+
+export interface ProcessPaymentPayload {
+  orderId: string;
+  method: PaymentMethod;
+  idempotencyKey: string;
+  simulateFailure?: boolean;
+}
+
+export interface ProcessPaymentResponse {
+  success: boolean;
+  idempotentReplay: boolean;
+  message: string;
+  payment: PaymentRecord;
+  order: OrderRecord;
+  loyaltyPointsEarned: number;
+  loyaltyPointsBalance: number | null;
+}

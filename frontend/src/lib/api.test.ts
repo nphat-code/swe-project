@@ -1,12 +1,17 @@
 import {
+  createOrder,
   fetchCategories,
   fetchCurrentUser,
+  fetchMyOrders,
   fetchProductById,
   fetchProducts,
   fetchToppings,
   formatCurrency,
+  generateIdempotencyKey,
   loginUser,
+  processPayment,
   registerUser,
+  updateOrderStatus,
   validateVoucherCode,
 } from './api';
 
@@ -246,5 +251,93 @@ describe('API Client', () => {
     await expect(validateVoucherCode('BREWLITEFIRST', 25000)).rejects.toThrow(
       /Đơn tối thiểu/i
     );
+  });
+
+  it('generateIdempotencyKey returns unique keys and checkout APIs send Bearer and Idempotency-Key headers', async () => {
+    const keyA = generateIdempotencyKey();
+    const keyB = generateIdempotencyKey();
+    expect(keyA.length).toBeGreaterThan(8);
+    expect(keyA).not.toBe(keyB);
+
+    const mockOrder = { id: 'ord-1', orderNumber: '#777111', status: 'PENDING' };
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      status: 201,
+      json: async () => mockOrder,
+    });
+
+    const createdOrder = await createOrder('jwt-token', {
+      items: [{ productId: 'prod-1', quantity: 1 }],
+      paymentMethod: 'WALLET',
+    });
+    expect(createdOrder).toEqual(mockOrder);
+    expect(global.fetch).toHaveBeenCalledWith('http://localhost:3001/orders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer jwt-token',
+      },
+      body: JSON.stringify({
+        items: [{ productId: 'prod-1', quantity: 1 }],
+        paymentMethod: 'WALLET',
+      }),
+    });
+
+    const mockPaymentResult = { success: true, order: { ...mockOrder, status: 'PAID' } };
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => mockPaymentResult,
+    });
+
+    const paymentResult = await processPayment('jwt-token', {
+      orderId: 'ord-1',
+      method: 'CARD',
+      idempotencyKey: 'idem-key-123',
+      simulateFailure: false,
+    });
+    expect(paymentResult).toEqual(mockPaymentResult);
+    expect(global.fetch).toHaveBeenCalledWith('http://localhost:3001/payments', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer jwt-token',
+        'Idempotency-Key': 'idem-key-123',
+      },
+      body: JSON.stringify({
+        orderId: 'ord-1',
+        method: 'CARD',
+        idempotencyKey: 'idem-key-123',
+        simulateFailure: false,
+      }),
+    });
+
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => [mockOrder],
+    });
+    const history = await fetchMyOrders('jwt-token');
+    expect(history).toEqual([mockOrder]);
+    expect(global.fetch).toHaveBeenCalledWith('http://localhost:3001/orders/me', {
+      headers: { Authorization: 'Bearer jwt-token' },
+      cache: 'no-store',
+    });
+
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({ ...mockOrder, status: 'CANCELLED' }),
+    });
+    const cancelled = await updateOrderStatus('jwt-token', 'ord-1', 'CANCELLED');
+    expect(cancelled.status).toBe('CANCELLED');
+    expect(global.fetch).toHaveBeenCalledWith('http://localhost:3001/orders/ord-1/status', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer jwt-token',
+      },
+      body: JSON.stringify({ status: 'CANCELLED' }),
+    });
   });
 });

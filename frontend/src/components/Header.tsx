@@ -1,7 +1,15 @@
 'use client';
 
 import React from 'react';
-import { Coffee, LogIn, LogOut, ShoppingBag, Sparkles, User } from 'lucide-react';
+import {
+  ClipboardList,
+  Coffee,
+  LogIn,
+  LogOut,
+  ShoppingBag,
+  Sparkles,
+  User,
+} from 'lucide-react';
 import Link from 'next/link';
 import { AuthUser } from '../types';
 
@@ -10,6 +18,7 @@ interface HeaderProps {
   onOpenCart?: () => void;
   user?: AuthUser | null;
   onOpenAuth?: () => void;
+  onOpenOrders?: () => void;
   onLogout?: () => void;
 }
 
@@ -18,6 +27,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenCart,
   user = null,
   onOpenAuth,
+  onOpenOrders,
   onLogout,
 }) => {
   return (
@@ -37,24 +47,38 @@ export const Header: React.FC<HeaderProps> = ({
 
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             {user ? (
-              <div className="flex items-center gap-1.5 sm:gap-2 bg-[#f2f0eb] pl-2.5 pr-1.5 py-1 sm:py-1.5 rounded-full min-w-0">
-                <User className="w-4 h-4 text-[#006241] flex-shrink-0" />
-                <span className="text-xs sm:text-sm font-bold text-[#1e3932] truncate max-w-[96px] sm:max-w-[160px]">
-                  {user.fullName}
-                </span>
-                <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-bold text-[#006241] bg-[#d4e9e2] px-2 py-0.5 rounded-full flex-shrink-0">
-                  <Sparkles className="w-3 h-3 text-[#cba258]" />
-                  {user.loyaltyPoints} điểm
-                </span>
-                <button
-                  type="button"
-                  onClick={onLogout}
-                  aria-label="Đăng xuất"
-                  className="p-1.5 rounded-full bg-white hover:bg-rose-50 text-stone-500 hover:text-rose-600 transition-colors flex-shrink-0"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                </button>
-              </div>
+              <>
+                <div className="flex items-center gap-1.5 sm:gap-2 bg-[#f2f0eb] pl-2.5 pr-1.5 py-1 sm:py-1.5 rounded-full min-w-0">
+                  <User className="w-4 h-4 text-[#006241] flex-shrink-0" />
+                  <span className="text-xs sm:text-sm font-bold text-[#1e3932] truncate max-w-[96px] sm:max-w-[160px]">
+                    {user.fullName}
+                  </span>
+                  <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-bold text-[#006241] bg-[#d4e9e2] px-2 py-0.5 rounded-full flex-shrink-0">
+                    <Sparkles className="w-3 h-3 text-[#cba258]" />
+                    {user.loyaltyPoints} điểm
+                  </span>
+                  <button
+                    type="button"
+                    onClick={onLogout}
+                    aria-label="Đăng xuất"
+                    className="p-1.5 rounded-full bg-white hover:bg-rose-50 text-stone-500 hover:text-rose-600 transition-colors flex-shrink-0"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                {onOpenOrders && (
+                  <button
+                    type="button"
+                    onClick={onOpenOrders}
+                    aria-label="Lịch sử đơn hàng"
+                    className="flex items-center gap-1.5 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-full border border-stone-200 bg-white hover:border-[#006241] hover:bg-[#d4e9e2]/30 text-[#1e3932] hover:text-[#006241] transition-all duration-200 active:scale-95 text-xs sm:text-sm font-bold flex-shrink-0"
+                  >
+                    <ClipboardList className="w-4 h-4" />
+                    <span className="hidden md:inline">Đơn hàng</span>
+                  </button>
+                )}
+              </>
             ) : (
               <button
                 type="button"

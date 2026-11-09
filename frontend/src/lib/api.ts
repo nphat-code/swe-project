@@ -3,7 +3,12 @@ import {
   AuthResponse,
   AuthUser,
   Category,
+  CreateOrderPayload,
   LoginPayload,
+  OrderRecord,
+  OrderStatus,
+  ProcessPaymentPayload,
+  ProcessPaymentResponse,
   Product,
   RegisterPayload,
   Topping,
@@ -247,6 +252,99 @@ export async function validateVoucherCode(
     }
     return assertMinOrderAmount(preview);
   }
+}
+
+export function generateIdempotencyKey(): string {
+  if (typeof globalThis.crypto?.randomUUID === 'function') {
+    return globalThis.crypto.randomUUID();
+  }
+  return `brewlite-${Date.now()}-${Math.random().toString(16).slice(2, 10)}`;
+}
+
+export async function createOrder(
+  accessToken: string,
+  payload: CreateOrderPayload
+): Promise<OrderRecord> {
+  const response = await fetch(`${API_BASE_URL}/orders`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const message = await extractApiErrorMessage(response, 'Không thể tạo đơn hàng');
+    throw new Error(message);
+  }
+
+  return (await response.json()) as OrderRecord;
+}
+
+export async function processPayment(
+  accessToken: string,
+  payload: ProcessPaymentPayload
+): Promise<ProcessPaymentResponse> {
+  const response = await fetch(`${API_BASE_URL}/payments`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+      'Idempotency-Key': payload.idempotencyKey,
+    },
+    body: JSON.stringify({
+      orderId: payload.orderId,
+      method: payload.method,
+      idempotencyKey: payload.idempotencyKey,
+      simulateFailure: Boolean(payload.simulateFailure),
+    }),
+  });
+
+  if (!response.ok) {
+    const message = await extractApiErrorMessage(response, 'Không thể xử lý thanh toán');
+    throw new Error(message);
+  }
+
+  return (await response.json()) as ProcessPaymentResponse;
+}
+
+export async function fetchMyOrders(accessToken: string): Promise<OrderRecord[]> {
+  const response = await fetch(`${API_BASE_URL}/orders/me`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    const message = await extractApiErrorMessage(response, 'Không thể tải lịch sử đơn hàng');
+    throw new Error(message);
+  }
+
+  return (await response.json()) as OrderRecord[];
+}
+
+export async function updateOrderStatus(
+  accessToken: string,
+  orderId: string,
+  status: OrderStatus
+): Promise<OrderRecord> {
+  const response = await fetch(`${API_BASE_URL}/orders/${orderId}/status`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({ status }),
+  });
+
+  if (!response.ok) {
+    const message = await extractApiErrorMessage(response, 'Không thể cập nhật trạng thái đơn hàng');
+    throw new Error(message);
+  }
+
+  return (await response.json()) as OrderRecord;
 }
 
 export function formatCurrency(amount: number): string {

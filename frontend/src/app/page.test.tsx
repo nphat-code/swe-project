@@ -15,6 +15,9 @@ jest.mock('../lib/api', () => {
     fetchToppings: jest.fn(),
     loginUser: jest.fn(),
     fetchCurrentUser: jest.fn(),
+    createOrder: jest.fn(),
+    processPayment: jest.fn(),
+    fetchMyOrders: jest.fn(),
   };
 });
 
@@ -198,5 +201,111 @@ describe('Home Page (Sprint 1 + Sprint 2 Cart & Auth Flow)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Đăng xuất' }));
     expect(screen.queryByText('Nguyễn Minh Khách')).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Đăng nhập' })).toBeInTheDocument();
+  });
+
+  it('completes cashless checkout from CartDrawer to OrderConfirmationModal and OrderHistoryModal', async () => {
+    const authUser = {
+      id: 'user-1',
+      email: 'customer@brewlite.vn',
+      fullName: 'Nguyễn Minh Khách',
+      phone: '0901234567',
+      role: 'CUSTOMER' as const,
+      loyaltyPoints: 10,
+      createdAt: '2026-11-09T03:00:00.000Z',
+    };
+    const pendingOrder = {
+      id: 'order-e2e-1',
+      orderNumber: '#990001',
+      userId: 'user-1',
+      customerName: 'Nguyễn Minh Khách',
+      customerPhone: '0901234567',
+      note: null,
+      status: 'PENDING' as const,
+      paymentStatus: 'UNPAID' as const,
+      paymentMethod: 'WALLET',
+      totalAmount: 38000,
+      discountAmount: 0,
+      finalAmount: 38000,
+      items: [
+        {
+          id: 'item-1',
+          orderId: 'order-e2e-1',
+          productId: 'prod-1',
+          productName: 'Cà Phê Sữa Đá Sài Gòn',
+          sizeName: 'Vừa (M)',
+          unitPrice: 38000,
+          quantity: 1,
+          subtotal: 38000,
+          toppings: [],
+          createdAt: '2026-11-09T09:00:00.000Z',
+        },
+      ],
+      createdAt: '2026-11-09T09:00:00.000Z',
+      updatedAt: '2026-11-09T09:00:00.000Z',
+    };
+    const paidOrder = {
+      ...pendingOrder,
+      status: 'PAID' as const,
+      paymentStatus: 'PAID' as const,
+    };
+    const paymentResponse = {
+      success: true,
+      idempotentReplay: false,
+      message: 'Thanh toán thành công',
+      payment: {
+        id: 'pay-e2e-1',
+        orderId: 'order-e2e-1',
+        idempotencyKey: 'idem-e2e-1',
+        amount: 38000,
+        method: 'WALLET',
+        status: 'PAID' as const,
+        transactionId: 'TXN-990001',
+        paidAt: '2026-11-09T09:01:00.000Z',
+        createdAt: '2026-11-09T09:01:00.000Z',
+      },
+      order: paidOrder,
+      loyaltyPointsEarned: 3,
+      loyaltyPointsBalance: 13,
+    };
+
+    useAuthStore.getState().setAuth({ accessToken: 'jwt-e2e', user: authUser });
+    useCartStore.getState().addItem({
+      productId: 'prod-1',
+      productName: 'Cà Phê Sữa Đá Sài Gòn',
+      productImage: 'https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5',
+      basePrice: 32000,
+      selectedSize: { id: 'm-1', name: 'Vừa (M)', code: 'M', extraPrice: 6000 },
+      selectedToppings: [],
+      quantity: 1,
+      unitPrice: 38000,
+      totalPrice: 38000,
+    });
+
+    (api.fetchCategories as jest.Mock).mockResolvedValue(mockCategories);
+    (api.fetchProducts as jest.Mock).mockResolvedValue(mockProducts);
+    (api.fetchToppings as jest.Mock).mockResolvedValue(mockToppings);
+    (api.fetchCurrentUser as jest.Mock).mockResolvedValue(authUser);
+    (api.createOrder as jest.Mock).mockResolvedValue(pendingOrder);
+    (api.processPayment as jest.Mock).mockResolvedValue(paymentResponse);
+    (api.fetchMyOrders as jest.Mock).mockResolvedValue([paidOrder]);
+
+    render(<Home />);
+    expect(await screen.findByText('Cà Phê Sữa Đá Sài Gòn')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Giỏ hàng' }));
+    fireEvent.click(screen.getByRole('button', { name: /Tiến hành thanh toán/i }));
+
+    expect(screen.getByRole('dialog', { name: 'Thanh toán đơn hàng' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Xác nhận trả/i }));
+
+    expect(await screen.findByText('Đặt hàng thành công')).toBeInTheDocument();
+    expect(screen.getByText('#990001')).toBeInTheDocument();
+    expect(screen.getByText('Trạng thái: PAID')).toBeInTheDocument();
+    expect(screen.getByText('13 điểm')).toBeInTheDocument();
+    expect(useCartStore.getState().items).toHaveLength(0);
+
+    fireEvent.click(screen.getByRole('button', { name: /Xem lịch sử đơn/i }));
+    expect(screen.getByRole('dialog', { name: 'Lịch sử đơn hàng' })).toBeInTheDocument();
+    expect(await screen.findByText('#990001')).toBeInTheDocument();
   });
 });
