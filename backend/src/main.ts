@@ -36,6 +36,7 @@ async function bootstrap() {
     .addTag('products', 'Quản lý đồ uống, danh mục và topping')
     .addTag('vouchers', 'Kiểm tra và áp dụng mã khuyến mãi')
     .addTag('orders', 'Khởi tạo và tra cứu lịch sử đơn hàng')
+    .addTag('payments', 'Thanh toán không tiền mặt idempotent và tích điểm loyalty')
     .addTag('system', 'Giám sát hệ thống')
     .addBearerAuth()
     .build();

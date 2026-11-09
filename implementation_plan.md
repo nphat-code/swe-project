@@ -6,8 +6,8 @@
 > **Đề bài gốc Assignment 1:** [`docs/DE_BAI_ASSIGNMENT_1_GOC.md`](docs/DE_BAI_ASSIGNMENT_1_GOC.md) *(10 Tasks x 1.0đ = 10.0 Điểm)*  
 > **Đề bài gốc Assignment 2:** [`docs/DE_BAI_ASSIGNMENT_2_GOC.md`](docs/DE_BAI_ASSIGNMENT_2_GOC.md) *(5 Tasks x 2.0đ = 10.0 Điểm)*  
 > **Trạng thái hiện tại:**
-> * **Assignment 1 (10 Tasks Scrum):** 🟢 **Đã xong Task 1 $\rightarrow$ 7 (Sprint 1 & 2 — 7.0/10.0đ)** | 🟡 **Đang làm Task 9 (~35%) & Task 10 (~40%)** | ⏳ **Chờ Task 8 (Sprint 3)**
-> * **Assignment 2 (5 Tasks tuần tự):** 🟢 **Đã xong Task 1, 2, 3, 4 (8.0/10.0đ)** | 🟡 **Đang triển khai Task 5 (Hoàn tất Giai đoạn 1, 2 & Bước 3.1 / 5 Giai đoạn)**
+> * **Assignment 1 (10 Tasks Scrum):** 🟢 **Đã xong Task 1 $\rightarrow$ 7 (Sprint 1 & 2 — 7.0/10.0đ)** | 🟡 **Đang làm Task 8 (~55%), Task 9 (~35%) & Task 10 (~75%)**
+> * **Assignment 2 (5 Tasks tuần tự):** 🟢 **Đã xong Task 1, 2, 3, 4 (8.0/10.0đ)** | 🟡 **Đang triển khai Task 5 (Hoàn tất Giai đoạn 1, 2 & 3 / 5 Giai đoạn)**
 
 ---
 
@@ -41,9 +41,9 @@
 | **Task 5** | Sprint 2 | **Giỏ hàng (Cart)** | Thêm/sửa số lượng/xóa; lưu state (Zustand/Context); tự tính tổng tiền; badge số lượng | **1.0** | 🟢 **Đã xong (100%)** | Đã hoàn tất `useCartStore.ts` (Zustand + `localStorage`, gộp món trùng size/topping/note, áp mã giảm giá, tính tổng), `CartDrawer.tsx`, tích hợp `Header.tsx` & `page.tsx` (không còn `alert()`) kèm unit tests (`useCartStore.test.ts`, `CartDrawer.test.tsx`, `page.test.tsx`). |
 | **Task 6** | Sprint 2 | **API tạo đơn hàng** | NestJS `POST /orders` nhận giỏ hàng, validate (`class-validator`), lưu đơn trạng thái `PENDING`, trả mã đơn | **1.0** | 🟢 **Đã xong (100%)** | Đã hoàn tất `OrdersModule`, `OrdersController`, `OrdersService`, `CreateOrderDto`, `VouchersModule` (`POST /orders`, `GET /vouchers/validate`), tính giá server-side, kiểm tra tồn kho gộp & unit tests (`orders.*.spec.ts`, `vouchers.*.spec.ts`). |
 | **Task 7** | Sprint 2 | **Đăng ký / Đăng nhập (JWT)** | `POST /auth/register`, `/auth/login`; băm mật khẩu (`bcrypt`); phát JWT; guard bảo vệ route đặt đơn | **1.0** | 🟢 **Đã xong (100%)** | Đã hoàn tất Backend `AuthModule` + `JwtAuthGuard` bảo vệ `POST /orders`, `GET /orders/me`, `GET /orders/:id` + Frontend `useAuthStore.ts`, `AuthModal.tsx`, `Header.tsx` kèm unit tests đầy đủ. |
-| **Task 8** | Sprint 3 | **Thanh toán không tiền mặt** | Tích hợp mock payment: chọn Ví/Thẻ, gọi `POST /payments`; đơn chuyển `PAID` khi thành công, `PAYMENT_FAILED` khi lỗi | **1.0** | 🔴 **Chưa làm (0%)** | **Cần làm:** Xây dựng `PaymentsModule` (`POST /payments`) ở Bước 3.2 và giao diện `CheckoutModal.tsx` ở Bước 4.2. |
+| **Task 8** | Sprint 3 | **Thanh toán không tiền mặt** | Tích hợp mock payment: chọn Ví/Thẻ, gọi `POST /payments`; đơn chuyển `PAID` khi thành công, `PAYMENT_FAILED` khi lỗi | **1.0** | 🟡 **Đang làm (~55%)** | Đã hoàn tất Backend `PaymentsModule` (`POST /payments` hỗ trợ `WALLET`/`CARD`/`MOCK_*`, `simulateFailure`, retry `PAYMENT_FAILED`, unit tests & live smoke test). **Cần làm:** Giao diện `CheckoutModal.tsx` ở Bước 4.2. |
 | **Task 9** | Sprint 3 | **Xác nhận, lịch sử đơn & bàn giao** | Màn hình xác nhận (mã đơn, trạng thái) & `GET /orders/me`; `docker-compose` chạy cả 3 (FE, BE, DB); `README` | **1.0** | 🟡 **Đang làm (~35%)** | Đã xong Backend `GET /orders/me`, `GET /orders/:id` (kiểm tra quyền sở hữu) và `README.md`. **Cần làm:** Màn hình xác nhận đơn, trang/modal Lịch sử đơn (Bước 4.2), Dockerfile FE/BE + `docker-compose.yml` 3 services (Bước 5). |
-| **Task 10** | Sprint 3 | **Nghiệp vụ backend** | (1) State Machine `assertTransition`, (2) Thanh toán `Idempotency-Key`, (3) Tồn kho đồng thời (Transaction + Optimistic Locking), (4) Khuyến mãi/Loyalty + **Bộ Test (a)(b)(c)** | **1.0** | 🟡 **Đang làm (~40%)** | Đã hoàn tất Task 10.1 (`order-state-machine.ts` + `PATCH /orders/:id/status` + RBAC + ma trận test 7x7 `order-state-machine.spec.ts`) và Voucher server-side (`VouchersService`). **Cần làm:** `PaymentsModule` Idempotent + Optimistic Locking `version` + Loyalty (Bước 3.2) và bộ test (b)(c) (Bước 4.1). |
+| **Task 10** | Sprint 3 | **Nghiệp vụ backend** | (1) State Machine `assertTransition`, (2) Thanh toán `Idempotency-Key`, (3) Tồn kho đồng thời (Transaction + Optimistic Locking), (4) Khuyến mãi/Loyalty + **Bộ Test (a)(b)(c)** | **1.0** | 🟡 **Đang làm (~75%)** | Đã hoàn tất cả 4 nghiệp vụ lõi ở Backend: State Machine (10.1), `Idempotency-Key` chống race (10.2), Transaction + Optimistic Locking `version` (10.3), Voucher & tích điểm Loyalty (10.4). **Cần làm:** Bổ sung bộ test tích hợp chuyên biệt cho (b) & (c) `concurrency-inventory.spec.ts` ở Bước 4.1. |
 
 ---
 
@@ -85,14 +85,14 @@
     * `COMPLETED`, `CANCELLED` là trạng thái kết thúc (chặn mọi chuyển tiếp).
   * Thêm endpoint `PATCH /orders/:id/status` (`UpdateOrderStatusDto`, `OrdersController.updateOrderStatus`, `OrdersService.updateOrderStatus`) dùng `assertTransition`, kiểm soát RBAC (`CUSTOMER` chỉ hủy/thử lại đơn của mình; `STAFF`/`ADMIN` điều phối trạng thái), đồng bộ `paymentStatus`, hoàn tồn kho khi hủy đơn đã thanh toán trong `$transaction` + `updateMany` chống xung đột.
   * Kiểm chứng ma trận 49 cặp chuyển tiếp trong `order-state-machine.spec.ts` + RBAC/hoàn kho trong `orders.service.spec.ts` và smoke test HTTP thực tế với Neon DB.
-- [ ] **Bước 3.2 (Task 8, Task 10.2, 10.3, 10.4 - Thanh toán Idempotent, Optimistic Locking & Loyalty):**
-  * Tạo `backend/src/payments/` (`payments.module.ts`, `payments.controller.ts`, `payments.service.ts`, `dto/create-payment.dto.ts`).
-  * Hiện thực `POST /payments`:
-    * Nhận `idempotencyKey` (từ Header `Idempotency-Key` hoặc body), `orderId`, `method` (`WALLET` / `CARD`), và cờ mô phỏng `simulateFailure` (tùy chọn).
-    * **Idempotency (Task 10.2):** Nếu `idempotencyKey` đã tồn tại trong bảng `Payment`, trả về ngay kết quả giao dịch cũ kèm đơn hàng mà không trừ kho hay trừ tiền lần 2.
-    * **Optimistic Locking tồn kho (Task 10.3):** Trong `prisma.$transaction`, với từng `OrderItem`, đọc `product.version` và `product.stock`, thực hiện `updateMany({ where: { id: productId, version: currentVersion, stock: { gte: quantity } }, data: { stock: { decrement: quantity }, version: { increment: 1 } } })`. Nếu `count === 0`, ném `ConflictException` (hết hàng hoặc xung đột đặt đồng thời) để rollback toàn bộ transaction.
-    * **State Machine & Loyalty (Task 10.1 & 10.4):** Nếu thanh toán thành công, kiểm tra `assertTransition(order.status, 'PAID')`, cập nhật đơn thành `PAID`, ghi bản ghi `Payment`, và cộng `loyaltyPoints` (`Math.floor(finalAmount / 10000)`) cho `User`. Nếu thanh toán lỗi, chuyển đơn sang `PAYMENT_FAILED` (giỏ hàng trên client được giữ nguyên để thử lại).
-  * Commit & push ngay.
+- [x] **Bước 3.2 (Task 8, Task 10.2, 10.3, 10.4 - Thanh toán Idempotent, Optimistic Locking & Loyalty):**
+  * Tạo `backend/src/payments/` (`payments.module.ts`, `payments.controller.ts`, `payments.service.ts`, `dto/create-payment.dto.ts`) và đăng ký vào `AppModule` + Swagger tag `payments`.
+  * Hiện thực `POST /payments` (bảo vệ bằng `JwtAuthGuard`, kiểm tra quyền sở hữu đơn):
+    * Nhận `idempotencyKey` (ưu tiên Header `Idempotency-Key`, fallback body), `orderId`, `method` (`WALLET` / `CARD` / `MOCK_*`), và cờ mô phỏng `simulateFailure` (tùy chọn).
+    * **Idempotency (Task 10.2):** Nếu `idempotencyKey` đã tồn tại trong `Payment` (hoặc xảy ra xung đột đồng thời `P2002` / `ConflictException` khi cùng key đang xử lý song song), trả về ngay kết quả giao dịch đã commit với `idempotentReplay: true` mà không trừ kho hay cộng điểm lần 2.
+    * **Optimistic Locking tồn kho (Task 10.3):** Trong `prisma.$transaction`, gộp số lượng theo từng `productId` sắp xếp thứ tự cố định (tránh deadlock), thực hiện `updateMany({ where: { id: productId, isAvailable: true, version: product.version, stock: { gte: requiredQty } }, data: { stock: { decrement: requiredQty }, version: { increment: 1 } } })`. Nếu `count === 0`, ném `ConflictException` để rollback toàn bộ transaction.
+    * **State Machine & Loyalty (Task 10.1 & 10.4):** Kiểm tra `assertTransition` (hỗ trợ retry từ `PAYMENT_FAILED -> PENDING -> PAID`); khi thanh toán thành công cập nhật đơn `PAID`, tạo `Payment`, cộng `loyaltyPoints` (`Math.floor(finalAmount / 10000)`) cho `User`; khi lỗi đánh dấu `PAYMENT_FAILED` giữ nguyên tồn kho & giỏ hàng client.
+  * Kiểm chứng 13 unit tests (`payments.*.spec.ts`), smoke test HTTP thực tế (mô phỏng lỗi, retry, sequential & parallel same-key idempotency, diff-key optimistic lock race) với Neon DB, commit & push ngay.
 
 #### 🔹 Giai đoạn 4: Triển khai Sprint 3 (Phần 2) — Bộ Test bắt buộc Task 10 & Giao diện Thanh toán / Xác nhận / Lịch sử (Task 8, 9)
 - [ ] **Bước 4.1 (Task 10 - Bộ Unit & Integration Tests chứng minh 3 tiêu chí chấm Mục 9):**
@@ -123,5 +123,5 @@
 | **Task 2** | **Mô hình hóa hệ thống** | Activity Diagram (`.puml` / `.png`), Sequence Diagram (`.mmd` / `.png`), Domain Class Diagram (`.mmd` / `.drawio.png`) | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
 | **Task 3** | **Thiết kế kiến trúc & Triển khai** | `docs/architecture/architecture-description.md`, thư mục `docs/architecture/adr/`, `docs/deployment.md` | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
 | **Task 4** | **Triển khai Sprint 1** | Chuẩn hóa repo, MVP Menu duyệt đồ uống (Next.js + NestJS), `.github/workflows/ci.yml` | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
-| **Task 5** | **Triển khai Sprint 2 & CI/CD** | MVP End-to-End (Task 5..10 của Assignment 1), Bộ Test (Unit/Integration/E2E), `.github/workflows/cd.yml`, Triển khai Production HTTPS | **2.0** | 🟡 **Đang triển khai (Xong Giai đoạn 1, 2 & Bước 3.1 / 5)** | **45%** |
-| **TỔNG** | **TOÀN BỘ ASSIGNMENT 2** | **Hệ thống chạy thực tế, mã nguồn, tài liệu và pipeline CI/CD** | **10.0** | 🟢 **ĐÃ ĐẠT 8.0/10.0 (+ Task 5: 45%)** | **89%** |
+| **Task 5** | **Triển khai Sprint 2 & CI/CD** | MVP End-to-End (Task 5..10 của Assignment 1), Bộ Test (Unit/Integration/E2E), `.github/workflows/cd.yml`, Triển khai Production HTTPS | **2.0** | 🟡 **Đang triển khai (Xong Giai đoạn 1, 2 & 3 / 5)** | **55%** |
+| **TỔNG** | **TOÀN BỘ ASSIGNMENT 2** | **Hệ thống chạy thực tế, mã nguồn, tài liệu và pipeline CI/CD** | **10.0** | 🟢 **ĐÃ ĐẠT 8.0/10.0 (+ Task 5: 55%)** | **91%** |
