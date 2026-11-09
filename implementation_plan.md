@@ -1,18 +1,20 @@
-# 📋 KẾ HOẠCH TRIỂN KHAI DỰ ÁN BREWLITE (ASSIGNMENT 2)
-## Master Implementation Plan: Requirements to Deployment (VER 1.0)
-### Thang điểm đánh giá: 10.0 Điểm (5 Tasks x 2.0 Điểm)
+# 📋 KẾ HOẠCH TRIỂN KHAI DỰ ÁN BREWLITE (ASSIGNMENT 1 & ASSIGNMENT 2)
+## Master Implementation Plan: Agile Scrum 10 Tasks & Requirements to Deployment (VER 1.0)
 
 > **Môn học:** Công nghệ Phần mềm (Software Engineering) — ĐH Sài Gòn  
 > **Dự án:** BrewLite — Hệ thống đặt đồ uống không dùng tiền mặt (Cashless Coffee Ordering System)  
-> **Trạng thái tổng thể:** 🟢 **Task 1, 2, 3, 4: ĐÃ HOÀN THÀNH (8.0/10.0 Điểm)** | ⏳ **Task 5: CHỜ TRIỂN KHAI SPRINT 2 (0.0/2.0 Điểm)**
+> **Đề bài gốc Assignment 1:** [`docs/DE_BAI_ASSIGNMENT_1_GOC.md`](docs/DE_BAI_ASSIGNMENT_1_GOC.md) *(10 Tasks x 1.0đ = 10.0 Điểm)*  
+> **Đề bài gốc Assignment 2:** [`docs/DE_BAI_ASSIGNMENT_2_GOC.md`](docs/DE_BAI_ASSIGNMENT_2_GOC.md) *(5 Tasks x 2.0đ = 10.0 Điểm)*  
+> **Trạng thái hiện tại:**
+> * **Assignment 1 (10 Tasks Scrum):** 🟢 **Đã xong Task 1, 2, 3, 4 (Sprint 1 — 4.0/10.0đ)** | ⏳ **Chờ triển khai Task 5 $\rightarrow$ 10 (Sprint 2 & Sprint 3 — 6.0/10.0đ)**
+> * **Assignment 2 (5 Tasks tuần tự):** 🟢 **Đã xong Task 1, 2, 3, 4 (8.0/10.0đ)** | ⏳ **Chờ triển khai Task 5 (Sprint 2 & CI/CD — 2.0/10.0đ)**
 
 ---
 
 ## 🧭 CÁC NGUYÊN TẮC BẮT BUỘC CỦA DỰ ÁN (PROJECT LAWS)
 
 1. **Quy tắc thực hiện tuần tự (Sequential Rule):**
-   * 5 Task lớn phải hoàn thành đúng thứ tự: Task 1 $\rightarrow$ Task 2 $\rightarrow$ Task 3 $\rightarrow$ Task 4 $\rightarrow$ Task 5.
-   * Task sau chỉ được nghiệm thu khi các tạo phẩm của task trước đã có đầy đủ trên kho mã nguồn với lịch sử commit rõ ràng.
+   * Hoàn thành tuần tự từng Task, kiểm tra build/test không lỗi trước khi sang Task tiếp theo.
 2. **Quy tắc Git & Bàn giao (Git Push Immediately - [AGENTS.md](AGENTS.md)):**
    * Làm xong phần nào, kiểm tra chạy tốt, tạo commit chuẩn Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`,...) và chạy lệnh `git push origin main` ngay lập tức.
 3. **Tuyệt đối không comment trong code (Self-Documenting Code - [AGENTS.md](AGENTS.md)):**
@@ -26,186 +28,99 @@
 
 ---
 
-## 📊 TIẾN ĐỘ TỔNG QUAN 5 TASK (PROGRESS DASHBOARD)
+## 📊 PHẦN I: KIỂM TRA TIẾN ĐỘ & KẾ HOẠCH TRIỂN KHAI ASSIGNMENT 1 (10 TASKS X 1.0Đ)
+
+### 1.1 Bảng đối chiếu trạng thái 10 Tasks trong `BrewLite-CongNghePhanMem.pdf`
+
+| Task | Sprint | Tên hạng mục (Story) | Yêu cầu / Tiêu chí chấp nhận chính | Điểm | Trạng thái | Chi tiết đối chiếu trong Codebase |
+| :---: | :---: | :--- | :--- | :---: | :---: | :--- |
+| **Task 1** | Sprint 1 | **Khởi tạo dự án và cấu trúc** | Tạo monorepo/2 thư mục `frontend` (Next.js) + `backend` (NestJS), chạy được, có `README`, Git, `.env.example` | **1.0** | 🟢 **Đã xong (100%)** | Đã có `frontend/`, `backend/`, `README.md`, `.env.example`, `.gitignore`, `.github/workflows/ci.yml`. |
+| **Task 2** | Sprint 1 | **API danh sách sản phẩm** | NestJS `GET /products` (& `GET /products/:id`) trả về JSON menu (id, tên, giá, ảnh) từ CSDL | **1.0** | 🟢 **Đã xong (100%)** | Đã có `ProductsController`, `ProductsService`, `prisma/seed.ts` và 14 unit tests pass 100%. |
+| **Task 3** | Sprint 1 | **Trang Menu (Frontend)** | Next.js gọi `/products`, render lưới sản phẩm, có loading/empty/error state | **1.0** | 🟢 **Đã xong (100%)** | Đã có `page.tsx`, `ProductCard.tsx`, `CategoryFilter.tsx`, `ProductSkeleton.tsx`, `EmptyState.tsx`, `ErrorState.tsx`. |
+| **Task 4** | Sprint 1 | **Chi tiết và tùy chọn sản phẩm** | Màn hình chi tiết: chọn size (S/M/L) và topping; tự tính giá theo tùy chọn | **1.0** | 🟢 **Đã xong (100%)** | Đã hoàn thiện `ProductDetailModal.tsx` (chọn Size S/M/L, đa Topping, ghi chú, số lượng, tính giá động, chuẩn ARIA/Escape/chống double-submit) kèm unit tests (`ProductDetailModal.test.tsx`, `page.test.tsx`, `api.test.ts`) và CI Pipeline pass 100%. Sẵn sàng nối Zustand Store ở Task 5. |
+| **Task 5** | Sprint 2 | **Giỏ hàng (Cart)** | Thêm/sửa số lượng/xóa; lưu state (Zustand/Context); tự tính tổng tiền; badge số lượng | **1.0** | 🟡 **Mới làm ~25%** | Đã có badge số lượng trên `Header.tsx`, nhưng `page.tsx` mới dùng `useState` tạm và hiện `alert()`. **Cần làm:** Zustand store (`localStorage`) + `CartDrawer.tsx`. |
+| **Task 6** | Sprint 2 | **API tạo đơn hàng** | NestJS `POST /orders` nhận giỏ hàng, validate (`class-validator`), lưu đơn trạng thái `PENDING`, trả mã đơn | **1.0** | 🔴 **Chưa làm (0%)** | Mới có model `Order` & `OrderItem` trong `schema.prisma`. **Cần làm:** `OrdersModule`, `OrdersController`, `OrdersService`, DTOs. |
+| **Task 7** | Sprint 2 | **Đăng ký / Đăng nhập (JWT)** | `POST /auth/register`, `/auth/login`; băm mật khẩu (`bcrypt`); phát JWT; guard bảo vệ route đặt đơn | **1.0** | 🔴 **Chưa làm (0%)** | Mới có model `User` trong `schema.prisma`. **Cần làm:** `AuthModule`, `JwtStrategy`, `JwtAuthGuard` và `AuthModal.tsx` trên Frontend. |
+| **Task 8** | Sprint 3 | **Thanh toán không tiền mặt** | Tích hợp mock payment: chọn Ví/Thẻ, gọi `POST /payments`; đơn chuyển `PAID` khi thành công, `PAYMENT_FAILED` khi lỗi | **1.0** | 🔴 **Chưa làm (0%)** | **Cần làm:** Bổ sung model `Payment` vào `schema.prisma`, xây dựng `PaymentsModule` (`POST /payments`) và giao diện `CheckoutModal.tsx`. |
+| **Task 9** | Sprint 3 | **Xác nhận, lịch sử đơn & bàn giao** | Màn hình xác nhận (mã đơn, trạng thái) & `GET /orders/me`; `docker-compose` chạy cả 3 (FE, BE, DB); `README` | **1.0** | 🟡 **Mới làm ~20%** | Đã có `README.md`, nhưng `docker-compose.yml` mới có `postgres`. **Cần làm:** Màn hình xác nhận đơn, `GET /orders/me`, trang Lịch sử đơn, Dockerfile FE/BE + `docker-compose.yml` 3 services. |
+| **Task 10** | Sprint 3 | **Nghiệp vụ backend** | (1) State Machine `assertTransition`, (2) Thanh toán `Idempotency-Key`, (3) Tồn kho đồng thời (Transaction + Optimistic Locking), (4) Khuyến mãi/Loyalty + **Bộ Test (a)(b)(c)** | **1.0** | 🔴 **Chưa làm (0%)** | Đã có trường `stock`, `version`, `loyaltyPoints`, `Voucher` trong `schema.prisma`. **Cần làm:** Hiện thực 4 nghiệp vụ lõi và bộ Unit/Integration Tests chứng minh (a), (b), (c). |
+
+---
+
+### 1.2 Lộ trình 5 Giai đoạn (Phases) hoàn thiện Task 5 $\rightarrow$ Task 10 (Đồng bộ với Task 5 Assignment 2)
+
+#### 🔹 Giai đoạn 1: Chuẩn hóa Prisma Schema & Thực thể tối thiểu (Mục 12.2 PDF)
+- [ ] **Bước 1.1:** Cập nhật `backend/prisma/schema.prisma` bổ sung model `Payment`:
+  * Trường: `id`, `orderId`, `idempotencyKey (@unique)`, `amount`, `method`, `status`, `createdAt`, liên kết với `Order`.
+  * Kiểm tra các thực thể bắt buộc Mục 12.2: `Product(id, name, basePrice, imageUrl, stock, version)`, `User(id, email, password, loyaltyPoints)`, `Order`, `OrderItem`, `Payment`, `Voucher`.
+- [ ] **Bước 1.2:** Cập nhật `backend/prisma/seed.ts` (nếu cần seed sẵn tài khoản mẫu khách hàng/barista và làm sạch bảng `Payment` khi seed), chạy `npx prisma generate`.
+- [ ] **Bước 1.3:** Commit & push ngay (`feat(prisma): add Payment model and align schema with Assignment 1`).
+
+#### 🔹 Giai đoạn 2: Triển khai Sprint 2 — Auth JWT (Task 7), Giỏ hàng Zustand (Task 5) & API Tạo đơn (Task 6)
+- [ ] **Bước 2.1 (Task 7 - Backend Auth):**
+  * Tạo `backend/src/auth/` (`auth.module.ts`, `auth.controller.ts`, `auth.service.ts`, `jwt.strategy.ts`, `jwt-auth.guard.ts`, `dto/register.dto.ts`, `dto/login.dto.ts`).
+  * Hiện thực `POST /auth/register` (băm mật khẩu bằng `bcrypt`, tạo user mới, trả JWT + thông tin user), `POST /auth/login` (xác thực mật khẩu, trả JWT + thông tin user), `GET /auth/me`.
+  * Viết unit tests cho `AuthService` & `AuthController`, commit & push ngay.
+- [ ] **Bước 2.2 (Task 5 - Frontend Giỏ hàng Zustand & Auth UI):**
+  * Cài đặt `zustand` trong `frontend/`.
+  * Tạo `frontend/src/store/useCartStore.ts` đồng bộ `localStorage` (thêm món, gộp món trùng size/topping/note, tăng/giảm số lượng, xóa món, áp mã giảm giá, tính tổng tiền).
+  * Tạo `frontend/src/store/useAuthStore.ts` lưu JWT token & thông tin user.
+  * Xây dựng `frontend/src/components/CartDrawer.tsx` và `frontend/src/components/AuthModal.tsx`, tích hợp vào `Header.tsx` và `page.tsx`.
+  * Kiểm tra lint/typecheck/test frontend, commit & push ngay.
+- [ ] **Bước 2.3 (Task 6 & Task 10.3/10.4 - Backend Tạo đơn hàng):**
+  * Tạo `backend/src/orders/` (`orders.module.ts`, `orders.controller.ts`, `orders.service.ts`, `order-state-machine.ts`, `dto/create-order.dto.ts`).
+  * Hiện thực `POST /orders` (bảo vệ bằng `JwtAuthGuard`, validate bằng `class-validator`), tính lại giá từ CSDL, kiểm tra & áp mã `Voucher` (Task 10.4), kiểm tra tồn kho và tạo đơn ở trạng thái `PENDING`.
+  * Hiện thực `GET /orders/me` (Task 9) trả về danh sách lịch sử đơn hàng của user đang đăng nhập.
+  * Hiện thực endpoint `GET /vouchers/validate?code=...` để Frontend kiểm tra mã khuyến mãi trực tiếp.
+  * Commit & push ngay.
+
+#### 🔹 Giai đoạn 3: Triển khai Sprint 3 (Phần 1) — Nghiệp vụ Backend (Task 10) & Thanh toán (Task 8)
+- [ ] **Bước 3.1 (Task 10.1 - Order State Machine):**
+  * Hiện thực hàm `assertTransition(currentStatus, targetStatus)` trong `backend/src/orders/order-state-machine.ts` đúng sơ đồ Mục 9.1:
+    * `PENDING` $\rightarrow$ `PAID`, `PAYMENT_FAILED`, `CANCELLED`
+    * `PAYMENT_FAILED` $\rightarrow$ `PENDING` (thử lại), `CANCELLED`
+    * `PAID` $\rightarrow$ `PREPARING`, `CANCELLED`
+    * `PREPARING` $\rightarrow$ `READY`
+    * `READY` $\rightarrow$ `COMPLETED`
+    * `COMPLETED`, `CANCELLED` là trạng thái kết thúc (chặn mọi chuyển tiếp).
+  * Thêm endpoint `PATCH /orders/:id/status` sử dụng `assertTransition`.
+- [ ] **Bước 3.2 (Task 8, Task 10.2, 10.3, 10.4 - Thanh toán Idempotent, Optimistic Locking & Loyalty):**
+  * Tạo `backend/src/payments/` (`payments.module.ts`, `payments.controller.ts`, `payments.service.ts`, `dto/create-payment.dto.ts`).
+  * Hiện thực `POST /payments`:
+    * Nhận `idempotencyKey` (từ Header `Idempotency-Key` hoặc body), `orderId`, `method` (`WALLET` / `CARD`), và cờ mô phỏng `simulateFailure` (tùy chọn).
+    * **Idempotency (Task 10.2):** Nếu `idempotencyKey` đã tồn tại trong bảng `Payment`, trả về ngay kết quả giao dịch cũ kèm đơn hàng mà không trừ kho hay trừ tiền lần 2.
+    * **Optimistic Locking tồn kho (Task 10.3):** Trong `prisma.$transaction`, với từng `OrderItem`, đọc `product.version` và `product.stock`, thực hiện `updateMany({ where: { id: productId, version: currentVersion, stock: { gte: quantity } }, data: { stock: { decrement: quantity }, version: { increment: 1 } } })`. Nếu `count === 0`, ném `ConflictException` (hết hàng hoặc xung đột đặt đồng thời) để rollback toàn bộ transaction.
+    * **State Machine & Loyalty (Task 10.1 & 10.4):** Nếu thanh toán thành công, kiểm tra `assertTransition(order.status, 'PAID')`, cập nhật đơn thành `PAID`, ghi bản ghi `Payment`, và cộng `loyaltyPoints` (`Math.floor(finalAmount / 10000)`) cho `User`. Nếu thanh toán lỗi, chuyển đơn sang `PAYMENT_FAILED` (giỏ hàng trên client được giữ nguyên để thử lại).
+  * Commit & push ngay.
+
+#### 🔹 Giai đoạn 4: Triển khai Sprint 3 (Phần 2) — Bộ Test bắt buộc Task 10 & Giao diện Thanh toán / Xác nhận / Lịch sử (Task 8, 9)
+- [ ] **Bước 4.1 (Task 10 - Bộ Unit & Integration Tests chứng minh 3 tiêu chí chấm Mục 9):**
+  * **(a) Test Order State Machine (`order-state-machine.spec.ts`):** Chứng minh cho phép các chuyển tiếp hợp lệ và ném lỗi chặn mọi chuyển tiếp sai (`PENDING -> COMPLETED`, `COMPLETED -> PAID`, `CANCELLED -> PAID`, v.v.).
+  * **(b) Test Thanh toán Idempotent (`payments.service.spec.ts`):** Chứng minh gửi 2 lần cùng `Idempotency-Key` chỉ tạo 1 bản ghi thanh toán / xử lý đơn 1 lần duy nhất.
+  * **(c) Test Đặt hàng / Thanh toán đồng thời (`concurrency-inventory.spec.ts`):** Chứng minh khi nhiều khách đặt cùng lúc (`Promise.all`) vượt số lượng `stock` còn lại, cơ chế Transaction + Optimistic Locking (`version`) chặn chính xác các đơn vượt tồn kho, không bao giờ để `stock < 0`.
+  * Commit & push ngay.
+- [ ] **Bước 4.2 (Task 8 & Task 9 - Frontend Checkout, Màn hình Xác nhận `#1042` & Lịch sử đơn):**
+  * Xây dựng `CheckoutModal.tsx`: chọn phương thức `Ví điện tử` / `Thẻ ngân hàng`, nhập mã giảm giá (`BREWLITEFIRST` / `COFFEELOVER`), tùy chọn mô phỏng thanh toán Thành công / Thất bại, tự sinh `Idempotency-Key` khi gọi `POST /payments`.
+  * Xây dựng `OrderConfirmationModal.tsx`: hiển thị xác nhận đặt hàng thành công, mã đơn (ví dụ `#1042`), trạng thái `PAID`, điểm thưởng tích lũy và lời nhắc tới quầy nhận nước (bám sát wireframe Mục 7).
+  * Xây dựng `OrderHistoryModal.tsx` (hoặc trang `/orders`): gọi `GET /orders/me` hiển thị lịch sử đơn hàng, trạng thái đơn và cho phép thanh toán lại nếu đơn ở trạng thái `PAYMENT_FAILED`.
+  * Commit & push ngay.
+
+#### 🔹 Giai đoạn 5: Docker Compose 3 Services, Health Check & Bàn giao (Task 9 & Task 5.2/5.3 Assignment 2)
+- [ ] **Bước 5.1:** Thêm `GET /health` endpoint vào Backend (`AppController` / `HealthController`).
+- [ ] **Bước 5.2:** Tạo `backend/Dockerfile` và `frontend/Dockerfile` đa tầng (multi-stage build).
+- [ ] **Bước 5.3:** Cập nhật `docker-compose.yml` chạy trọn bộ 3 services: `postgres`, `backend`, `frontend` theo đúng yêu cầu Task 9.
+- [ ] **Bước 5.4:** Cập nhật `README.md`, `docs/sprint/` (bổ sung biểu đồ Sprint Burndown Chart & Sprint Retrospective theo Mục 2.4 và Mục 11 của PDF Assignment 1) và `docs/traceability-matrix.md`.
+- [ ] **Bước 5.5:** Commit & push toàn bộ lên `origin main`.
+
+---
+
+## 📊 PHẦN II: TIẾN ĐỘ TỔNG QUAN 5 TASK CỦA ASSIGNMENT 2 (PROGRESS DASHBOARD)
 
 | Task | Giai đoạn | Tạo phẩm chính | Điểm | Trạng thái | Tiến độ |
-| :---: | :--- | :--- | :--- | :---: | :---: |
+| :---: | :--- | :--- | :---: | :---: | :---: |
 | **Task 1** | **Khai thác & đặc tả yêu cầu** | `context-and-scope.md`, `system-requirements-matrix.md`, `core-use-case-specification.md`, `use-case-system.png/mmd`, `use-case-checkout.mmd` | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
 | **Task 2** | **Mô hình hóa hệ thống** | Activity Diagram (`.puml` / `.png`), Sequence Diagram (`.mmd` / `.png`), Domain Class Diagram (`.mmd` / `.drawio.png`) | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
 | **Task 3** | **Thiết kế kiến trúc & Triển khai** | `docs/architecture/architecture-description.md`, thư mục `docs/architecture/adr/`, `docs/deployment.md` | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
 | **Task 4** | **Triển khai Sprint 1** | Chuẩn hóa repo, MVP Menu duyệt đồ uống (Next.js + NestJS), `.github/workflows/ci.yml` | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
-| **Task 5** | **Triển khai Sprint 2 & CI/CD** | MVP End-to-End, Bộ Test (Unit/Integration/E2E), `.github/workflows/cd.yml`, Triển khai Production HTTPS | **2.0** | ⏳ Chờ Task 4 | **0%** |
+| **Task 5** | **Triển khai Sprint 2 & CI/CD** | MVP End-to-End (Task 5..10 của Assignment 1), Bộ Test (Unit/Integration/E2E), `.github/workflows/cd.yml`, Triển khai Production HTTPS | **2.0** | ⏳ **Chuẩn bị thực thi theo 5 Giai đoạn trên** | **0%** |
 | **TỔNG** | **TOÀN BỘ ASSIGNMENT 2** | **Hệ thống chạy thực tế, mã nguồn, tài liệu và pipeline CI/CD** | **10.0** | 🟢 **ĐÃ ĐẠT 8.0/10.0** | **80%** |
-
----
-
-## 🔍 CHI TIẾT TỪNG TASK & TẠO PHẨM NGHIỆM THU
-
----
-
-### 🟢 TASK 1: KHAI THÁC VÀ ĐẶC TẢ YÊU CẦU (2.0 / 2.0 Điểm) — [ĐÃ XONG 100%]
-
-- [x] **Task 1.1: Bối cảnh, Stakeholder và Phạm vi**
-  * **File:** [`docs/requirements/context-and-scope.md`](docs/requirements/context-and-scope.md)
-  * **Kết quả:** Phân tích vấn đề nghiệp vụ BrewLite; 6 nhóm Stakeholder kèm mục tiêu & kỳ vọng; phân định In-Scope (MVP), Future Scope, Out-of-Scope; Bảng giả định, ràng buộc kỹ thuật và ma trận 5 rủi ro ban đầu kèm giải pháp.
-  * **Git Status:** Đã commit và push remote.
-
-- [x] **Task 1.2: Yêu cầu chức năng, phi chức năng & Sơ đồ Use Case tổng quát**
-  * **File tài liệu:** [`docs/requirements/system-requirements-matrix.md`](docs/requirements/system-requirements-matrix.md)
-  * **File sơ đồ:** [`docs/diagrams/use-case/use-case-system.mmd`](docs/diagrams/use-case/use-case-system.mmd) & [`use-case-system.png`](docs/diagrams/use-case/use-case-system.png)
-  * **Kết quả:** 
-    * Bảng danh mục 12 yêu cầu chức năng `FR-01` $\rightarrow$ `FR-12` phân loại theo MoSCoW (9 Must, 2 Should, 1 Could).
-    * Bảng danh mục 8 yêu cầu phi chức năng `NFR-01` $\rightarrow$ `NFR-08`.
-    * Sơ đồ Use Case tổng quát toàn hệ thống gồm 5 phân hệ, 5 tác nhân (Customer, Member, Barista, Admin, Payment Gateway), 16 Use Case chính và 4 Sub-Use Case chuẩn UML.
-  * **Git Status:** Đã commit và push remote.
-
-- [x] **Task 1.3: Đặc tả một Use Case trọng tâm (Đặt & Thanh toán đơn hàng)**
-  * **File tài liệu:** [`docs/requirements/core-use-case-specification.md`](docs/requirements/core-use-case-specification.md)
-  * **File sơ đồ:** [`docs/diagrams/use-case/use-case-checkout.mmd`](docs/diagrams/use-case/use-case-checkout.mmd)
-  * **Kết quả:**
-    * Sơ đồ phân phạm vi trọng tâm: `UC04` (Giỏ hàng), `UC05` (Đặt hàng), `UC05.1` (Voucher), `UC06` (Thanh toán trực tuyến).
-    * Bảng đặc tả chuẩn CNPM: Actor, Trigger, Pre-conditions, Post-conditions (Success/Failure).
-    * Luồng sự kiện chính (Main Flow - 13 bước), 3 Luồng thay thế (Alternative Flows), 5 Luồng ngoại lệ (Exception Flows).
-    * 5 Tiêu chí chấp nhận (AC-CORE-01 $\rightarrow$ 05) theo chuẩn `Given - When - Then` làm căn cứ viết Test cho Task 5.2.
-    * Bảng ma trận truy vết với các mã `FR` và `NFR`.
-  * **Git Status:** Đã commit và push remote.
-
----
-
-### 🟢 TASK 2: MÔ HÌNH HÓA HỆ THỐNG (2.0 / 2.0 Điểm) — [ĐÃ XONG 100%]
-
-> **Yêu cầu kỹ thuật:** Bắt buộc lưu cả tệp mã nguồn (`.puml` / `.mmd`) và ảnh kết xuất trực quan (`.svg` hoặc `.png`). Cả 3 sơ đồ không mâu thuẫn với SRS, Use Case hoặc CSDL.
-
-- [x] **Task 2.1: Sơ đồ Hoạt động (Activity Diagram)**
-  * **File:** [`docs/diagrams/activity/activity-flow.puml`](docs/diagrams/activity/activity-flow.puml), [`activity-flow.svg`](docs/diagrams/activity/activity-flow.svg), [`activity-flow.png`](docs/diagrams/activity/activity-flow.png)
-  * **Tiêu chí bắt buộc:**
-    * Luồng End-to-End: Duyệt Menu $\rightarrow$ Tùy biến món $\rightarrow$ Giỏ hàng $\rightarrow$ Đặt đơn $\rightarrow$ Thanh toán $\rightarrow$ Nhận đồ uống.
-    * 5 Swimlane rõ ràng: Khách hàng (Customer / Member), Giao diện Web (Next.js Client), Backend API & CSDL (NestJS & PostgreSQL), Cổng thanh toán (Payment Gateway Mock), Quầy pha chế (Nhân viên Barista).
-    * **Điều kiện rẽ nhánh (Guard condition):** **Tuyệt đối không dùng Yes/No**, dùng hành động cụ thể (`[Chưa đăng nhập]`, `[Đã có JWT hợp lệ]`, `[Hết hàng / Xung đột version]`, `[Đủ hàng & Hợp lệ]`, `[Thanh toán thành công]`, `[Thanh toán thất bại / Hủy]`).
-    * Có sử dụng **Fork** (tách luồng song song Barista và tích điểm) và **Join** (đồng bộ luồng).
-    * Xử lý đủ 3 trường hợp ngoại lệ: Hết hàng, Chưa đăng nhập, Thanh toán thất bại.
-
-- [x] **Task 2.2: Sơ đồ Tuần tự (Sequence Diagram)**
-  * **File:** [`docs/diagrams/sequence/sequence-checkout.mmd`](docs/diagrams/sequence/sequence-checkout.mmd), [`sequence-checkout.svg`](docs/diagrams/sequence/sequence-checkout.svg), [`sequence-checkout.png`](docs/diagrams/sequence/sequence-checkout.png)
-  * **Tiêu chí bắt buộc:**
-    * Đặc tả chi tiết cho Use Case trọng tâm ở Task 1.3 (Đặt & Thanh toán đơn hàng).
-    * 5 Lifeline tối thiểu: `Customer -> Next.js UI -> NestJS API -> Database -> Payment Service`.
-    * Thứ tự gọi API và cấu trúc request/response chuẩn REST.
-    * Kiểm tra JWT Token và validate dữ liệu DTO bằng `ValidationPipe`.
-    * Mở Database Transaction khi tạo đơn hàng (`PENDING`) và cập nhật kiểm tra tồn kho.
-    * Xử lý cơ chế lũy thừa `Idempotency-Key` khi client gửi lặp lại yêu cầu thanh toán.
-    * Nhánh rẽ `alt` cho 2 kịch bản: Thanh toán thành công (`PAID`, trừ stock, tích điểm) và Thất bại (`PAYMENT_FAILED`, giữ giỏ hàng).
-    * Cân bằng toàn diện Activation Bars và đường sống nét đứt (`dashed stroke`).
-
-- [x] **Task 2.3: Sơ đồ Lớp (Class Diagram mức Domain)**
-  * **File:** [`docs/diagrams/class/class-domain.mmd`](docs/diagrams/class/class-domain.mmd), [`ClassDiagram.drawio.svg`](docs/diagrams/class/ClassDiagram.drawio.svg), [`ClassDiagram.drawio.png`](docs/diagrams/class/ClassDiagram.drawio.png)
-  * **Tiêu chí bắt buộc:**
-    * Xây dựng ở mức Domain dựa trên các thực thể tham gia trong Sequence Diagram.
-    * Tối thiểu 7 lớp cốt lõi: `User`, `Product`, `Order`, `OrderItem`, `Payment`, `Promotion`, `LoyaltyTransaction`.
-    * Mỗi lớp mô tả đủ 3 thành phần: **Tên class**, **Tên thuộc tính (Attributes + Kiểu dữ liệu)**, **Tên phương thức (Methods + Kiểu trả về/Tham số)**.
-    * Thể hiện mối quan hệ chính xác: Association, Composition, Generalization và Multiplicity (`1`, `0..*`, `1..*`).
-    * Thể hiện 7 enum trạng thái chuẩn hóa, hiển thị hoàn hảo trên cả Draw.io và Visual Paradigm: `Role`, `ProductCategory`, `Size`, `OrderStatus`, `PaymentMethod`, `PaymentStatus`, `LoyaltyType`.
-
----
-
-### 🟢 TASK 3: THIẾT KẾ KIẾN TRÚC HỆ THỐNG (2.0 / 2.0 Điểm) — [ĐÃ XONG 100%]
-
-- [x] **Task 3.1: Phương pháp và Quyết định kiến trúc (Architecture & ADRs)**
-  * **File:** [`docs/architecture/architecture-description.md`](docs/architecture/architecture-description.md) và thư mục [`docs/architecture/adr/`](docs/architecture/adr/)
-  * **Tiêu chí bắt buộc:**
-    * Trình bày kiến trúc theo mô hình C4 (System Context, Container, Component) kết hợp Kiến trúc phân lớp hướng Module (Modular Monolith):
-      * Frontend Next.js 15 App Router (Server Components + Client Components, PWA, Zustand).
-      * Backend NestJS theo Module/Domain (`AuthModule`, `ProductsModule`, `OrdersModule`, `PaymentsModule`, `LoyaltyModule`, `HealthModule`).
-      * PostgreSQL 16 + Prisma ORM + cơ chế Migration.
-      * Mock Payment Service tích hợp chống trừ tiền lặp `Idempotency-Key`.
-      * Logging, Health Check endpoint (`GET /health`) và Quản lý biến môi trường (`ConfigService`).
-      * Lý do chọn kiến trúc, ưu điểm, hạn chế và bảng phân tích đánh đổi (trade-offs).
-    * 6 Bản ghi quyết định kiến trúc quan trọng (ADR):
-      * [`001-monorepo-structure.md`](docs/architecture/adr/001-monorepo-structure.md): Kiến trúc Monorepo frontend/backend.
-      * [`002-frontend-nextjs-pwa.md`](docs/architecture/adr/002-frontend-nextjs-pwa.md): Frontend Next.js PWA & Zustand.
-      * [`003-backend-nestjs-modular.md`](docs/architecture/adr/003-backend-nestjs-modular.md): Backend NestJS Modular & Domain-Driven Design.
-      * [`004-postgresql-and-prisma-orm.md`](docs/architecture/adr/004-postgresql-and-prisma-orm.md): PostgreSQL & Prisma Migration Workflow.
-      * [`005-payment-idempotency-and-mock-gateway.md`](docs/architecture/adr/005-payment-idempotency-and-mock-gateway.md): Idempotency Key & Mock Payment Gateway.
-      * [`006-logging-and-health-monitoring.md`](docs/architecture/adr/006-logging-and-health-monitoring.md): Structured Logging & Health Check.
-
-- [x] **Task 3.2: Sơ đồ Triển khai (Deployment Diagram) & Hướng dẫn triển khai**
-  * **File:** [`docs/deployment.md`](docs/deployment.md), [`docs/diagrams/deployment/deployment-diagram.puml`](docs/diagrams/deployment/deployment-diagram.puml) & [`deployment-diagram.png`](docs/diagrams/deployment/deployment-diagram.png)
-  * **Tiêu chí bắt buộc:**
-    * Sơ đồ UML Deployment Diagram cho môi trường Production thực tế (AWS EC2 Ubuntu 22.04 LTS).
-    * Thể hiện: Thiết bị người dùng (Browser/PWA), Nginx Reverse Proxy & SSL Let's Encrypt, Container Next.js, Container NestJS API, PostgreSQL có persistent volume (AWS EBS SSD), Container Registry.
-    * Giao thức HTTPS, kết nối nội bộ, cổng mạng, secrets/environment variables, health check và logging.
-    * Phân định rõ 3 ranh giới môi trường: **Local Development** (Docker Compose) $\rightarrow$ **CI Environment** (GitHub Actions) $\rightarrow$ **Production Environment** (AWS Cloud).
-    * Hướng dẫn triển khai chi tiết từng bước, cấu hình biến môi trường, migration, seeding, health check và rollback.
-
----
-
-### 🟢 TASK 4: TRIỂN KHAI SPRINT 1 (2.0 / 2.0 Điểm) — [ĐÃ XONG 100%]
-
-> **Sprint Goal:** Tạo nền tảng kỹ thuật, tài liệu có kiểm soát phiên bản và một MVP đầu tiên chạy được cho luồng xem menu.
-
-- [x] **Task 4.1: Chuẩn hóa Repository & Quy trình Agile**
-  * Cấu trúc thư mục Monorepo chuẩn (`frontend/`, `backend/`, `docs/`, `tests/`).
-  * [`docs/sprint/branching-strategy.md`](docs/sprint/branching-strategy.md): Chiến lược phân nhánh Git (`main`, `develop`, `feature/*`), PR checklist & quy chuẩn Conventional Commits.
-  * [`docs/sprint/definition-of-done.md`](docs/sprint/definition-of-done.md): Thỏa thuận kỹ thuật 3 tầng (Story level, Sprint level, Release level).
-  * [`docs/sprint/product-backlog.md`](docs/sprint/product-backlog.md): Product Backlog 6 Epics, 15 User Stories, Fibonacci story points & ma trận FR traceability.
-  * [`docs/sprint/sprint-1-backlog.md`](docs/sprint/sprint-1-backlog.md): Sprint 1 Backlog 5 hạng mục (`SP1-01` -> `SP1-05`), Kanban board, Acceptance Criteria & Sprint Retrospective.
-  * `README.md` cập nhật theo Assignment 2, `.gitignore` chặt chẽ, `.env.example`.
-- [x] **Task 4.2: Quản lý Tài liệu**
-  * Toàn bộ tạo phẩm Task 1–3 lưu trữ bài bản trong thư mục `docs/` (`docs/requirements/`, `docs/diagrams/`, `docs/architecture/`, `docs/traceability-matrix.md`, `docs/deployment.md`).
-  * Mọi thay đổi yêu cầu, sơ đồ đi qua Git commit/pull request và ghi rõ lý do.
-- [x] **Task 4.3: Hiện thực MVP Sprint 1 (Menu Browse Flow)**
-  * Backend API: `GET /products` (lọc theo danh mục), `GET /products/:id`, `GET /products/categories`, `GET /products/toppings`.
-  * Frontend Web: Màn hình Menu Next.js Mobile-first, hiển thị Tabs danh mục, lưới sản phẩm sắc nét, giá VND (`35.000đ`).
-  * Đầy đủ 3 trạng thái UX: Skeleton Loading, Empty State, Error State kèm nút Retry tự động.
-  * Dữ liệu mẫu seed vào CSDL phong phú và chân thực (`prisma/seed.ts`).
-  * Kiểm thử đơn vị tự động: 14/14 tests đạt cho `ProductsService` và `ProductsController`, độ bao phủ nghiệp vụ đạt 100% dòng lệnh (`backend/src/products/*.spec.ts`).
-- [x] **Task 4.4: Thiết lập Continuous Integration (CI Pipeline)**
-  * Tệp cấu hình: [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
-  * Chu trình tự động 4 bước: `Install -> Lint / TypeCheck -> Unit Test -> Build` chạy song song trên GitHub Actions cho cả Backend và Frontend.
-  * Quality Gate: Pull Request không được merge nếu có bất kỳ bước nào thất bại.
-
----
-
-### ⏳ TASK 5: TRIỂN KHAI SPRINT 2, CI/CD VÀ DELIVERY (0.0 / 2.0 Điểm)
-
-> **Sprint Goal:** Hoàn thành luồng End-to-End, tự động hóa đóng gói và triển khai một phiên bản production có thể truy cập được.
-
-- [ ] **Task 5.1: Hoàn thiện tính năng MVP End-to-End**
-  * Chi tiết sản phẩm: Modal chọn Size (S/M/L) và Topping, cập nhật giá realtime.
-  * Giỏ hàng: Client Store (Zustand), lưu `localStorage`, tăng giảm số lượng, tính tổng tiền.
-  * Đăng ký, đăng nhập JWT: Băm mật khẩu `bcrypt`, cấp token, bảo vệ endpoint bằng `AuthGuard`.
-  * Tạo đơn hàng: API `POST /orders`, validate DTO, tính lại giá trên server, tạo đơn `PENDING`.
-  * Thanh toán trực tuyến giả lập: API `POST /payments`, chọn Ví/Thẻ, cập nhật `PAID` hoặc `PAYMENT_FAILED`.
-  * Xác nhận & Lịch sử đơn: Màn hình nhận nước mã `#1042`, trang `GET /orders/me` tra cứu đơn cá nhân.
-  * 4 nghiệp vụ lõi: **Order State Machine** (`assertTransition`), **Idempotent Payment**, **Optimistic Locking** tồn kho (`version`), **Loyalty Points**.
-- [ ] **Task 5.2: Tích hợp và Bộ kiểm thử toàn diện**
-  * Unit Tests cho toàn bộ nghiệp vụ quan trọng (State Machine, Idempotency, Concurrency, Loyalty).
-  * Integration Tests cho API tạo đơn và thanh toán `POST /orders` & `POST /payments`.
-  * Ít nhất 1 kịch bản End-to-End (E2E) Test trọn vẹn từ Menu đến Xác nhận đơn.
-  * Database Migration & Seed có thể tái tạo CSDL chỉ bằng 1 câu lệnh.
-  * Tệp `docker-compose.yml` khởi động đầy đủ cả 3 services (web, api, postgres) ở local.
-  * Endpoint kiểm tra sức khỏe hệ thống: `GET /health`.
-- [ ] **Task 5.3: Continuous Delivery/Deployment (CD Pipeline)**
-  * Tệp cấu hình: `.github/workflows/cd.yml`.
-  * Chu trình tự động: `Push/Tag -> Lint & Test -> Build -> Docker Image -> Push Registry -> Deploy -> Smoke Test`.
-  * Đóng gói Docker Image đa tầng có tag Commit SHA / SemVer (`v1.0.0`).
-  * Triển khai vào Production sử dụng GitHub Secrets an toàn.
-  * Tự động chạy migration CSDL an toàn trước khi switch traffic.
-  * Smoke Test tự động gọi `GET /health` sau khi deploy.
-  * Kế hoạch rollback khi triển khai gặp sự cố.
-- [ ] **Task 5.4: Triển khai Production & Hồ sơ bàn giao**
-  * URL Frontend Production truy cập được qua HTTPS.
-  * URL Backend API Production và Health Check (`/health`).
-  * Database Production bảo mật (không public port trực tiếp).
-  * Secrets được bảo vệ tuyệt đối (không lộ `.env`).
-  * Release Tag `v1.0.0` và Release Notes chi tiết trên GitHub.
-  * `README.md` hoàn chỉnh hướng dẫn cài đặt, test, build, deploy và rollback.
-  * Video demo trực tiếp luồng End-to-End.
-  * Biên bản **Sprint Review** và **Sprint Retrospective** sau 2 Sprint.
-
----
-
-### 🔗 MỤC 8: MA TRẬN TRUY VẾT BẮT BUỘC (TRACEABILITY MATRIX)
-
-* **Tệp bắt buộc:** [`docs/traceability-matrix.md`](docs/traceability-matrix.md)
-* Liên kết 5 cột: `Mã yêu cầu (FR-xx)` $\iff$ `Mã Use Case` $\iff$ `Thiết kế / Sơ đồ` $\iff$ `Code / API` $\iff$ `Mã Kiểm thử (Test ID)`.

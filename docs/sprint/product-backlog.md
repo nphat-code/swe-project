@@ -12,14 +12,14 @@
 Product Backlog của BrewLite được quản lý theo mô hình Agile Scrum, tổ chức thành 6 Epics kỹ thuật bám sát 12 Yêu cầu Chức năng (`FR-01` $\rightarrow$ `FR-12`) và được hiện thực tuần tự qua 2 Sprint:
 
 ```
-[PRODUCT BACKLOG: 6 EPICS KỸ THUẬT - 48 STORY POINTS]
-  ├── EPIC 1: Quản lý thực đơn & Duyệt danh mục (FR-01, FR-02) ────────► [SPRINT 1: 18 SP]
-  ├── EPIC 2: Nền tảng Monorepo, CSDL PostgreSQL & CI Pipeline (FR-12) ─► [SPRINT 1: 18 SP]
+[PRODUCT BACKLOG: 6 EPICS KỸ THUẬT - 56 STORY POINTS]
+  ├── EPIC 1: Quản lý thực đơn, Danh mục & Tùy biến món (FR-01, FR-02) ► [SPRINT 1: 23 SP]
+  ├── EPIC 2: Nền tảng Monorepo, CSDL PostgreSQL & CI Pipeline (FR-12) ─► [SPRINT 1: 23 SP]
   │
-  ├── EPIC 3: Giỏ hàng Client & Quản lý State Zustand (FR-03) ────────► [SPRINT 2: 30 SP]
-  ├── EPIC 4: Xác thực & Phân quyền bảo mật JWT (FR-04, FR-10) ────────► [SPRINT 2: 30 SP]
-  ├── EPIC 5: Đặt hàng, Khóa lạc quan & Thanh toán Idempotent (FR-05..08) ► [SPRINT 2: 30 SP]
-  └── EPIC 6: Tích điểm Loyalty, CD Pipeline & Production Cloud (FR-09) ► [SPRINT 2: 30 SP]
+  ├── EPIC 3: Giỏ hàng Client & Quản lý State Zustand (FR-03) ────────► [SPRINT 2: 33 SP]
+  ├── EPIC 4: Xác thực & Phân quyền bảo mật JWT (FR-04, FR-10) ────────► [SPRINT 2: 33 SP]
+  ├── EPIC 5: Đặt hàng, Khóa lạc quan & Thanh toán Idempotent (FR-05..08) ► [SPRINT 2: 33 SP]
+  └── EPIC 6: Tích điểm Loyalty, CD Pipeline & Production Cloud (FR-09) ► [SPRINT 2: 33 SP]
 ```
 
 ---
@@ -34,7 +34,7 @@ Product Backlog của BrewLite được quản lý theo mô hình Agile Scrum, t
 | **PBI-04** | Xây dựng Giao diện Menu Mobile-First với Tabs danh mục | Epic 1 | `FR-01` | `UC01` | Must | 5 | Sprint 1 | 🟢 Done |
 | **PBI-05** | Thiết lập Pipeline CI tự động kiểm tra Lint, Test & Build | Epic 2 | `NFR-08` | DevOps | Must | 3 | Sprint 1 | 🟢 Done |
 | **PBI-06** | Quản lý Giỏ hàng Client bằng Zustand & LocalStorage đồng bộ | Epic 3 | `FR-03` | `UC04` | Must | 5 | Sprint 2 | ⏳ Chờ làm |
-| **PBI-07** | Modal Tùy biến món: Chọn kích cỡ (S/M/L) và đa topping kèm giá động | Epic 3 | `FR-02` | `UC02`, `UC03` | Must | 5 | Sprint 2 | ⏳ Chờ làm |
+| **PBI-07** | Modal Tùy biến món: Chọn kích cỡ (S/M/L) và đa topping kèm giá động | Epic 1 | `FR-02` | `UC02`, `UC03` | Must | 5 | Sprint 1 | 🟢 Done |
 | **PBI-08** | Xác thực tài khoản Khách hàng / Nhân viên bằng JWT & bcrypt | Epic 4 | `FR-04` | `UC09`, `UC10` | Must | 3 | Sprint 2 | ⏳ Chờ làm |
 | **PBI-09** | Khởi tạo đơn hàng với Prisma Transaction & Optimistic Locking (`version`) | Epic 5 | `FR-05`, `FR-06` | `UC05` | Must | 5 | Sprint 2 | ⏳ Chờ làm |
 | **PBI-10** | Tích hợp Cổng thanh toán mô phỏng MoMo/VNPay bảo vệ Idempotent | Epic 5 | `FR-07` | `UC06` | Must | 5 | Sprint 2 | ⏳ Chờ làm |

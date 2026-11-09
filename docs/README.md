@@ -12,6 +12,7 @@ Thư mục `docs/` được cấu trúc phân cấp chặt chẽ, tương ứng 
 
 ```plaintext
 docs/
+├── DE_BAI_ASSIGNMENT_1_GOC.md   # Văn bản gốc 12 mục của Assignment 1 (10 Tasks Scrum)
 ├── DE_BAI_ASSIGNMENT_2_GOC.md   # Single Source of Truth: Văn bản gốc 9 mục của Assignment 2
 ├── README.md                    # Tài liệu này: Mục lục hồ sơ & Quy chế kiểm soát tài liệu
 ├── traceability-matrix.md       # Mục 8: Ma trận truy vết yêu cầu (FR/NFR -> Diagram -> Code)
@@ -76,3 +77,4 @@ Tuân thủ nghiêm ngặt yêu cầu của Mục 6.2 đề tài Assignment 2:
 | **v1.4** | Tuần 3 | Task 3 | `docs/architecture/*`, `docs/deployment.md` | Hoàn thiện tài liệu kiến trúc C4, 6 bản ghi ADRs và Sơ đồ Triển khai hạ tầng Production AWS EC2. | `c37d22b` |
 | **v1.5** | Sprint 1 | Task 4.1 | `docs/sprint/*` | Bổ sung hồ sơ quy trình Agile: Branching Strategy, Definition of Done, Product Backlog, Sprint 1 Backlog. | `8b9d6af` |
 | **v1.6** | Sprint 1 | Task 4.3 & 4.4 | `.github/workflows/ci.yml`, `docs/sprint/*` | Hoàn thiện MVP Sprint 1, 14 unit tests, pipeline CI tự động và cập nhật trạng thái Backlog DONE. | `faa86ba` |
+| **v1.7** | Sprint 1 | Task 4 (Hoàn thiện) | `ProductDetailModal.tsx`, `*.test.tsx`, `.github/workflows/ci.yml`, `docs/sprint/*`, `docs/traceability-matrix.md` | Hoàn tất 100% Task 4: chuẩn hóa ARIA/tùy chọn món, bổ sung unit/flow tests FE & BE (16 BE + 31 FE), sửa CI đa nền tảng & đồng bộ Backlog/Traceability. | *Task 4 Final* |
