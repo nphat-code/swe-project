@@ -42,6 +42,7 @@ describe('OrdersController', () => {
     createOrder: jest.fn(),
     getMyOrders: jest.fn(),
     getOrderById: jest.fn(),
+    updateOrderStatus: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -86,5 +87,23 @@ describe('OrdersController', () => {
 
     expect(service.getOrderById).toHaveBeenCalledWith('order-1', mockUser);
     expect(result).toEqual(mockOrder);
+  });
+
+  it('should call updateOrderStatus with order id, target status, and authenticated user', async () => {
+    const updatedOrder = { ...mockOrder, status: OrderStatus.CANCELLED };
+    mockOrdersService.updateOrderStatus.mockResolvedValue(updatedOrder);
+
+    const result = await controller.updateOrderStatus(
+      'order-1',
+      { status: OrderStatus.CANCELLED },
+      { user: mockUser },
+    );
+
+    expect(service.updateOrderStatus).toHaveBeenCalledWith(
+      'order-1',
+      OrderStatus.CANCELLED,
+      mockUser,
+    );
+    expect(result).toEqual(updatedOrder);
   });
 });

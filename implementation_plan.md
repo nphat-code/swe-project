@@ -6,8 +6,8 @@
 > **Đề bài gốc Assignment 1:** [`docs/DE_BAI_ASSIGNMENT_1_GOC.md`](docs/DE_BAI_ASSIGNMENT_1_GOC.md) *(10 Tasks x 1.0đ = 10.0 Điểm)*  
 > **Đề bài gốc Assignment 2:** [`docs/DE_BAI_ASSIGNMENT_2_GOC.md`](docs/DE_BAI_ASSIGNMENT_2_GOC.md) *(5 Tasks x 2.0đ = 10.0 Điểm)*  
 > **Trạng thái hiện tại:**
-> * **Assignment 1 (10 Tasks Scrum):** 🟢 **Đã xong Task 1 $\rightarrow$ 7 (Sprint 1 & 2 — 7.0/10.0đ)** | 🟡 **Đang làm Task 9 (~35%) & Task 10 (~25%)** | ⏳ **Chờ Task 8 (Sprint 3)**
-> * **Assignment 2 (5 Tasks tuần tự):** 🟢 **Đã xong Task 1, 2, 3, 4 (8.0/10.0đ)** | 🟡 **Đang triển khai Task 5 (Hoàn tất Giai đoạn 1 & Giai đoạn 2 / 5 Giai đoạn)**
+> * **Assignment 1 (10 Tasks Scrum):** 🟢 **Đã xong Task 1 $\rightarrow$ 7 (Sprint 1 & 2 — 7.0/10.0đ)** | 🟡 **Đang làm Task 9 (~35%) & Task 10 (~40%)** | ⏳ **Chờ Task 8 (Sprint 3)**
+> * **Assignment 2 (5 Tasks tuần tự):** 🟢 **Đã xong Task 1, 2, 3, 4 (8.0/10.0đ)** | 🟡 **Đang triển khai Task 5 (Hoàn tất Giai đoạn 1, 2 & Bước 3.1 / 5 Giai đoạn)**
 
 ---
 
@@ -43,7 +43,7 @@
 | **Task 7** | Sprint 2 | **Đăng ký / Đăng nhập (JWT)** | `POST /auth/register`, `/auth/login`; băm mật khẩu (`bcrypt`); phát JWT; guard bảo vệ route đặt đơn | **1.0** | 🟢 **Đã xong (100%)** | Đã hoàn tất Backend `AuthModule` + `JwtAuthGuard` bảo vệ `POST /orders`, `GET /orders/me`, `GET /orders/:id` + Frontend `useAuthStore.ts`, `AuthModal.tsx`, `Header.tsx` kèm unit tests đầy đủ. |
 | **Task 8** | Sprint 3 | **Thanh toán không tiền mặt** | Tích hợp mock payment: chọn Ví/Thẻ, gọi `POST /payments`; đơn chuyển `PAID` khi thành công, `PAYMENT_FAILED` khi lỗi | **1.0** | 🔴 **Chưa làm (0%)** | **Cần làm:** Xây dựng `PaymentsModule` (`POST /payments`) ở Bước 3.2 và giao diện `CheckoutModal.tsx` ở Bước 4.2. |
 | **Task 9** | Sprint 3 | **Xác nhận, lịch sử đơn & bàn giao** | Màn hình xác nhận (mã đơn, trạng thái) & `GET /orders/me`; `docker-compose` chạy cả 3 (FE, BE, DB); `README` | **1.0** | 🟡 **Đang làm (~35%)** | Đã xong Backend `GET /orders/me`, `GET /orders/:id` (kiểm tra quyền sở hữu) và `README.md`. **Cần làm:** Màn hình xác nhận đơn, trang/modal Lịch sử đơn (Bước 4.2), Dockerfile FE/BE + `docker-compose.yml` 3 services (Bước 5). |
-| **Task 10** | Sprint 3 | **Nghiệp vụ backend** | (1) State Machine `assertTransition`, (2) Thanh toán `Idempotency-Key`, (3) Tồn kho đồng thời (Transaction + Optimistic Locking), (4) Khuyến mãi/Loyalty + **Bộ Test (a)(b)(c)** | **1.0** | 🟡 **Đang làm (~25%)** | Đã có `order-state-machine.ts` (`assertTransition` + `order-state-machine.spec.ts`) và `VouchersService` áp mã giảm giá server-side. **Cần làm:** `PATCH /orders/:id/status` (Bước 3.1), `PaymentsModule` Idempotent + Optimistic Locking `version` + Loyalty (Bước 3.2) và bộ test tích hợp (Bước 4.1). |
+| **Task 10** | Sprint 3 | **Nghiệp vụ backend** | (1) State Machine `assertTransition`, (2) Thanh toán `Idempotency-Key`, (3) Tồn kho đồng thời (Transaction + Optimistic Locking), (4) Khuyến mãi/Loyalty + **Bộ Test (a)(b)(c)** | **1.0** | 🟡 **Đang làm (~40%)** | Đã hoàn tất Task 10.1 (`order-state-machine.ts` + `PATCH /orders/:id/status` + RBAC + ma trận test 7x7 `order-state-machine.spec.ts`) và Voucher server-side (`VouchersService`). **Cần làm:** `PaymentsModule` Idempotent + Optimistic Locking `version` + Loyalty (Bước 3.2) và bộ test (b)(c) (Bước 4.1). |
 
 ---
 
@@ -75,15 +75,16 @@
   * Viết bộ unit tests (`vouchers.*.spec.ts`, `orders.*.spec.ts`, `order-state-machine.spec.ts`), chạy smoke test HTTP thực tế với Neon DB, commit & push ngay.
 
 #### 🔹 Giai đoạn 3: Triển khai Sprint 3 (Phần 1) — Nghiệp vụ Backend (Task 10) & Thanh toán (Task 8)
-- [ ] **Bước 3.1 (Task 10.1 - Order State Machine):**
-  * Hiện thực hàm `assertTransition(currentStatus, targetStatus)` trong `backend/src/orders/order-state-machine.ts` đúng sơ đồ Mục 9.1:
+- [x] **Bước 3.1 (Task 10.1 - Order State Machine):**
+  * Hiện thực hàm `assertTransition(currentStatus, targetStatus)` & `canTransition` trong `backend/src/orders/order-state-machine.ts` đúng sơ đồ Mục 9.1:
     * `PENDING` $\rightarrow$ `PAID`, `PAYMENT_FAILED`, `CANCELLED`
     * `PAYMENT_FAILED` $\rightarrow$ `PENDING` (thử lại), `CANCELLED`
     * `PAID` $\rightarrow$ `PREPARING`, `CANCELLED`
     * `PREPARING` $\rightarrow$ `READY`
     * `READY` $\rightarrow$ `COMPLETED`
     * `COMPLETED`, `CANCELLED` là trạng thái kết thúc (chặn mọi chuyển tiếp).
-  * Thêm endpoint `PATCH /orders/:id/status` sử dụng `assertTransition`.
+  * Thêm endpoint `PATCH /orders/:id/status` (`UpdateOrderStatusDto`, `OrdersController.updateOrderStatus`, `OrdersService.updateOrderStatus`) dùng `assertTransition`, kiểm soát RBAC (`CUSTOMER` chỉ hủy/thử lại đơn của mình; `STAFF`/`ADMIN` điều phối trạng thái), đồng bộ `paymentStatus`, hoàn tồn kho khi hủy đơn đã thanh toán trong `$transaction` + `updateMany` chống xung đột.
+  * Kiểm chứng ma trận 49 cặp chuyển tiếp trong `order-state-machine.spec.ts` + RBAC/hoàn kho trong `orders.service.spec.ts` và smoke test HTTP thực tế với Neon DB.
 - [ ] **Bước 3.2 (Task 8, Task 10.2, 10.3, 10.4 - Thanh toán Idempotent, Optimistic Locking & Loyalty):**
   * Tạo `backend/src/payments/` (`payments.module.ts`, `payments.controller.ts`, `payments.service.ts`, `dto/create-payment.dto.ts`).
   * Hiện thực `POST /payments`:
@@ -122,5 +123,5 @@
 | **Task 2** | **Mô hình hóa hệ thống** | Activity Diagram (`.puml` / `.png`), Sequence Diagram (`.mmd` / `.png`), Domain Class Diagram (`.mmd` / `.drawio.png`) | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
 | **Task 3** | **Thiết kế kiến trúc & Triển khai** | `docs/architecture/architecture-description.md`, thư mục `docs/architecture/adr/`, `docs/deployment.md` | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
 | **Task 4** | **Triển khai Sprint 1** | Chuẩn hóa repo, MVP Menu duyệt đồ uống (Next.js + NestJS), `.github/workflows/ci.yml` | **2.0** | 🟢 **HOÀN THÀNH** | **100%** |
-| **Task 5** | **Triển khai Sprint 2 & CI/CD** | MVP End-to-End (Task 5..10 của Assignment 1), Bộ Test (Unit/Integration/E2E), `.github/workflows/cd.yml`, Triển khai Production HTTPS | **2.0** | 🟡 **Đang triển khai (Xong Giai đoạn 1 & 2 / 5)** | **40%** |
-| **TỔNG** | **TOÀN BỘ ASSIGNMENT 2** | **Hệ thống chạy thực tế, mã nguồn, tài liệu và pipeline CI/CD** | **10.0** | 🟢 **ĐÃ ĐẠT 8.0/10.0 (+ Task 5: 40%)** | **88%** |
+| **Task 5** | **Triển khai Sprint 2 & CI/CD** | MVP End-to-End (Task 5..10 của Assignment 1), Bộ Test (Unit/Integration/E2E), `.github/workflows/cd.yml`, Triển khai Production HTTPS | **2.0** | 🟡 **Đang triển khai (Xong Giai đoạn 1, 2 & Bước 3.1 / 5)** | **45%** |
+| **TỔNG** | **TOÀN BỘ ASSIGNMENT 2** | **Hệ thống chạy thực tế, mã nguồn, tài liệu và pipeline CI/CD** | **10.0** | 🟢 **ĐÃ ĐẠT 8.0/10.0 (+ Task 5: 45%)** | **89%** |

@@ -15,9 +15,13 @@ export function getAllowedTransitions(status: OrderStatus): readonly OrderStatus
   return ORDER_STATUS_TRANSITIONS[status];
 }
 
-export function assertTransition(currentStatus: OrderStatus, targetStatus: OrderStatus): void {
+export function canTransition(currentStatus: OrderStatus, targetStatus: OrderStatus): boolean {
   const allowedTargets = ORDER_STATUS_TRANSITIONS[currentStatus];
-  if (!allowedTargets || !allowedTargets.includes(targetStatus)) {
+  return Boolean(allowedTargets && allowedTargets.includes(targetStatus));
+}
+
+export function assertTransition(currentStatus: OrderStatus, targetStatus: OrderStatus): void {
+  if (!canTransition(currentStatus, targetStatus)) {
     throw new BadRequestException(
       `Không thể chuyển trạng thái đơn hàng từ ${currentStatus} sang ${targetStatus}`,
     );

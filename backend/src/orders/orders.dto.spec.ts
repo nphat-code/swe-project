@@ -1,7 +1,9 @@
 import 'reflect-metadata';
+import { OrderStatus } from '@prisma/client';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 
 describe('CreateOrderDto', () => {
   it('should validate nested order items and normalize blank optional strings', async () => {
@@ -55,5 +57,23 @@ describe('CreateOrderDto', () => {
     });
     const nestedErrors = await validate(invalidNestedDto);
     expect(nestedErrors.length).toBeGreaterThan(0);
+  });
+});
+
+describe('UpdateOrderStatusDto', () => {
+  it('should validate and normalize OrderStatus enum values', async () => {
+    const validDto = plainToInstance(UpdateOrderStatusDto, { status: ' preparing ' });
+    const errors = await validate(validDto);
+
+    expect(errors).toHaveLength(0);
+    expect(validDto.status).toBe(OrderStatus.PREPARING);
+  });
+
+  it('should reject unknown order status values', async () => {
+    const invalidDto = plainToInstance(UpdateOrderStatusDto, { status: 'DELIVERED' });
+    const errors = await validate(invalidDto);
+
+    expect(errors.length).toBeGreaterThan(0);
+    expect(errors[0].property).toBe('status');
   });
 });

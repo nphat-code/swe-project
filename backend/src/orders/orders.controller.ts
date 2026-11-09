@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Request,
   UseGuards,
@@ -14,6 +15,7 @@ import { Order, OrderItem } from '@prisma/client';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AuthenticatedRequest } from '../auth/types/auth.types';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { OrderWithDetails, OrdersService } from './orders.service';
 
 @ApiTags('orders')
@@ -47,5 +49,18 @@ export class OrdersController {
     @Request() req: AuthenticatedRequest,
   ): Promise<OrderWithDetails> {
     return this.ordersService.getOrderById(id, req.user);
+  }
+
+  @Patch(':id/status')
+  @ApiOperation({
+    summary: 'Cập nhật trạng thái đơn hàng theo Order State Machine (assertTransition)',
+  })
+  @ApiParam({ name: 'id', description: 'ID đơn hàng (UUID)' })
+  async updateOrderStatus(
+    @Param('id') id: string,
+    @Body() updateOrderStatusDto: UpdateOrderStatusDto,
+    @Request() req: AuthenticatedRequest,
+  ): Promise<OrderWithDetails> {
+    return this.ordersService.updateOrderStatus(id, updateOrderStatusDto.status, req.user);
   }
 }

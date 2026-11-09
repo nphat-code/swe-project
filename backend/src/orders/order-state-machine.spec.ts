@@ -1,8 +1,24 @@
 import { BadRequestException } from '@nestjs/common';
 import { OrderStatus } from '@prisma/client';
-import { assertTransition, getAllowedTransitions } from './order-state-machine';
+import {
+  assertTransition,
+  canTransition,
+  getAllowedTransitions,
+} from './order-state-machine';
 
 describe('Order State Machine', () => {
+  const expectedAllowedPairs = new Set<string>([
+    `${OrderStatus.PENDING}->${OrderStatus.PAID}`,
+    `${OrderStatus.PENDING}->${OrderStatus.PAYMENT_FAILED}`,
+    `${OrderStatus.PENDING}->${OrderStatus.CANCELLED}`,
+    `${OrderStatus.PAYMENT_FAILED}->${OrderStatus.PENDING}`,
+    `${OrderStatus.PAYMENT_FAILED}->${OrderStatus.CANCELLED}`,
+    `${OrderStatus.PAID}->${OrderStatus.PREPARING}`,
+    `${OrderStatus.PAID}->${OrderStatus.CANCELLED}`,
+    `${OrderStatus.PREPARING}->${OrderStatus.READY}`,
+    `${OrderStatus.READY}->${OrderStatus.COMPLETED}`,
+  ]);
+
   it('should allow valid state transitions according to specification', () => {
     expect(() => assertTransition(OrderStatus.PENDING, OrderStatus.PAID)).not.toThrow();
     expect(() =>
@@ -39,5 +55,23 @@ describe('Order State Machine', () => {
     );
     expect(getAllowedTransitions(OrderStatus.COMPLETED)).toEqual([]);
     expect(getAllowedTransitions(OrderStatus.CANCELLED)).toEqual([]);
+  });
+
+  it('should exhaustively match the 7x7 transition matrix', () => {
+    const allStatuses = Object.values(OrderStatus);
+    for (const currentStatus of allStatuses) {
+      for (const targetStatus of allStatuses) {
+        const key = `${currentStatus}->${targetStatus}`;
+        const shouldAllow = expectedAllowedPairs.has(key);
+        expect(canTransition(currentStatus, targetStatus)).toBe(shouldAllow);
+        if (shouldAllow) {
+          expect(() => assertTransition(currentStatus, targetStatus)).not.toThrow();
+        } else {
+          expect(() => assertTransition(currentStatus, targetStatus)).toThrow(
+            BadRequestException,
+          );
+        }
+      }
+    }
   });
 });

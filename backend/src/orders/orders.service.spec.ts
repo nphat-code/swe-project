@@ -63,9 +63,10 @@ describe('OrdersService (INT-ORD01 / FR-05 / FR-11)', () => {
     },
   ];
 
-  const mockPrismaService = {
+  const mockPrismaTx = {
     product: {
       findMany: jest.fn(),
+      update: jest.fn(),
     },
     topping: {
       findMany: jest.fn(),
@@ -74,7 +75,16 @@ describe('OrdersService (INT-ORD01 / FR-05 / FR-11)', () => {
       create: jest.fn(),
       findMany: jest.fn(),
       findUnique: jest.fn(),
+      findUniqueOrThrow: jest.fn(),
+      updateMany: jest.fn(),
     },
+  };
+
+  const mockPrismaService = {
+    ...mockPrismaTx,
+    $transaction: jest.fn((callback: (tx: typeof mockPrismaTx) => Promise<unknown>) =>
+      callback(mockPrismaTx),
+    ),
   };
 
   const mockVouchersService = {
@@ -283,5 +293,179 @@ describe('OrdersService (INT-ORD01 / FR-05 / FR-11)', () => {
     mockPrismaService.order.findUnique.mockResolvedValueOnce(someoneElsesOrder);
     const staffResult = await service.getOrderById('order-99', staffUser);
     expect(staffResult).toEqual(someoneElsesOrder);
+  });
+
+  it('should allow staff to advance order through Barista workflow using assertTransition', async () => {
+    const paidOrder = {
+      id: 'order-paid-1',
+      userId: customerUser.id,
+      status: OrderStatus.PAID,
+      paymentStatus: PaymentStatus.PAID,
+      items: [],
+      payments: [],
+    };
+    const preparingOrder = { ...paidOrder, status: OrderStatus.PREPARING };
+
+    mockPrismaService.order.findUnique.mockResolvedValueOnce(paidOrder);
+    mockPrismaService.order.updateMany.mockResolvedValueOnce({ count: 1 });
+    mockPrismaService.order.findUniqueOrThrow.mockResolvedValueOnce(preparingOrder);
+
+    const result = await service.updateOrderStatus(
+      'order-paid-1',
+      OrderStatus.PREPARING,
+      staffUser,
+    );
+
+    expect(mockPrismaService.order.updateMany).toHaveBeenCalledWith({
+      where: { id: 'order-paid-1', status: OrderStatus.PAID },
+      data: { status: OrderStatus.PREPARING },
+    });
+    expect(result.status).toBe(OrderStatus.PREPARING);
+  });
+
+  it('should sync paymentStatus when transitioning PENDING <-> PAYMENT_FAILED or to PAID', async () => {
+    const failedOrder = {
+      id: 'order-fail-1',
+      userId: customerUser.id,
+      status: OrderStatus.PAYMENT_FAILED,
+      paymentStatus: PaymentStatus.FAILED,
+      items: [],
+      payments: [],
+    };
+    const retriedOrder = {
+      ...failedOrder,
+      status: OrderStatus.PENDING,
+      paymentStatus: PaymentStatus.UNPAID,
+    };
+
+    mockPrismaService.order.findUnique.mockResolvedValueOnce(failedOrder);
+    mockPrismaService.order.updateMany.mockResolvedValueOnce({ count: 1 });
+    mockPrismaService.order.findUniqueOrThrow.mockResolvedValueOnce(retriedOrder);
+
+    const result = await service.updateOrderStatus(
+      'order-fail-1',
+      OrderStatus.PENDING,
+      customerUser,
+    );
+
+    expect(mockPrismaService.order.updateMany).toHaveBeenCalledWith({
+      where: { id: 'order-fail-1', status: OrderStatus.PAYMENT_FAILED },
+      data: {
+        status: OrderStatus.PENDING,
+        paymentStatus: PaymentStatus.UNPAID,
+      },
+    });
+    expect(result.paymentStatus).toBe(PaymentStatus.UNPAID);
+  });
+
+  it('should reject invalid state transitions and enforce customer RBAC restrictions', async () => {
+    mockPrismaService.order.findUnique.mockResolvedValueOnce(null);
+    await expect(
+      service.updateOrderStatus('missing-order', OrderStatus.CANCELLED, customerUser),
+    ).rejects.toThrow(NotFoundException);
+
+    mockPrismaService.order.findUnique.mockResolvedValueOnce({
+      id: 'order-other',
+      userId: 'other-user-id',
+      status: OrderStatus.PENDING,
+      paymentStatus: PaymentStatus.UNPAID,
+      items: [],
+      payments: [],
+    });
+    await expect(
+      service.updateOrderStatus('order-other', OrderStatus.CANCELLED, customerUser),
+    ).rejects.toThrow(ForbiddenException);
+
+    mockPrismaService.order.findUnique.mockResolvedValueOnce({
+      id: 'order-own-pending',
+      userId: customerUser.id,
+      status: OrderStatus.PENDING,
+      paymentStatus: PaymentStatus.UNPAID,
+      items: [],
+      payments: [],
+    });
+    await expect(
+      service.updateOrderStatus('order-own-pending', OrderStatus.PAID, customerUser),
+    ).rejects.toThrow(ForbiddenException);
+
+    mockPrismaService.order.findUnique.mockResolvedValueOnce({
+      id: 'order-own-preparing',
+      userId: customerUser.id,
+      status: OrderStatus.PREPARING,
+      paymentStatus: PaymentStatus.PAID,
+      items: [],
+      payments: [],
+    });
+    await expect(
+      service.updateOrderStatus('order-own-preparing', OrderStatus.CANCELLED, customerUser),
+    ).rejects.toThrow(BadRequestException);
+
+    mockPrismaService.order.findUnique.mockResolvedValueOnce({
+      id: 'order-completed',
+      userId: customerUser.id,
+      status: OrderStatus.COMPLETED,
+      paymentStatus: PaymentStatus.PAID,
+      items: [],
+      payments: [],
+    });
+    await expect(
+      service.updateOrderStatus('order-completed', OrderStatus.PAID, staffUser),
+    ).rejects.toThrow(BadRequestException);
+  });
+
+  it('should restore aggregated product stock when cancelling a confirmed PAID order', async () => {
+    const paidOrderWithItems = {
+      id: 'order-paid-cancel',
+      userId: customerUser.id,
+      status: OrderStatus.PAID,
+      paymentStatus: PaymentStatus.PAID,
+      items: [
+        { productId: 'prod-1', quantity: 2 },
+        { productId: 'prod-1', quantity: 1 },
+        { productId: 'prod-2', quantity: 3 },
+      ],
+      payments: [{ id: 'pay-1', status: PaymentStatus.PAID }],
+    };
+
+    mockPrismaService.order.findUnique.mockResolvedValueOnce(paidOrderWithItems);
+    mockPrismaService.product.update.mockResolvedValue({});
+    mockPrismaService.order.updateMany.mockResolvedValueOnce({ count: 1 });
+    mockPrismaService.order.findUniqueOrThrow.mockResolvedValueOnce({
+      ...paidOrderWithItems,
+      status: OrderStatus.CANCELLED,
+    });
+
+    const result = await service.updateOrderStatus(
+      'order-paid-cancel',
+      OrderStatus.CANCELLED,
+      customerUser,
+    );
+
+    expect(mockPrismaService.product.update).toHaveBeenCalledTimes(2);
+    expect(mockPrismaService.product.update).toHaveBeenCalledWith({
+      where: { id: 'prod-1' },
+      data: { stock: { increment: 3 }, version: { increment: 1 } },
+    });
+    expect(mockPrismaService.product.update).toHaveBeenCalledWith({
+      where: { id: 'prod-2' },
+      data: { stock: { increment: 3 }, version: { increment: 1 } },
+    });
+    expect(result.status).toBe(OrderStatus.CANCELLED);
+  });
+
+  it('should throw ConflictException on concurrent order status mutation race', async () => {
+    mockPrismaService.order.findUnique.mockResolvedValueOnce({
+      id: 'order-race',
+      userId: customerUser.id,
+      status: OrderStatus.PAID,
+      paymentStatus: PaymentStatus.PAID,
+      items: [],
+      payments: [],
+    });
+    mockPrismaService.order.updateMany.mockResolvedValueOnce({ count: 0 });
+
+    await expect(
+      service.updateOrderStatus('order-race', OrderStatus.PREPARING, staffUser),
+    ).rejects.toThrow(ConflictException);
   });
 });

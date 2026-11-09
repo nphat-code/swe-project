@@ -22,6 +22,7 @@ import { SafeUser } from '../auth/types/auth.types';
 import { PrismaService } from '../prisma/prisma.service';
 import { VouchersService } from '../vouchers/vouchers.service';
 import { CreateOrderDto, CreateOrderItemDto } from './dto/create-order.dto';
+import { assertTransition } from './order-state-machine';
 
 type ProductWithSizes = Product & { sizes: SizeOption[] };
 
@@ -280,5 +281,107 @@ export class OrdersService {
     }
 
     return order;
+  }
+
+  private resolveNextPaymentStatus(targetStatus: OrderStatus): PaymentStatus | undefined {
+    if (targetStatus === OrderStatus.PAID) {
+      return PaymentStatus.PAID;
+    }
+    if (targetStatus === OrderStatus.PAYMENT_FAILED) {
+      return PaymentStatus.FAILED;
+    }
+    if (targetStatus === OrderStatus.PENDING) {
+      return PaymentStatus.UNPAID;
+    }
+    return undefined;
+  }
+
+  async updateOrderStatus(
+    orderId: string,
+    targetStatus: OrderStatus,
+    requester: SafeUser,
+  ): Promise<OrderWithDetails> {
+    return this.prisma.$transaction(async (tx) => {
+      const order = await tx.order.findUnique({
+        where: { id: orderId },
+        include: {
+          items: true,
+          payments: true,
+        },
+      });
+
+      if (!order) {
+        throw new NotFoundException('Không tìm thấy đơn hàng');
+      }
+
+      if (requester.role === Role.CUSTOMER) {
+        if (order.userId !== requester.id) {
+          throw new ForbiddenException('Bạn không có quyền cập nhật đơn hàng này');
+        }
+        const customerAllowedTargets: readonly OrderStatus[] = [
+          OrderStatus.CANCELLED,
+          OrderStatus.PENDING,
+        ];
+        if (!customerAllowedTargets.includes(targetStatus)) {
+          throw new ForbiddenException(
+            'Khách hàng không có quyền chuyển đơn hàng sang trạng thái này',
+          );
+        }
+      }
+
+      assertTransition(order.status, targetStatus);
+
+      const hasConfirmedPaidPayment = order.payments.some(
+        (payment) => payment.status === PaymentStatus.PAID,
+      );
+
+      if (
+        order.status === OrderStatus.PAID &&
+        targetStatus === OrderStatus.CANCELLED &&
+        hasConfirmedPaidPayment
+      ) {
+        const restoreQuantityByProduct = new Map<string, number>();
+        for (const item of order.items) {
+          const currentQty = restoreQuantityByProduct.get(item.productId) ?? 0;
+          restoreQuantityByProduct.set(item.productId, currentQty + item.quantity);
+        }
+
+        for (const [productId, quantity] of restoreQuantityByProduct.entries()) {
+          await tx.product.update({
+            where: { id: productId },
+            data: {
+              stock: { increment: quantity },
+              version: { increment: 1 },
+            },
+          });
+        }
+      }
+
+      const nextPaymentStatus = this.resolveNextPaymentStatus(targetStatus);
+      const updated = await tx.order.updateMany({
+        where: {
+          id: orderId,
+          status: order.status,
+        },
+        data: {
+          status: targetStatus,
+          ...(nextPaymentStatus ? { paymentStatus: nextPaymentStatus } : {}),
+        },
+      });
+
+      if (updated.count === 0) {
+        throw new ConflictException(
+          'Trạng thái đơn hàng đã được cập nhật trước đó, vui lòng tải lại và thử lại',
+        );
+      }
+
+      return tx.order.findUniqueOrThrow({
+        where: { id: orderId },
+        include: {
+          items: true,
+          payments: true,
+        },
+      });
+    });
   }
 }
