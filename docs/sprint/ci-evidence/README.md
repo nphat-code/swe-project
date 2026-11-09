@@ -9,10 +9,11 @@
 ## 1. LẦN CHẠY PHÁT HIỆN LỖI (CI FAILURE — RUN `#24`)
 
 * **Commit:** `5f1af24` (`docs(sprint-1): align Task 4 progress, traceability, backlog, and Assignment 1 spec`)
-* **Trạng thái:** `Failure` (`1m 32s`) — `Backend CI` pass, `Frontend CI` dừng pipeline ở bước `Run ESLint Quality Check` (exit code `1`).
+* **Actions Run ID:** `42547817722`
+* **Trạng thái:** `Failure` (`1m 32s`) — `Backend CI` pass (`1m 28s`), `Frontend CI` dừng pipeline ở bước `Run ESLint Quality Check` (exit code `1`).
 * **Lỗi được bắt tự động:** Rule `react-hooks/set-state-in-effect` tại `frontend/src/app/page.tsx:56` (`loadInitialData()` gọi `setState` đồng bộ trong `useEffect`).
 
-![CI Failure Run 24 Summary](ci-fail-run-24.jpg)
+![CI Failure Run 24 Summary](ci-fail-run-24.png)
 
 ![CI Failure Run 24 ESLint Log](ci-fail-log.png)
 
@@ -21,6 +22,7 @@
 ## 2. LẦN CHẠY THÀNH CÔNG (CI PASS — RUN `#25`)
 
 * **Commit:** `82f60b4` (`fix(frontend): avoid synchronous setState in useEffect for CI lint`)
+* **Actions Run ID:** `42550203806`
 * **Trạng thái:** `Success` (`1m 27s`) — Cả hai job `Backend CI (NestJS + Prisma)` (`53s`) và `Frontend CI (Next.js App Router)` (`1m 23s`) vượt qua toàn bộ các chặng `npm ci` $\rightarrow$ `Lint` $\rightarrow$ `TypeCheck` $\rightarrow$ `Unit Test & Coverage` $\rightarrow$ `Build`.
 
-![CI Success Run 25 Summary](ci-success-run-25.jpg)
+![CI Success Run 25 Summary](ci-success-run-25.png)
