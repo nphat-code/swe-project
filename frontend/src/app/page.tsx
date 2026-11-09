@@ -29,7 +29,14 @@ export default function Home() {
     return cartItems.reduce((sum, item) => sum + item.quantity, 0);
   }, [cartItems]);
 
-  const loadInitialData = async () => {
+  const applyMenuResult = (catsData: Category[], prodsData: Product[], topsData: Topping[]) => {
+    setCategories(catsData);
+    setProducts(prodsData);
+    setToppings(topsData);
+    setHasError(catsData.length === 0 && prodsData.length === 0);
+  };
+
+  const handleRetryLoad = async () => {
     setIsLoading(true);
     setHasError(false);
     try {
@@ -38,12 +45,7 @@ export default function Home() {
         fetchProducts(),
         fetchToppings(),
       ]);
-      setCategories(catsData);
-      setProducts(prodsData);
-      setToppings(topsData);
-      if (catsData.length === 0 && prodsData.length === 0) {
-        setHasError(true);
-      }
+      applyMenuResult(catsData, prodsData, topsData);
     } catch (err) {
       console.error('Lỗi khi tải dữ liệu khởi tạo:', err);
       setHasError(true);
@@ -53,8 +55,29 @@ export default function Home() {
   };
 
   useEffect(() => {
-    loadInitialData();
+    let isCancelled = false;
+
+    Promise.all([fetchCategories(), fetchProducts(), fetchToppings()])
+      .then(([catsData, prodsData, topsData]) => {
+        if (isCancelled) return;
+        setCategories(catsData);
+        setProducts(prodsData);
+        setToppings(topsData);
+        setHasError(catsData.length === 0 && prodsData.length === 0);
+      })
+      .catch((err) => {
+        if (isCancelled) return;
+        console.error('Lỗi khi tải dữ liệu khởi tạo:', err);
+        setHasError(true);
+      })
+      .finally(() => {
+        if (!isCancelled) {
+          setIsLoading(false);
+        }
+      });
+
     return () => {
+      isCancelled = true;
       if (toastTimeoutRef.current) {
         clearTimeout(toastTimeoutRef.current);
       }
@@ -185,7 +208,7 @@ export default function Home() {
           ) : hasError && products.length === 0 ? (
             <ErrorState
               message="Không thể kết nối đến máy chủ BrewLite. Vui lòng đảm bảo backend đang hoạt động và nhấn thử lại."
-              onRetry={loadInitialData}
+              onRetry={handleRetryLoad}
             />
           ) : filteredProducts.length === 0 ? (
             <EmptyState
