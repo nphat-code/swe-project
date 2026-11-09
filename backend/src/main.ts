@@ -32,6 +32,7 @@ async function bootstrap() {
     .setTitle('BrewLite API')
     .setDescription('BrewLite Cashless Coffee Ordering System - REST API Documentation')
     .setVersion('1.0')
+    .addTag('auth', 'Đăng ký, đăng nhập và xác thực JWT')
     .addTag('products', 'Quản lý đồ uống, danh mục và topping')
     .addTag('system', 'Giám sát hệ thống')
     .addBearerAuth()
