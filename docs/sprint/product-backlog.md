@@ -42,7 +42,7 @@ Product Backlog của BrewLite được quản lý theo mô hình Agile Scrum, t
 | **PBI-12** | Tự động tích lũy điểm thưởng thành viên Loyalty (`total / 10000`) | Epic 6 | `FR-09` | `UC08` | Should | 2 | Sprint 2 | 🟢 Done |
 | **PBI-13** | Xem lịch sử đơn hàng cá nhân của tài khoản đã đăng nhập | Epic 4 | `FR-10` | `UC11` | Must | 2 | Sprint 2 | 🟡 Đang làm (Xong Backend `GET /orders/me`; chờ UI Bước 4.2) |
 | **PBI-14** | Thiết lập Continuous Delivery (CD) tự động triển khai máy chủ đám mây | Epic 6 | `NFR-08` | DevOps | Must | 3 | Sprint 2 | ⏳ Chờ làm |
-| **PBI-15** | Bộ kiểm thử tự động toàn diện 3 tầng (Unit, Integration, E2E) | Epic 6 | `NFR-04` | QA | Must | 5 | Sprint 2 | ⏳ Chờ làm |
+| **PBI-15** | Bộ kiểm thử tự động toàn diện 3 tầng (Unit, Integration, E2E) | Epic 6 | `NFR-04` | QA | Must | 5 | Sprint 2 | 🟡 Đang làm (Xong Unit & Integration Test Task 10 (a)(b)(c); chờ UI/E2E Bước 4.2 & 5) |
 
 ---
 
