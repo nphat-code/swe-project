@@ -1,0 +1,189 @@
+name: BrewLite CD Pipeline (Package, Compose Smoke & Delivery)
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      deploy_environment:
+        description: 'Target deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+      rollback_tag:
+        description: 'Optional existing image tag (e.g. sha-abc1234 or v1.0.0) to roll back to'
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: write
+  packages: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAMESPACE: ${{ github.repository }}
+
+jobs:
+  quality-gate:
+    name: Quality Gate (Lint, TypeCheck, Unit, E2E & Build)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Backend Install, Lint, TypeCheck, Tests & Build
+        working-directory: backend
+        run: |
+          npm ci
+          npx prisma generate
+          npm run lint
+          npm run typecheck
+          npm run test:cov
+          npm run test:e2e
+          npm run build
+
+      - name: Frontend Install, Lint, TypeCheck, Tests & Build
+        working-directory: frontend
+        env:
+          NEXT_PUBLIC_API_URL: ${{ vars.PRODUCTION_API_URL || 'https://api.brewlite.nphat.dev' }}
+        run: |
+          npm ci
+          npm run lint
+          npm run typecheck
+          npm run test -- --ci --coverage
+          npm run build
+
+  docker-package-and-smoke:
+    name: Docker Build, Registry Tagging & Compose E2E Smoke
+    runs-on: ubuntu-latest
+    needs: quality-gate
+    outputs:
+      image_tag: ${{ steps.tag.outputs.image_tag }}
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Compute Immutable Image Tag
+        id: tag
+        run: |
+          if [ -n "${{ inputs.rollback_tag }}" ]; then
+            echo "image_tag=${{ inputs.rollback_tag }}" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "image_tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          else
+            echo "image_tag=sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Validate Docker Compose Stack Definition
+        run: docker compose config --quiet
+
+      - name: Build Multi-Stage Docker Images & Verify 3-Service Stack
+        run: |
+          docker compose build
+          docker compose up -d
+          for attempt in $(seq 1 30); do
+            if curl -sf http://localhost:3001/health | grep -q '"status":"ok"'; then
+              break
+            fi
+            sleep 2
+          done
+          curl -sf http://localhost:3001/health
+          curl -sf http://localhost:3001/products | grep -q "Cà Phê"
+          curl -sf http://localhost:3000 >/dev/null
+          docker compose down -v
+
+      - name: Log in to GitHub Container Registry (GHCR)
+        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push Versioned Backend & Frontend Images to GHCR
+        if: (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch') && inputs.rollback_tag == ''
+        run: |
+          LOWER_REPO=$(echo "${{ env.IMAGE_NAMESPACE }}" | tr '[:upper:]' '[:lower:]')
+          TAG="${{ steps.tag.outputs.image_tag }}"
+          docker build -t "${{ env.REGISTRY }}/${LOWER_REPO}-backend:${TAG}" -t "${{ env.REGISTRY }}/${LOWER_REPO}-backend:latest" ./backend
+          docker build --build-arg NEXT_PUBLIC_API_URL="${{ vars.PRODUCTION_API_URL || 'http://localhost:3001' }}" -t "${{ env.REGISTRY }}/${LOWER_REPO}-frontend:${TAG}" -t "${{ env.REGISTRY }}/${LOWER_REPO}-frontend:latest" ./frontend
+          docker push "${{ env.REGISTRY }}/${LOWER_REPO}-backend:${TAG}"
+          docker push "${{ env.REGISTRY }}/${LOWER_REPO}-backend:latest"
+          docker push "${{ env.REGISTRY }}/${LOWER_REPO}-frontend:${TAG}"
+          docker push "${{ env.REGISTRY }}/${LOWER_REPO}-frontend:latest"
+
+  deploy-production:
+    name: Deploy to Production & Post-Deploy Health Verification
+    runs-on: ubuntu-latest
+    needs: docker-package-and-smoke
+    environment: ${{ inputs.deploy_environment || 'production' }}
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Run Production Deployment Hook & Smoke Probe
+        env:
+          DEPLOY_HOOK_URL: ${{ secrets.PRODUCTION_DEPLOY_HOOK }}
+          PRODUCTION_API_URL: ${{ vars.PRODUCTION_API_URL }}
+          PRODUCTION_WEB_URL: ${{ vars.PRODUCTION_WEB_URL }}
+          IMAGE_TAG: ${{ needs.docker-package-and-smoke.outputs.image_tag }}
+        run: |
+          if [ -z "$DEPLOY_HOOK_URL" ] || [ -z "$PRODUCTION_API_URL" ]; then
+            echo "Production deploy hook or URL not configured in GitHub repository secrets/variables yet."
+            echo "Verified immutable image tag ready for deployment: ${IMAGE_TAG}"
+            echo "Rollback procedure: re-run CD workflow with rollback_tag=<previous-sha-or-semver> or checkout previous tag and run docker compose up --build -d"
+            exit 0
+          fi
+
+          curl -fsSL -X POST "$DEPLOY_HOOK_URL"
+
+          for attempt in $(seq 1 30); do
+            if curl -sf "${PRODUCTION_API_URL}/health" | grep -q '"status":"ok"'; then
+              echo "Production API health check passed."
+              break
+            fi
+            if [ "$attempt" -eq 30 ]; then
+              echo "::error::Production /health check failed after deploy of ${IMAGE_TAG}. Initiate rollback immediately using previous stable tag."
+              exit 1
+            fi
+            sleep 5
+          done
+
+          if [ -n "$PRODUCTION_WEB_URL" ]; then
+            curl -fsS "$PRODUCTION_WEB_URL" >/dev/null
+          fi
+
+  create-release:
+    name: Publish GitHub Release Notes
+    runs-on: ubuntu-latest
+    needs: deploy-production
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" --title "BrewLite ${GITHUB_REF_NAME}" --notes-file docs/release-notes.md --latest
+

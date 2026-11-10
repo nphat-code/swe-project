@@ -1,10 +1,17 @@
 import { PrismaClient, Role } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import process from 'node:process';
 
 const prisma = new PrismaClient();
 
 async function main() {
+  if (process.env.SEED_IF_EMPTY === 'true') {
+    const existingProducts = await prisma.product.count();
+    if (existingProducts > 0) {
+      console.log(`⏭️ Skipping database seed (${existingProducts} products already exist).`);
+      return;
+    }
+  }
+
   console.log('🌱 Starting BrewLite database seeding...');
 
   await prisma.payment.deleteMany();

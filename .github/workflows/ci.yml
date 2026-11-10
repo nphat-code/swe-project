@@ -51,6 +51,9 @@ jobs:
       - name: Run Backend Unit Tests & Coverage
         run: npm run test:cov
 
+      - name: Run Backend HTTP E2E Tests
+        run: npm run test:e2e
+
       - name: Build Backend Production Artifact
         run: npm run build
 

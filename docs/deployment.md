@@ -81,16 +81,17 @@ Có 2 phương thức vận hành trên máy trạm lập trình viên:
 
 1. **Khởi động CSDL PostgreSQL qua Docker Compose:**
    ```bash
-   docker compose up -d db
+   docker compose up -d postgres
    ```
 2. **Cài đặt toàn bộ thư viện Monorepo:**
    ```bash
-   npm install
+   npm --prefix backend install
+   npm --prefix frontend install
    ```
 3. **Thực hiện di chuyển lược đồ CSDL (Prisma Migration) & Nạp dữ liệu mẫu (Seed):**
    ```bash
    cd backend
-   npx prisma migrate dev --name init_domain_schema
+   npx prisma migrate deploy
    npx prisma db seed
    cd ..
    ```
@@ -104,9 +105,9 @@ Có 2 phương thức vận hành trên máy trạm lập trình viên:
 
 ---
 
-#### Cách 2: Đóng gói toàn bộ cụm dịch vụ qua Docker Compose
+#### Cách 2: Đóng gói toàn bộ cụm dịch vụ qua Docker Compose (3 Services)
 
-Khởi chạy cả 3 container (`web`, `api`, `db`) trong mạng bridge nội bộ chỉ với 1 câu lệnh duy nhất:
+Khởi chạy cả 3 container (`postgres`, `backend`, `frontend`) trong mạng bridge nội bộ chỉ với 1 câu lệnh duy nhất (container `backend` tự chạy `prisma migrate deploy` và nạp dữ liệu mẫu khi database rỗng):
 
 ```bash
 docker compose up --build -d
