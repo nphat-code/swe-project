@@ -140,33 +140,47 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Run Production Deployment Hook & Smoke Probe
+      - name: Run Production Deployment (AWS EC2 SSH or Webhook) & Smoke Probe
         env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER || 'ubuntu' }}
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          EC2_APP_DIR: ${{ vars.EC2_APP_DIR || '/home/ubuntu/swe-project' }}
           DEPLOY_HOOK_URL: ${{ secrets.PRODUCTION_DEPLOY_HOOK }}
           PRODUCTION_API_URL: ${{ vars.PRODUCTION_API_URL }}
           PRODUCTION_WEB_URL: ${{ vars.PRODUCTION_WEB_URL }}
           IMAGE_TAG: ${{ needs.docker-package-and-smoke.outputs.image_tag }}
+          TARGET_REF: ${{ inputs.rollback_tag || github.ref_name }}
         run: |
-          if [ -z "$DEPLOY_HOOK_URL" ] || [ -z "$PRODUCTION_API_URL" ]; then
-            echo "Production deploy hook or URL not configured in GitHub repository secrets/variables yet."
+          if [ -n "$EC2_HOST" ] && [ -n "$EC2_SSH_KEY" ]; then
+            mkdir -p ~/.ssh
+            printf '%s\n' "$EC2_SSH_KEY" > ~/.ssh/ec2_deploy_key
+            chmod 600 ~/.ssh/ec2_deploy_key
+            ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+            ssh -i ~/.ssh/ec2_deploy_key -o StrictHostKeyChecking=accept-new "${EC2_USER}@${EC2_HOST}" \
+              "cd '${EC2_APP_DIR}' && git fetch --all --tags && git checkout '${TARGET_REF}' && (git pull --ff-only origin '${TARGET_REF}' || true) && docker compose -f docker-compose.prod.yml up --build -d"
+          elif [ -n "$DEPLOY_HOOK_URL" ]; then
+            curl -fsSL -X POST "$DEPLOY_HOOK_URL"
+          else
+            echo "AWS EC2 SSH secrets or deploy hook not configured in GitHub repository secrets yet."
             echo "Verified immutable image tag ready for deployment: ${IMAGE_TAG}"
-            echo "Rollback procedure: re-run CD workflow with rollback_tag=<previous-sha-or-semver> or checkout previous tag and run docker compose up --build -d"
+            echo "Rollback procedure: re-run CD workflow with rollback_tag=<previous-sha-or-semver> or run docker compose -f docker-compose.prod.yml up --build -d"
             exit 0
           fi
 
-          curl -fsSL -X POST "$DEPLOY_HOOK_URL"
-
-          for attempt in $(seq 1 30); do
-            if curl -sf "${PRODUCTION_API_URL}/health" | grep -q '"status":"ok"'; then
-              echo "Production API health check passed."
-              break
-            fi
-            if [ "$attempt" -eq 30 ]; then
-              echo "::error::Production /health check failed after deploy of ${IMAGE_TAG}. Initiate rollback immediately using previous stable tag."
-              exit 1
-            fi
-            sleep 5
-          done
+          if [ -n "$PRODUCTION_API_URL" ]; then
+            for attempt in $(seq 1 30); do
+              if curl -sf "${PRODUCTION_API_URL}/health" | grep -q '"status":"ok"'; then
+                echo "Production API health check passed."
+                break
+              fi
+              if [ "$attempt" -eq 30 ]; then
+                echo "::error::Production /health check failed after deploy of ${IMAGE_TAG}. Initiate rollback immediately using previous stable tag."
+                exit 1
+              fi
+              sleep 5
+            done
+          fi
 
           if [ -n "$PRODUCTION_WEB_URL" ]; then
             curl -fsS "$PRODUCTION_WEB_URL" >/dev/null

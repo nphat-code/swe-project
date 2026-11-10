@@ -156,10 +156,10 @@ Mỗi khi lập trình viên tạo Pull Request hoặc đẩy mã nguồn lên n
 Triển khai thực tế trên máy chủ **AWS EC2 (Ubuntu 22.04 LTS)** theo đúng mô hình chỉ đạo của Giảng viên.
 
 #### Bước 1: Khởi tạo & Đăng nhập máy chủ AWS EC2
-1. Khởi tạo EC2 Instance (tối thiểu `t3.small` - 2 vCPU, 2GB RAM hoặc `t3.medium`).
+1. Khởi tạo EC2 Instance **Ubuntu 22.04 / 24.04 LTS** (`t3.small` hoặc Free Tier `t2.micro` / `t3.micro` — script bootstrap tự tạo 2GB Swap chống tràn RAM khi build).
 2. Gán địa chỉ **Elastic IP** tĩnh cho instance để IP không bị đổi khi khởi động lại.
-3. Cấu hình Security Group mở các cổng mạng:
-   - `Port 22` (SSH): Giới hạn IP của quản trị viên.
+3. Cấu hình Security Group mở đúng 3 cổng mạng cần thiết (tuyệt đối **không** mở cổng `5432` PostgreSQL):
+   - `Port 22` (SSH): Giới hạn IP quản trị viên.
    - `Port 80` (HTTP): Mở toàn cầu (`0.0.0.0/0`) để cấp chứng chỉ SSL.
    - `Port 443` (HTTPS): Mở toàn cầu (`0.0.0.0/0`) phục vụ khách hàng.
 4. Đăng nhập qua terminal dòng lệnh bằng SSH key:
@@ -167,95 +167,53 @@ Triển khai thực tế trên máy chủ **AWS EC2 (Ubuntu 22.04 LTS)** theo đ
    ssh -i "brewlite-prod-key.pem" ubuntu@<ELASTIC_IP>
    ```
 
-#### Bước 2: Thiết lập môi trường máy chủ Ubuntu
-Cài đặt Docker Engine và Docker Compose plugin chính thức trên Ubuntu:
-```bash
-sudo apt-get update && sudo apt-get upgrade -y
-sudo apt-get install -y ca-certificates curl gnupg git nginx certbot python3-certbot-nginx
-
-# Cài đặt Docker
-sudo install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-sudo chmod a+r /etc/apt/keyrings/docker.gpg
-
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-sudo apt-get update
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-sudo usermod -aG docker ubuntu
-newgrp docker
-```
-
-#### Bước 3: Triển khai mã nguồn qua Git
+#### Bước 2: Clone mã nguồn & Chạy Script Bootstrap tự động
 ```bash
 git clone https://github.com/nphat-code/swe-project.git
 cd swe-project
-
-# Cấu hình biến môi trường Production
-cp .env.example .env
-nano .env # Điền mật khẩu database mạnh, JWT_SECRET an toàn và NEXT_PUBLIC_API_URL
+chmod +x deploy/aws-ec2-bootstrap.sh
+./deploy/aws-ec2-bootstrap.sh
+newgrp docker
 ```
 
-#### Bước 4: Khởi chạy Cụm dịch vụ Docker
+#### Bước 3: Cấu hình biến môi trường Production (`.env`)
+Nếu chưa mua tên miền riêng, bạn có thể dùng miễn phí `<ELASTIC_IP>.sslip.io` (ví dụ: `3.1.25.100.sslip.io`) để Let's Encrypt cấp chứng chỉ HTTPS hợp lệ:
 ```bash
-# Khởi chạy cụm container chế độ chạy ngầm (detached)
-docker compose up --build -d
-
-# Thực thi Migration trên CSDL Production
-docker compose exec api npx prisma migrate deploy
-
-# Nạp dữ liệu danh mục & thực đơn ban đầu
-docker compose exec api npx prisma db seed
+cat <<'EOF' > .env
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=<MAT_KHAU_DB_MANH>
+POSTGRES_DB=brewlite_db
+JWT_SECRET=<CHUOI_BI_MAT_TOI_THIEU_32_KY_TU>
+JWT_EXPIRES_IN=7d
+FRONTEND_URL=https://<DOMAIN_HOAC_IP.sslip.io>
+NEXT_PUBLIC_API_URL=https://<DOMAIN_HOAC_IP.sslip.io>/api
+EOF
 ```
 
-#### Bước 5: Cấu hình Nginx Reverse Proxy & Chứng chỉ SSL HTTPS
-Tạo tệp cấu hình Nginx tại `/etc/nginx/sites-available/brewlite`:
-
-```nginx
-server {
-    server_name brewlite.coffee www.brewlite.coffee;
-
-    # Giao diện người dùng Next.js
-    location / {
-        proxy_pass http://127.0.0.1:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
-    # Backend API NestJS
-    location /api/ {
-        proxy_pass http://127.0.0.1:3001/;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_read_timeout 90;
-    }
-
-    # Health Check endpoint
-    location /health {
-        proxy_pass http://127.0.0.1:3001/health;
-        proxy_set_header Host $host;
-    }
-}
-```
-
-Kích hoạt cấu hình và cấp chứng chỉ bảo mật SSL miễn phí qua Let's Encrypt:
+#### Bước 4: Khởi chạy Cụm dịch vụ Production (`docker-compose.prod.yml`)
+Tệp [`docker-compose.prod.yml`](../docker-compose.prod.yml) cô lập `postgres` hoàn toàn trong mạng nội bộ, chỉ bind `frontend` (`127.0.0.1:3000`) và `backend` (`127.0.0.1:3001`) cho Nginx Reverse Proxy, đồng thời tự chạy `prisma migrate deploy` và nạp dữ liệu mẫu khi DB trống:
 ```bash
-sudo ln -s /etc/nginx/sites-available/brewlite /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl reload nginx
-
-# Cấp chứng chỉ HTTPS tự động gia hạn
-sudo certbot --nginx -d brewlite.coffee -d www.brewlite.coffee
+docker compose -f docker-compose.prod.yml up --build -d
+docker compose -f docker-compose.prod.yml ps
 ```
+
+#### Bước 5: Kích hoạt SSL HTTPS miễn phí qua Certbot (Let's Encrypt)
+Cập nhật `server_name` trong `/etc/nginx/sites-available/brewlite` (mẫu sẵn tại [`deploy/nginx/brewlite.conf`](../deploy/nginx/brewlite.conf)) và cấp chứng chỉ HTTPS tự động gia hạn:
+```bash
+sudo sed -i "s/server_name _;/server_name <DOMAIN_HOAC_IP.sslip.io>;/" /etc/nginx/sites-available/brewlite
+sudo nginx -t && sudo systemctl reload nginx
+sudo certbot --nginx -d <DOMAIN_HOAC_IP.sslip.io> --non-interactive --agree-tos -m <EMAIL_CUA_BAN> --redirect
+```
+
+#### Bước 6: Tự động hóa CD từ GitHub Actions lên AWS EC2
+Vào **GitHub Repository → Settings → Secrets and variables → Actions** và khai báo:
+- **Secrets:**
+  - `EC2_HOST`: Địa chỉ Elastic IP của AWS EC2
+  - `EC2_USER`: `ubuntu`
+  - `EC2_SSH_KEY`: Toàn bộ nội dung file khóa riêng tư `.pem`
+- **Variables:**
+  - `PRODUCTION_API_URL`: `https://<DOMAIN_HOAC_IP.sslip.io>/api`
+  - `PRODUCTION_WEB_URL`: `https://<DOMAIN_HOAC_IP.sslip.io>`
 
 ---
 
@@ -285,7 +243,7 @@ Phản hồi chuẩn định dạng JSON (`HTTP 200 OK`):
 ### 5.2. Giám sát luồng Log trực tiếp
 Theo dõi log vận hành của container Backend API để kịp thời phát hiện lỗi:
 ```bash
-docker compose logs -f --tail=100 api
+docker compose -f docker-compose.prod.yml logs -f --tail=100 backend
 ```
 
 ---
@@ -295,32 +253,27 @@ docker compose logs -f --tail=100 api
 ### 6.1. Quy trình khôi phục phiên bản trước (Rollback)
 Khi phiên bản mới phát sinh lỗi nghiêm trọng trên Production:
 ```bash
-# 1. Quay ngược mã nguồn về commit ổn định gần nhất
 git log --oneline -n 5
 git checkout <COMMIT_HASH_ON_DINH>
-
-# 2. Tái tạo lại container
-docker compose up --build -d
-
-# 3. Kiểm tra lại health check
-curl https://brewlite.coffee/health
+docker compose -f docker-compose.prod.yml up --build -d
+curl https://<DOMAIN_HOAC_IP.sslip.io>/health
 ```
 
 ### 6.2. Sao lưu và Phục hồi CSDL (Database Backup & Restore)
 * **Sao lưu dữ liệu định kỳ (Backup Dump):**
   ```bash
-  docker compose exec -t db pg_dump -U postgres brewlite > backup_$(date +%Y%m%d_%H%M%S).sql
+  docker compose -f docker-compose.prod.yml exec -T postgres pg_dump -U postgres brewlite_db > backup_$(date +%Y%m%d_%H%M%S).sql
   ```
 * **Khôi phục dữ liệu từ bản sao lưu (Restore):**
   ```bash
-  cat backup_20261031_090000.sql | docker compose exec -T db psql -U postgres brewlite
+  cat backup_20261110_090000.sql | docker compose -f docker-compose.prod.yml exec -T postgres psql -U postgres brewlite_db
   ```
 
 ### 6.3. Bảng xử lý các lỗi thường gặp (Common Pitfalls)
 
 | Hiện tượng lỗi | Nguyên nhân gốc | Biện pháp xử lý triệt để |
 | :--- | :--- | :--- |
-| **`Error: P1001: Can't reach database server`** | Container `db` chưa kịp sẵn sàng hoặc sai `DATABASE_URL`. | Kiểm tra `docker compose ps`, xác định cổng 5432 và tên host `db` trong mạng Docker. |
+| **`Error: P1001: Can't reach database server`** | Container `postgres` chưa kịp sẵn sàng hoặc sai `DATABASE_URL`. | Kiểm tra `docker compose -f docker-compose.prod.yml ps`, xác định cổng 5432 và tên host `postgres` trong mạng Docker. |
 | **`HTTP 409 Conflict` khi đặt món** | Tranh chấp tồn kho đồng thời (Optimistic Lock). | Bình thường theo thiết kế; Client hiển thị cảnh báo và giữ nguyên giỏ hàng. |
 | **`HTTP 401 Unauthorized` trên API** | Thiếu Header `Authorization: Bearer <token>` hoặc token hết hạn. | Thực hiện đăng nhập lại để nhận token mới. |
-| **Giao diện không gọi được API trên Cloud** | Biến `NEXT_PUBLIC_API_URL` trỏ nhầm về `localhost`. | Cập nhật `.env` sang URL tên miền chính thức và chạy `docker compose build web`. |
+| **Giao diện không gọi được API trên Cloud** | Biến `NEXT_PUBLIC_API_URL` trỏ nhầm về `localhost`. | Cập nhật `.env` sang URL HTTPS chính thức và chạy `docker compose -f docker-compose.prod.yml up --build -d frontend`. |
