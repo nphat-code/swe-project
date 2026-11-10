@@ -115,12 +115,10 @@
 \begin{tabular}{rrl}
   \textbf{Giảng viên hướng dẫn:} & & \textbf{ThS. Từ Lãng Phiêu} \\
   \vspace{0.2cm} \\
-  \textbf{Sinh viên thực hiện:}   & & Nguyễn Văn A -- MSSV: 3121xxxxxx \\
-                                  & & Trần Thị B   -- MSSV: 3121xxxxxx \\
-                                  & & Lê Văn C     -- MSSV: 3121xxxxxx \\
+  \textbf{Sinh viên thực hiện:}   & & Nguyễn Tấn Phát -- MSSV: 3124410265 \\
   \vspace{0.2cm} \\
-  \textbf{Lớp:}                   & & DCN12xxxx \\
-  \textbf{Khoá học:}              & & 2021 -- 2025
+  \textbf{Lớp:}                   & & DCT1243 \\
+  \textbf{Khoá học:}              & & 2024 -- 2028
 \end{tabular}
 \end{table}
 
@@ -145,61 +143,70 @@ Dự án \textbf{BrewLite} ra đời nhằm giải quyết vấn đề tắc ngh
 \subsubsection{Danh mục Stakeholder}
 Hệ thống xác định 6 nhóm bên liên quan chủ chốt:
 \begin{enumerate}[1.]
-  \item \textbf{Khách hàng (Customer):} Người trực tiếp xem thực đơn, tùy chọn sản phẩm, thanh toán không dùng tiền mặt và nhận thông báo hoàn thành đơn hàng.
-  \item \textbf{Nhân viên quầy (Barista):} Nhân viên tiếp nhận đơn, thực hiện pha chế và chuyển trạng thái đơn hàng.
-  \item \textbf{Quản lý cửa hàng (Store Manager):} Theo dõi doanh thu, cấu hình giá, số lượng tồn kho và khuyến mãi.
+  \item \textbf{Khách hàng (Customer / Member):} Người trực tiếp xem thực đơn, tùy chọn sản phẩm, áp dụng mã giảm giá, thanh toán không dùng tiền mặt, tích lũy điểm thưởng và theo dõi lịch sử đơn hàng.
+  \item \textbf{Nhân viên quầy (Barista):} Nhân viên tiếp nhận đơn đã thanh toán, thực hiện pha chế và chuyển trạng thái đơn hàng theo quy trình chuẩn.
+  \item \textbf{Quản lý cửa hàng (Store Manager / Admin):} Theo dõi doanh thu, cấu hình danh mục, sản phẩm, số lượng tồn kho và chương trình khuyến mãi.
   \item \textbf{Giảng viên hướng dẫn / Khách hàng nghiệm thu:} Đánh giá chất lượng kỹ thuật, quy trình công nghệ phần mềm và tính đúng đắn của giải pháp.
-  \item \textbf{Nhóm phát triển phần mềm (Dev Team):} Thiết kế kiến trúc, hiện thực Sprint, xây dựng kiểm thử tự động và vận hành CI/CD.
-  \item \textbf{Cổng thanh toán điện tử (Payment Gateway):} Nhà cung cấp dịch vụ xử lý giao dịch thanh toán trực tuyến (Ví MoMo, VNPay, Thẻ ngân hàng).
+  \item \textbf{Sinh viên thực hiện / Phát triển phần mềm (Developer):} Khai thác yêu cầu, mô hình hóa UML, thiết kế kiến trúc, hiện thực Sprint 1--2, xây dựng kiểm thử 3 tầng và vận hành CI/CD.
+  \item \textbf{Cổng thanh toán điện tử (Payment Gateway):} Dịch vụ xử lý giao dịch thanh toán trực tuyến không tiền mặt (Ví MoMo, VNPay, Thẻ ngân hàng, Ví BrewLite).
 \end{enumerate}
 
 \subsubsection{Phạm vi hệ thống (In-scope và Out-of-scope)}
 \begin{itemize}
-  \item \textbf{In-scope (MVP):} Duyệt thực đơn theo Tabs danh mục, tùy biến kích cỡ (Size S/M/L), thêm topping, giỏ hàng client (Zustand/LocalStorage), xác thực tài khoản JWT, đặt hàng, thanh toán mô phỏng Idempotency và màn hình điều phối đơn hàng.
-  \item \textbf{Out-of-scope:} Giao hàng tận nơi (Delivery logistics phức tạp), tích hợp thiết bị phần cứng POS chuyên dụng và quản lý chuỗi cung ứng nông sản.
+  \item \textbf{In-scope (MVP):} Duyệt thực đơn theo Tabs danh mục thực tế (\textit{Cà phê Việt Nam, Cà phê Pha Máy, Trà \& Trái Cây, Đá Xay \& Thức Uống Đá}), tìm kiếm món, tùy biến kích cỡ (Size S/M/L) và đa topping, giỏ hàng client (Zustand + \texttt{localStorage}), áp dụng mã giảm giá (Voucher), xác thực tài khoản JWT (\texttt{bcrypt}), khởi tạo đơn hàng tính giá phía server, thanh toán mô phỏng có \texttt{Idempotency-Key}, khóa lạc quan tồn kho (\texttt{version}), máy trạng thái đơn hàng, tích điểm Loyalty và lịch sử đơn hàng.
+  \item \textbf{Out-of-scope (\texttt{Won't Have} v1.0):} Giao hàng tận nơi (\texttt{FR-W01} -- Delivery logistics), thu/thối tiền mặt tại quầy (\texttt{FR-W02}), tích hợp thiết bị phần cứng POS chuyên dụng và quản lý chuỗi cung ứng nguyên liệu thô.
 \end{itemize}
 
 \subsection{Yêu cầu chức năng và Phi chức năng (Task 1.2)}
-Tài liệu yêu cầu phần mềm (SRS) được chuẩn hóa theo mã định danh tinh gọn và mức ưu tiên MoSCoW.
+Tài liệu yêu cầu phần mềm (SRS rút gọn tại \texttt{docs/requirements/system-requirements-matrix.md}) được chuẩn hóa theo mã định danh tinh gọn và mức ưu tiên MoSCoW, bao phủ toàn bộ 12 nhóm yêu cầu tối thiểu của đề bài.
 
 \subsubsection{Bảng yêu cầu chức năng (Functional Requirements -- FR)}
 \begin{table}[h!]
 \centering
-\small
+\scriptsize
 \begin{tabularx}{\textwidth}{|c|l|c|X|}
 \hline
 \textbf{Mã FR} & \textbf{Tên chức năng} & \textbf{Ưu tiên} & \textbf{Tiêu chí nghiệm thu (Acceptance Criteria)} \\
 \hline
-\textbf{FR-01} & Duyệt thực đơn \& Lọc danh mục & Must & Hiển thị danh sách món theo danh mục; có Skeleton Loading. \\
+\textbf{FR-01} & Duyệt thực đơn \& Lọc danh mục & Must & Hiển thị danh sách món theo 4 Tabs danh mục (\texttt{GET /products}, \texttt{GET /products/categories}); hỗ trợ tìm kiếm, Skeleton Loading, Empty và Error State. \\
 \hline
-\textbf{FR-02} & Tùy biến món (Size \& Topping) & Must & Modal chọn Size, đa Topping; tổng giá tính tự động realtime. \\
+\textbf{FR-02} & Tùy biến món (Size \& Topping) & Must & Modal chi tiết chọn Size (S/M/L), đa Topping (\texttt{GET /products/toppings}), ghi chú; tổng giá tạm tính cập nhật realtime. \\
 \hline
-\textbf{FR-03} & Quản lý giỏ hàng phía Client & Must & Thêm, bớt, xóa món; tự động tính tổng tiền; lưu LocalStorage. \\
+\textbf{FR-03} & Quản lý giỏ hàng phía Client & Must & Thêm, tăng/giảm, xóa món trong Zustand store (\texttt{useCartStore}); tự động tính tổng tiền và lưu bền vững qua \texttt{localStorage}. \\
 \hline
-\textbf{FR-04} & Xác thực \& Phân quyền JWT & Must & Đăng nhập/Đăng ký; bảo vệ endpoint bằng Guard; cấp JWT Bearer. \\
+\textbf{FR-04} & Xác thực \& Phân quyền JWT & Must & Đăng ký/Đăng nhập (\texttt{POST /auth/register}, \texttt{POST /auth/login}), mật khẩu băm \texttt{bcrypt} (salt $\ge 10$); bảo vệ endpoint bằng \texttt{JwtAuthGuard}. \\
 \hline
-\textbf{FR-05} & Khởi tạo đơn hàng & Must & Ghi nhận bản ghi Order; trạng thái khởi tạo \texttt{PENDING\_PAYMENT}. \\
+\textbf{FR-05} & Khởi tạo đơn hàng & Must & \texttt{POST /orders} tính lại giá hoàn toàn phía Server từ CSDL; tạo bản ghi \texttt{Order} ở trạng thái khởi tạo \texttt{PENDING} và mã hiển thị \texttt{\#xxxxxx}. \\
 \hline
-\textbf{FR-06} & Khóa lạc quan (Optimistic Lock) & Must & Kiểm tra phiên bản tồn kho (\texttt{version}); trả về HTTP 409 nếu xung đột. \\
+\textbf{FR-06} & Thanh toán không tiền mặt & Must & \texttt{POST /payments} bắt buộc header \texttt{Idempotency-Key}; mô phỏng MoMo/VNPay/Thẻ/Ví; thành công chuyển \texttt{PAID}, thất bại chuyển \texttt{PAYMENT\_FAILED}. \\
 \hline
-\textbf{FR-07} & Thanh toán không tiền mặt & Must & Xác thực \texttt{Idempotency-Key}; mô phỏng MoMo/VNPay thành công/thất bại. \\
+\textbf{FR-07} & Máy trạng thái đơn (State Machine)& Must & Kiểm soát chuyển trạng thái qua \texttt{assertTransition} (ma trận $7 \times 7$); chặn nhảy cóc bằng HTTP \texttt{400 Bad Request}. \\
 \hline
-\textbf{FR-08} & Máy trạng thái đơn (State Machine)& Must & Chuyển trạng thái đơn nghiêm ngặt qua hàm \texttt{assertTransition}. \\
+\textbf{FR-08} & Kiểm soát tồn kho đồng thời & Must & Khóa lạc quan (Optimistic Locking) bằng cột \texttt{Product.version} trong Prisma \texttt{\$transaction}; trả về HTTP \texttt{409 Conflict} khi xung đột. \\
 \hline
-\textbf{FR-09} & Tích điểm thành viên (Loyalty) & Should & Tự động tích lũy điểm thưởng thành viên khi đơn chuyển sang \texttt{PAID}. \\
+\textbf{FR-09} & Tích điểm thành viên (Loyalty) & Should & Tự động cộng điểm thưởng (\texttt{Math.floor(finalAmount / 10000)}) vào \texttt{User.loyaltyPoints} khi đơn chuyển sang \texttt{PAID}. \\
 \hline
-\textbf{FR-10} & Xem lịch sử đơn hàng & Must & Hiển thị các đơn cá nhân của tài khoản đã đăng nhập. \\
+\textbf{FR-10} & Xem lịch sử đơn hàng & Must & \texttt{GET /orders/me} hiển thị danh sách đơn cá nhân, hỗ trợ thanh toán lại đơn \texttt{PAYMENT\_FAILED} hoặc hủy đơn hợp lệ. \\
+\hline
+\textbf{FR-11} & Áp dụng mã Voucher giảm giá & Should & \texttt{GET /vouchers/validate} kiểm tra hiệu lực, hạn dùng, giá trị đơn tối thiểu (ví dụ: \texttt{BREWLITEFIRST}, \texttt{COFFEELOVER}) và chiết khấu tự động. \\
+\hline
+\textbf{FR-12} & Điều phối trạng thái đơn Barista & Could & \texttt{PATCH /orders/:id/status} cập nhật tiến độ pha chế (\texttt{PAID} $\rightarrow$ \texttt{PREPARING} $\rightarrow$ \texttt{READY} $\rightarrow$ \texttt{COMPLETED}) và hoàn kho khi hủy đơn \texttt{PAID}. \\
 \hline
 \end{tabularx}
-\caption{Bảng yêu cầu chức năng cốt lõi hệ thống BrewLite}
+\caption{Bảng yêu cầu chức năng cốt lõi hệ thống BrewLite (FR-01 đến FR-12)}
 \end{table}
 
 \subsubsection{Yêu cầu phi chức năng (Non-Functional Requirements -- NFR)}
 \begin{itemize}
-  \item \textbf{NFR-01 (Hiệu năng):} Thời gian phản hồi API trung bình đạt dưới $200$ms đối với tải đọc thực đơn.
-  \item \textbf{NFR-02 (Bảo mật):} Mật khẩu được băm bằng thuật toán \texttt{bcrypt}; mã hóa toàn diện qua giao thức HTTPS/TLS 1.3.
-  \item \textbf{NFR-03 (Tính khả dụng):} Giao diện thích ứng hoàn hảo trên thiết bị di động (Mobile-First / PWA).
-  \item \textbf{NFR-04 (Tính toàn vẹn dữ liệu):} Quá trình thanh toán và trừ kho tuân thủ chuẩn ACID thông qua Prisma Transaction.
+  \item \textbf{NFR-01 (Hiệu năng):} Thời gian phản hồi API đạt $p_{95} \le 500$ms cho tác vụ duyệt thực đơn; First Contentful Paint (FCP) $\le 1.8$s trên mạng di động 4G.
+  \item \textbf{NFR-02 (Bảo mật):} Mật khẩu băm bằng \texttt{bcrypt} (salt rounds $\ge 10$); xác thực JWT Bearer; truyền tải mã hóa HTTPS/TLS 1.3; chống lặp giao dịch qua \texttt{Idempotency-Key}.
+  \item \textbf{NFR-03 (Tính khả dụng):} Thiết kế Mobile-First / PWA tương thích cảm ứng; cung cấp đầy đủ 3 trạng thái UX: Skeleton Loading, Empty State và Error State có nút thử lại.
+  \item \textbf{NFR-04 (Tính toàn vẹn dữ liệu):} Tính giá hoàn toàn phía Server; trừ tồn kho, ghi nhận thanh toán và cộng điểm Loyalty trong cùng một giao dịch ACID (\texttt{prisma.\$transaction}) kèm Optimistic Locking.
+  \item \textbf{NFR-05 (Khả năng triển khai):} Khởi chạy toàn bộ 3 tầng (Frontend, Backend, PostgreSQL) cục bộ chỉ bằng 1 lệnh \texttt{docker compose up --build -d}, sẵn sàng triển khai lên Cloud.
+  \item \textbf{NFR-06 (Tự động hóa CI/CD):} Pipeline GitHub Actions (\texttt{ci.yml}, \texttt{cd.yml}) tự động chạy tuần tự Lint $\rightarrow$ TypeCheck $\rightarrow$ Unit/Integration/E2E Test $\rightarrow$ Build $\rightarrow$ Docker Compose Smoke Test.
+  \item \textbf{NFR-07 (Chuẩn mực Clean Code):} Tuyệt đối không chứa comment giải thích hay code thừa bị comment trong mã nguồn (\texttt{.ts}, \texttt{.tsx}, \texttt{.js}, \texttt{.css}); tuân thủ Conventional Commits.
+  \item \textbf{NFR-08 (Khả năng mở rộng):} Kiến trúc Backend phân tách rõ theo Domain Modules của NestJS và hỗ trợ cơ chế kết nối CSDL có khả năng phục hồi khi cold-start.
+  \item \textbf{NFR-09 (Giám sát sức khỏe hệ thống):} Cung cấp endpoint \texttt{GET /health} kiểm tra trạng thái tiến trình API và kết nối thực tế tới PostgreSQL (\texttt{SELECT 1}), trả về HTTP \texttt{200 OK} hoặc \texttt{503 Service Unavailable}.
 \end{itemize}
 
 \newpage
@@ -231,21 +238,22 @@ Hệ thống gồm 2 Actor chính tác động trực tiếp: \textbf{Khách hà
 \textbf{Điều kiện tiên quyết} & Khách hàng đã chọn ít nhất một sản phẩm vào giỏ hàng và đã đăng nhập hệ thống. \\
 \hline
 \textbf{Luồng sự kiện chính (Normal Flow)} & 
-1. Khách hàng nhấn ``Tiến hành đặt hàng'' từ giỏ hàng. \newline
-2. Giao diện gửi request \texttt{POST /orders} kèm token JWT và danh sách món. \newline
-3. Backend mở Transaction: kiểm tra tồn kho, áp dụng Optimistic Locking. \newline
-4. Tạo bản ghi đơn hàng với trạng thái \texttt{PENDING\_PAYMENT}. \newline
-5. Hệ thống điều hướng sang cổng thanh toán mô phỏng. \newline
-6. Khách hàng xác nhận thanh toán. \newline
-7. Cổng thanh toán gọi webhook phản hồi trạng thái \texttt{SUCCESS}. \newline
-8. Backend cập nhật đơn sang \texttt{PAID}, ghi nhận điểm thưởng và thông báo hoàn tất. \\
+1. Khách hàng nhấn ``Tiến hành đặt hàng'' từ giỏ hàng (\texttt{CartDrawer}). \newline
+2. Giao diện gửi request \texttt{POST /orders} kèm token JWT, danh sách món và mã Voucher (nếu có). \newline
+3. Backend xác thực JWT, truy vấn giá gốc từ CSDL để tính lại tổng tiền (Server-side Calculation) và kiểm tra tồn kho khả dụng. \newline
+4. Tạo bản ghi đơn hàng với trạng thái \texttt{PENDING} và sinh mã nhận nước \texttt{\#xxxxxx}. \newline
+5. Khách hàng chọn phương thức thanh toán (Ví MoMo, VNPay, Thẻ ngân hàng, Ví BrewLite) trên \texttt{CheckoutModal}. \newline
+6. Giao diện sinh mã \texttt{Idempotency-Key} (UUIDv4) và gọi \texttt{POST /payments}. \newline
+7. Backend mở \texttt{prisma.\$transaction}: kiểm tra Idempotency, trừ tồn kho bằng Optimistic Locking (\texttt{version}), ghi nhận bản ghi \texttt{Payment}, cập nhật đơn sang \texttt{PAID} và cộng điểm \texttt{loyaltyPoints}. \newline
+8. Giao diện xóa giỏ hàng và hiển thị \texttt{OrderConfirmationModal} xác nhận hoàn tất. \\
 \hline
 \textbf{Luồng ngoại lệ (Exception Flow)} & 
-\textbf{3a. Hết hàng / Xung đột tồn kho đồng thời:} Backend trả về HTTP 409 Conflict; Client giữ nguyên giỏ hàng và thông báo món vừa hết để khách đổi món. \newline
-\textbf{7a. Thanh toán thất bại / Hủy giao dịch:} Cổng thanh toán trả về FAILED; Backend đổi trạng thái đơn sang \texttt{PAYMENT\_FAILED}; Client giữ nguyên giỏ và cung cấp nút thử lại. \\
+\textbf{7a. Hết hàng / Xung đột tồn kho đồng thời:} Giao dịch đồng thời làm thay đổi cột \texttt{version} hoặc \texttt{stock < quantity}; Transaction tự động Rollback và trả về HTTP \texttt{409 Conflict}; Client giữ nguyên giỏ hàng và thông báo món vừa hết. \newline
+\textbf{7b. Thanh toán thất bại / Bị từ chối:} Cổng thanh toán mô phỏng trả về trạng thái thất bại; Backend cập nhật đơn sang \texttt{PAYMENT\_FAILED} (không trừ tồn kho); Client giữ nguyên giỏ hàng và cho phép thử lại thanh toán (\texttt{PAYMENT\_FAILED} $\rightarrow$ \texttt{PENDING} $\rightarrow$ \texttt{PAID}). \\
 \hline
 \textbf{Luồng thay thế (Alternative Flow)} & 
-\textbf{1a. Khách hàng chưa đăng nhập:} Giao diện mở Modal Đăng nhập/Đăng ký nhanh, giữ nguyên giỏ hàng; sau khi xác thực thành công thì tiếp tục bước 2. \\
+\textbf{1a. Khách hàng chưa đăng nhập:} Giao diện mở \texttt{AuthModal} đăng nhập/đăng ký nhanh, bảo toàn nguyên vẹn giỏ hàng trong \texttt{localStorage}; sau khi nhận JWT thì tiếp tục bước 2. \newline
+\textbf{6a. Gửi lặp request thanh toán (Double-click / Mạng chập chờn):} Request gửi lại cùng \texttt{Idempotency-Key} nhận ngay kết quả thanh toán đã lưu trước đó mà không trừ tiền hay trừ kho lần thứ hai. \\
 \hline
 \end{tabularx}
 \caption{Bảng đặc tả Use-case trọng tâm theo mẫu 7 ô chuẩn CNPM}
@@ -292,10 +300,10 @@ Sơ đồ Tuần tự mô hình hóa chi tiết trình tự trao đổi thông �
 
 \newpage
 \subsection{Sơ đồ Lớp miền nghiệp vụ (Class Diagram -- Task 2.3)}
-Mô hình lớp miền nghiệp vụ (Domain Model) phản ánh chính xác cấu trúc thực thể và quan hệ trong CSDL:
+Mô hình lớp miền nghiệp vụ (Domain Model) phản ánh chính xác cấu trúc thực thể và quan hệ trong CSDL PostgreSQL (\texttt{backend/prisma/schema.prisma}):
 \begin{itemize}
-  \item \textbf{Các lớp chính:} \texttt{User}, \texttt{Product}, \texttt{Category}, \texttt{Order}, \texttt{OrderItem}, \texttt{PaymentTransaction}, \texttt{LoyaltyAccount}.
-  \item \textbf{Thuộc tính \& Phương thức:} Thể hiện rõ kiểu dữ liệu, phạm vi truy cập (\texttt{public}, \texttt{private}) và các phương thức cốt lõi (ví dụ: \texttt{assertTransition()}, \texttt{calculateTotal()}).
+  \item \textbf{Các lớp chính:} \texttt{User}, \texttt{Product}, \texttt{ProductCategory}, \texttt{Topping}, \texttt{Order}, \texttt{OrderItem}, \texttt{Payment}, \texttt{Voucher}.
+  \item \textbf{Thuộc tính \& Phương thức:} Thể hiện rõ kiểu dữ liệu, phạm vi truy cập (\texttt{public}, \texttt{private}), trường khóa lạc quan \texttt{Product.version}, khóa chống lặp \texttt{Payment.idempotencyKey} và các phương thức cốt lõi (\texttt{assertTransition()}, \texttt{calculateLoyaltyPoints()}).
   \item \textbf{Quan hệ:} Thể hiện rõ quan hệ Kết tập (Aggregation), Hợp thành (Composition giữa \texttt{Order} và \texttt{OrderItem}) và Đa số lượng ($1 - 1$, $1 - n$).
 \end{itemize}
 
@@ -310,36 +318,36 @@ Mô hình lớp miền nghiệp vụ (Domain Model) phản ánh chính xác cấ
 \section{Thiết kế kiến trúc hệ thống (Task 3)}
 
 \subsection{Phương pháp và Quyết định kiến trúc (Task 3.1)}
-Hệ thống lựa chọn mô hình kiến trúc phân lớp hướng module (Modular Monolith) kết hợp Client-Server hiện đại:
+Hệ thống lựa chọn mô hình kiến trúc \textbf{Modular Monolith} kết hợp Client--Server hiện đại thay vì phân tách Microservices quá sớm:
 \begin{itemize}
-  \item \textbf{Frontend (Next.js 15 / React 19):} Áp dụng Server Components (RSC) kết hợp Client Components phục vụ giao diện Mobile-First/PWA; quản lý trạng thái giỏ hàng bằng Zustand.
-  \item \textbf{Backend (NestJS 11):} Tổ chức theo các Domain Module độc lập (\texttt{AuthModule}, \texttt{ProductsModule}, \texttt{OrdersModule}, \texttt{PaymentsModule}).
-  \item \textbf{Cơ sở dữ liệu (PostgreSQL 16):} Sử dụng Prisma ORM để quản lý cấu trúc bảng, migrations và bảo đảm giao dịch ACID.
+  \item \textbf{Frontend (Next.js 16.3.5 / React 19 / Tailwind CSS v4):} Áp dụng App Router (Server Components kết hợp Client Components) phục vụ giao diện Mobile-First/PWA; quản lý trạng thái giỏ hàng và phiên đăng nhập bằng Zustand (\texttt{useCartStore}, \texttt{useAuthStore}) đồng bộ \texttt{localStorage}.
+  \item \textbf{Backend (NestJS 10.4):} Tổ chức thành 5 Domain Module độc lập trong cùng một tiến trình (\texttt{AuthModule}, \texttt{ProductsModule}, \texttt{VouchersModule}, \texttt{OrdersModule}, \texttt{PaymentsModule}) kèm \texttt{ValidationPipe} toàn cục và \texttt{GET /health}.
+  \item \textbf{Cơ sở dữ liệu (PostgreSQL 16 + Prisma ORM 6.19):} Quản lý lược đồ dữ liệu, migrations có kiểm soát phiên bản và bảo đảm giao dịch ACID nguyên khối (\texttt{prisma.\$transaction}) cho thanh toán, trừ kho Optimistic Lock và tích điểm Loyalty.
 \end{itemize}
 
 \subsubsection{Các bản ghi quyết định kiến trúc (Architecture Decision Records -- ADR)}
+Toàn bộ 6 quyết định kiến trúc trọng yếu được lưu trữ tại \texttt{docs/architecture/adr/}:
 \begin{enumerate}[1.]
-  \item \textbf{ADR-001 (Monorepo Workspace):} Lựa chọn cấu trúc Monorepo dùng chung cấu hình npm workspace giúp đồng bộ kiểu dữ liệu TypeScript giữa Frontend và Backend.
-  \item \textbf{ADR-002 (Prisma Optimistic Locking):} Sử dụng trường số nguyên \texttt{version} trên bảng \texttt{Product} để kiểm soát tranh chấp kho hàng mà không cần khóa bi quan (Pessimistic Locking), giúp tăng tối đa thông lượng xử lý.
-  \item \textbf{ADR-003 (Idempotent Payment Handling):} Mọi yêu cầu thanh toán bắt buộc kèm \texttt{Idempotency-Key} duy nhất nhằm ngăn chặn giao dịch trừ tiền trùng lặp khi người dùng bấm nút nhiều lần hoặc mạng chập chờn.
+  \item \textbf{ADR-001 (\texttt{001-monorepo-structure.md}):} Tổ chức Monorepo tích hợp \texttt{frontend/}, \texttt{backend/}, \texttt{docs/} và \texttt{.github/workflows/} trong một kho mã nguồn duy nhất, đồng bộ kiểm thử và truy vết tài liệu.
+  \item \textbf{ADR-002 (\texttt{002-frontend-nextjs-pwa.md}):} Lựa chọn Next.js App Router, PWA và Zustand Store lưu \texttt{localStorage} để đạt tốc độ tải nhanh và bảo toàn giỏ hàng khi đăng nhập hoặc thanh toán lại.
+  \item \textbf{ADR-003 (\texttt{003-backend-nestjs-modular.md}):} Xây dựng Backend NestJS theo kiến trúc Modular Monolith hướng miền, tách bạch Controller -- Service -- Prisma và cài đặt máy trạng thái đơn hàng (\texttt{assertTransition}).
+  \item \textbf{ADR-004 (\texttt{004-postgresql-and-prisma-orm.md}):} Sử dụng PostgreSQL 16 kết hợp Prisma ORM và khóa lạc quan \texttt{Product.version} trong \texttt{\$transaction} để chống bán vượt tồn kho (overselling) mà không gây khóa chết (deadlock).
+  \item \textbf{ADR-005 (\texttt{005-payment-idempotency-and-mock-gateway.md}):} Bắt buộc header \texttt{Idempotency-Key} (UUIDv4) trên endpoint \texttt{POST /payments} kết hợp cổng thanh toán mô phỏng chuẩn hóa cho CI/CD và demo.
+  \item \textbf{ADR-006 (\texttt{006-logging-and-health-monitoring.md}):} Chuẩn hóa ghi log an toàn (không rò rỉ mật khẩu/token) và cung cấp endpoint \texttt{GET /health} kiểm tra sống kết nối PostgreSQL (\texttt{SELECT 1}) phục vụ Docker/Cloud probe.
 \end{enumerate}
 
 \newpage
 \subsection{Sơ đồ Triển khai hạ tầng Production (Deployment Diagram -- Task 3.2)}
-Sơ đồ Triển khai hệ thống được mô hình hóa theo chuẩn UML 2.0 trên môi trường đám mây \textbf{AWS EC2 Ubuntu}:
+Sơ đồ Triển khai hệ thống được mô hình hóa theo chuẩn UML 2.0, liên kết chặt chẽ từ môi trường phát triển cục bộ / CI (\texttt{docker-compose.yml}) lên hạ tầng đám mây (AWS EC2 / Cloud PaaS + Managed PostgreSQL):
 \begin{itemize}
   \item \textbf{Client Device:} Smartphone / Laptop chạy trình duyệt Web Browser (Chrome, Safari, PWA) giao tiếp qua HTTPS cổng 443.
-  \item \textbf{DevOps Station:} Kỹ sư quản trị kết nối dòng lệnh an toàn qua giao thức SSH cổng 22 (\texttt{ssh -i key.pem ubuntu@IP}), thực hiện đẩy mã lên GitHub và kéo mã nguồn về máy chủ (\texttt{git pull}).
-  \item \textbf{AWS EC2 Instance (Ubuntu 22.04 LTS):}
+  \item \textbf{DevOps \& CI/CD Pipeline:} GitHub Actions thực thi quality gate, đóng gói Docker images đa tầng và đẩy lên GitHub Container Registry (\texttt{ghcr.io}).
+  \item \textbf{Application \& Database Tier (Docker Compose / Cloud Runtime):}
     \begin{itemize}
-      \item Gắn địa chỉ \textbf{Elastic IP} tĩnh và tên miền phân giải \texttt{brewlite.coffee}.
-      \item \textbf{Nginx Reverse Proxy \& SSL Termination:} Tiếp nhận cổng 80/443, định tuyến sang container tương ứng và kiểm tra sức khỏe hệ thống định kỳ (\texttt{GET /health}).
-      \item \textbf{Docker Compose Runtime Engine:}
-        \begin{itemize}
-          \item Container \texttt{web}: Next.js App (Cổng nội bộ 3000).
-          \item Container \texttt{api}: NestJS REST API (Cổng nội bộ 3001) kèm Structured Logger.
-          \item Container \texttt{db}: PostgreSQL 16 (Cổng 5432) gắn phân vùng ổ cứng ngoài \textbf{AWS EBS SSD Volume} bền vững.
-        \end{itemize}
+      \item \textbf{Reverse Proxy \& SSL Termination:} Tiếp nhận lưu lượng HTTPS 443, định tuyến tới dịch vụ Web/API và giám sát định kỳ qua \texttt{GET /health}.
+      \item \textbf{Container \texttt{frontend}:} Ứng dụng Next.js Standalone (cổng nội bộ \texttt{3000}).
+      \item \textbf{Container \texttt{backend}:} Máy chủ NestJS REST API (cổng nội bộ \texttt{3001}), tự động chạy \texttt{npx prisma migrate deploy} khi khởi động.
+      \item \textbf{Container / Managed \texttt{postgres}:} Cơ sở dữ liệu PostgreSQL 16 (cổng \texttt{5432}) gắn ổ cứng bền vững (Persistent Volume / Neon PostgreSQL), cô lập trong mạng nội bộ không mở trực tiếp ra Internet.
     \end{itemize}
 \end{itemize}
 
@@ -360,56 +368,72 @@ Kho mã nguồn dự án được khởi tạo tại GitHub: \url{https://github
   \item Bảo mật cấu hình: File \texttt{.env} được giữ kín, tệp mẫu \texttt{.env.example} được công khai để chuẩn hóa cấu hình.
 \end{itemize}
 
-\subsection{Hiện thực MVP Sprint 1: Luồng xem thực đơn}
-Sprint 1 hoàn thành trọn vẹn luồng duyệt thực đơn theo đúng mục tiêu:
+\subsection{Hiện thực MVP Sprint 1: Luồng xem thực đơn (23 / 23 SP)}
+Sprint 1 hoàn thành 100\% mục tiêu với 23 Story Points cam kết (\texttt{docs/sprint/sprint-1-backlog.md}):
 \begin{itemize}
-  \item API Endpoint: \texttt{GET /products} (lấy danh sách món) và \texttt{GET /products/categories} (lấy danh mục đồ uống).
-  \item Giao diện người dùng: Tabs danh mục (Cà phê, Trà, Đá xay, Bánh), thẻ sản phẩm kèm ảnh và giá hiển thị định dạng VND (\texttt{35.000đ}).
-  \item Xử lý trạng thái tải: Skeleton Loading và giao diện khi không có sản phẩm.
+  \item \textbf{API Endpoints (\texttt{ProductsModule}):} \texttt{GET /products} (lọc theo danh mục và từ khóa), \texttt{GET /products/:id}, \texttt{GET /products/categories} và \texttt{GET /products/toppings}.
+  \item \textbf{Database Seed:} Script \texttt{backend/prisma/seed.ts} nạp tự động 12 món đồ uống thuộc 4 danh mục thực tế (\textit{Cà phê Việt Nam, Cà phê Pha Máy, Trà \& Trái Cây, Đá Xay \& Thức Uống Đá}) cùng 6 loại topping.
+  \item \textbf{Giao diện Mobile-First \& Tùy biến món:} Thanh lọc danh mục, thẻ sản phẩm định dạng tiền tệ VND (\texttt{35.000đ}), đầy đủ 3 trạng thái UX (Skeleton Loading, Empty State, Error State) và \texttt{ProductDetailModal} chọn Size (S/M/L), đa Topping và tính tổng giá động.
 \end{itemize}
 
 \subsection{Pipeline Tích hợp liên tục (Continuous Integration -- CI)}
-Quy trình CI được thiết lập tự động hóa hoàn toàn bằng \textbf{GitHub Actions} (\texttt{.github/workflows/ci.yml}):
+Quy trình CI được thiết lập tự động hóa hoàn toàn bằng \textbf{GitHub Actions} (\texttt{.github/workflows/ci.yml}) cho cả \texttt{backend} và \texttt{frontend}:
 \begin{enumerate}[1.]
-  \item \textbf{Lint \& Format Check:} Chạy ESLint và Prettier bảo đảm mã nguồn sạch.
-  \item \textbf{TypeScript Type Check:} Biên dịch kiểm tra kiểu tĩnh không có lỗi.
-  \item \textbf{Automated Testing:} Tự động chạy toàn bộ các bài kiểm thử Jest Unit Tests.
-  \item \textbf{Docker Build Validation:} Kiểm tra tính hợp lệ của quá trình đóng gói Docker multi-stage.
+  \item \textbf{Install \& Prisma Client:} Cài đặt thư viện tái lập (\texttt{npm ci}) và sinh Prisma Client (\texttt{npx prisma generate}).
+  \item \textbf{Lint \& Static Type Check:} Chạy ESLint (\texttt{npm run lint}) và kiểm tra kiểu tĩnh TypeScript (\texttt{npx tsc --noEmit}).
+  \item \textbf{Automated Testing:} Tự động chạy toàn bộ bộ kiểm thử Jest Unit/Integration (\texttt{--coverage}) và HTTP E2E (\texttt{npm run test:e2e}).
+  \item \textbf{Production Build:} Biên dịch xác thực \texttt{nest build} và \texttt{next build}.
+  \item \textbf{Minh chứng thực thi CI (\texttt{docs/sprint/ci-evidence/README.md}):} Lưu trữ bằng chứng 1 lần pipeline phát hiện lỗi ESLint và chặn merge (Run \texttt{\#24}) và 1 lần pipeline vượt qua toàn bộ quality gate sau khi khắc phục (Run \texttt{\#25}).
 \end{enumerate}
 
 \newpage
 \section{Hiện thực Sprint 2, CD và Bàn giao sản phẩm (Task 5)}
 
-\subsection{Hoàn thiện MVP: Đặt hàng, Giỏ hàng và Thanh toán}
-Sprint 2 hoàn thiện toàn bộ chuỗi nghiệp vụ mua sắm không tiền mặt:
+\subsection{Hoàn thiện MVP: Đặt hàng, Giỏ hàng và Thanh toán (33 / 33 SP)}
+Sprint 2 hoàn thành toàn bộ 9 hạng mục kỹ thuật (\texttt{33 / 33 SP} -- 100\% cam kết trong 10 ngày làm việc, chi tiết tại \texttt{docs/sprint/sprint-2-backlog.md}):
 \begin{itemize}
-  \item \textbf{Tùy biến món:} Modal chi tiết hỗ trợ chọn kích cỡ (S/M/L) và đa topping.
-  \item \textbf{Giỏ hàng Client:} Tăng giảm số lượng, tự động đồng bộ giỏ hàng vào \texttt{localStorage}.
-  \item \textbf{Thanh toán Idempotent:} Tích hợp thanh toán mô phỏng MoMo/VNPay kèm bảo vệ giao dịch trùng lặp.
-  \item \textbf{Máy trạng thái đơn hàng (Order State Machine):} Quản lý chuyển đổi trạng thái đơn tuần tự từ \texttt{PENDING\_PAYMENT} $\rightarrow$ \texttt{PAID} $\rightarrow$ \texttt{PREPARING} $\rightarrow$ \texttt{READY} $\rightarrow$ \texttt{COMPLETED}.
+  \item \textbf{Giỏ hàng Client \& Voucher:} \texttt{CartDrawer} + \texttt{useCartStore} đồng bộ \texttt{localStorage}; kiểm tra và áp mã giảm giá qua \texttt{GET /vouchers/validate} (\texttt{BREWLITEFIRST}, \texttt{COFFEELOVER}).
+  \item \textbf{Xác thực JWT:} \texttt{POST /auth/register}, \texttt{POST /auth/login}, \texttt{GET /auth/me} với mật khẩu băm \texttt{bcrypt} và \texttt{JwtAuthGuard} bảo vệ toàn bộ endpoint đơn hàng, thanh toán.
+  \item \textbf{Khởi tạo đơn \& Thanh toán Idempotent:} \texttt{POST /orders} tính giá hoàn toàn phía Server; \texttt{POST /payments} kiểm tra \texttt{Idempotency-Key}, trừ tồn kho qua Optimistic Locking (\texttt{Product.version}) trong \texttt{prisma.\$transaction}, cộng điểm Loyalty (\texttt{Math.floor(finalAmount / 10000)}) và hiển thị \texttt{OrderConfirmationModal} (\texttt{\#xxxxxx}).
+  \item \textbf{Máy trạng thái đơn hàng \& Lịch sử:} \texttt{order-state-machine.ts} kiểm soát nghiêm ngặt vòng đời \texttt{PENDING} $\rightarrow$ \texttt{PAID} $\rightarrow$ \texttt{PREPARING} $\rightarrow$ \texttt{READY} $\rightarrow$ \texttt{COMPLETED} (cùng nhánh \texttt{PAYMENT\_FAILED} thử lại và \texttt{CANCELLED} hoàn kho); \texttt{OrderHistoryModal} truy vấn \texttt{GET /orders/me}.
 \end{itemize}
 
-\subsection{Kiểm thử tự động toàn diện (Testing QA)}
-Hệ thống xây dựng tháp kiểm thử 3 tầng:
+\begin{table}[h!]
+\centering
+\scriptsize
+\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{Mốc ngày Sprint 2} & \textbf{D0} & \textbf{D1} & \textbf{D2} & \textbf{D3} & \textbf{D4} & \textbf{D5} & \textbf{D6} & \textbf{D7} & \textbf{D8} & \textbf{D9} & \textbf{D10} \\
+\hline
+\textbf{Lý tưởng (Ideal SP)} & 33.0 & 29.7 & 26.4 & 23.1 & 19.8 & 16.5 & 13.2 & 9.9 & 6.6 & 3.3 & 0.0 \\
+\hline
+\textbf{Thực tế (Actual SP)} & 33 & 30 & 25 & 23 & 20 & 17 & 12 & 10 & 8 & 3 & 0 \\
+\hline
+\end{tabular}
+\caption{Theo dõi Burndown Chart Sprint 2 (33 Story Points trong 10 ngày làm việc)}
+\end{table}
+
+\subsection{Kiểm thử tự động toàn diện (3-Tier QA \& Chứng minh đồng thời)}
+Hệ thống xây dựng tháp kiểm thử tự động 3 tầng với tổng cộng \textbf{32 test suites / 143 test cases} đều đạt 100\%:
 \begin{itemize}
-  \item \textbf{Unit Tests (Jest):} Kiểm thử logic chuyển đổi trạng thái đơn hàng và các hàm tính toán giá.
-  \item \textbf{Integration Tests:} Kiểm thử tương tác giữa NestJS Service, Prisma ORM và Database PostgreSQL thực nghiệm.
-  \item \textbf{End-to-End Tests:} Kiểm thử trọn vẹn luồng duyệt menu $\rightarrow$ thêm giỏ $\rightarrow$ đặt hàng $\rightarrow$ thanh toán.
+  \item \textbf{Tầng 1 -- Backend Unit \& Concurrency Integration (17 suites / 89 tests):} Kiểm thử độc lập và mô phỏng giao dịch đồng thời, bao gồm 3 bài chứng minh trọng tâm của Assignment 1 Task 10: \textbf{(a)} ma trận chuyển trạng thái \texttt{assertTransition} (\texttt{order-state-machine.spec.ts}); \textbf{(b)} 5 request thanh toán đồng thời cùng \texttt{Idempotency-Key} chỉ trừ tiền và cộng điểm 1 lần; \textbf{(c)} 8 khách hàng cùng thanh toán món có \texttt{stock = 3} qua khóa lạc quan \texttt{version} cho đúng 3 đơn \texttt{PAID} và 5 đơn nhận HTTP \texttt{409 Conflict} (\texttt{concurrency-inventory.spec.ts}).
+  \item \textbf{Tầng 2 -- Backend Supertest HTTP E2E (1 suite / 1 full-flow test):} \texttt{backend/test/checkout-flow.e2e-spec.ts} kiểm thử toàn bộ HTTP pipeline qua \texttt{ValidationPipe}, \texttt{JwtAuthGuard}, \texttt{GET /health} (\texttt{200 OK} và \texttt{503} khi DB ngắt kết nối), \texttt{GET /products}, \texttt{POST /auth/register}, \texttt{GET /vouchers/validate}, \texttt{POST /orders}, \texttt{POST /payments} (thất bại $\rightarrow$ thử lại $\rightarrow$ idempotent replay), \texttt{GET /orders/me} và \texttt{PATCH /orders/:id/status}.
+  \item \textbf{Tầng 3 -- Frontend Component, Store \& Flow (14 suites / 53 tests):} Kiểm thử \texttt{useCartStore}, \texttt{ProductDetailModal}, \texttt{CartDrawer}, \texttt{AuthModal}, \texttt{CheckoutModal}, \texttt{OrderConfirmationModal}, \texttt{OrderHistoryModal} và luồng trang chủ \texttt{page.test.tsx}.
 \end{itemize}
 
-\subsection{Continuous Delivery / Deployment và Môi trường Production}
-Pipeline CD tự động triển khai mã nguồn mới sau khi vượt qua toàn bộ các bước kiểm thử của CI:
+\subsection{Continuous Delivery / Deployment, Container hóa và Bàn giao}
 \begin{itemize}
-  \item Đóng gói Docker Images và lưu trữ tại GitHub Packages (GHCR).
-  \item Kích hoạt Webhook cập nhật ứng dụng tự động trên máy chủ đám mây.
-  \item Kiểm tra sức khỏe dịch vụ qua endpoint \texttt{GET /health} trước khi hoàn tất phiên bản phát hành.
+  \item \textbf{Đóng gói Docker Multi-stage \& Compose 3 Services:} Xây dựng \texttt{backend/Dockerfile} (\texttt{node:20-alpine}, entrypoint \texttt{dist/src/main}) và \texttt{frontend/Dockerfile} (\texttt{DOCKER\_BUILD=true}, Next.js \texttt{standalone}); tệp \texttt{docker-compose.yml} khởi chạy đồng thời 3 dịch vụ (\texttt{postgres}, \texttt{backend} tự chạy \texttt{prisma migrate deploy} + \texttt{SEED\_IF\_EMPTY=true}, \texttt{frontend}) với healthcheck đầy đủ.
+  \item \textbf{Pipeline CD (\texttt{.github/workflows/cd.yml}):} Tự động chạy \texttt{quality-gate} $\rightarrow$ \texttt{docker-package-and-smoke} (dựng stack Docker Compose thật và gọi \texttt{GET /health} xác thực DB \texttt{up}) $\rightarrow$ đẩy image gắn tag SHA/SemVer lên GitHub Container Registry (\texttt{ghcr.io}) $\rightarrow$ kích hoạt \texttt{DEPLOY\_HOOK\_URL}, xác minh health endpoint sau deploy và hỗ trợ rollback nhanh theo hướng dẫn tại \texttt{docs/release-notes.md}.
+  \item \textbf{Tình trạng bàn giao hạ tầng:} Toàn bộ mã nguồn, kiểm thử, cấu hình Docker Compose, pipeline CD và tài liệu vận hành (\texttt{README.md}, \texttt{docs/deployment.md}, \texttt{docs/release-notes.md}) đã hoàn tất và đẩy lên nhánh \texttt{main}; việc gắn URL HTTPS công khai và tạo tag \texttt{v1.0.0} sẵn sàng kích hoạt ngay khi cấu hình biến Secrets trên hạ tầng Cloud đích.
 \end{itemize}
 
-\subsection{Tổng kết Sprint, Đánh giá và Cải tiến (Sprint Retrospective)}
+\subsection{Sprint Review và Sprint Retrospective}
 \begin{itemize}
-  \item \textbf{Điểm làm tốt (What went well):} Kiến trúc phân tách rõ ràng; áp dụng Optimistic Lock giải quyết triệt để vấn đề tranh chấp tồn kho; hoàn thành đúng tiến độ cam kết.
-  \item \textbf{Thách thức (Challenges):} Cấu hình mạng Docker và quản lý biến môi trường an toàn đòi hỏi kiểm soát chặt chẽ.
-  \item \textbf{Kế hoạch cải tiến (Action items):} Tối ưu hóa dung lượng Docker Image bằng Alpine Linux và nâng cao độ bao phủ kiểm thử tự động.
+  \item \textbf{Kết quả Sprint Review:} Nghiệm thu đạt 8/8 kịch bản trình diễn end-to-end từ duyệt menu, tùy biến món, áp voucher, đăng nhập JWT, thanh toán thất bại/thử lại, kiểm chứng đồng thời `(a)(b)(c)` đến khởi chạy Docker Compose 3 services và \texttt{GET /health}.
+  \item \textbf{Điểm làm tốt (What went well):} Tính giá hoàn toàn phía Server kết hợp \texttt{prisma.\$transaction} và khóa lạc quan \texttt{version} bảo đảm an toàn tuyệt đối cho giao dịch; tuân thủ 100\% quy tắc Clean Code không comment thừa trong mã nguồn (kiểm tra bằng AST TypeScript).
+  \item \textbf{Thách thức \& Bài học (Challenges \& Lessons Learned):} Xử lý chính xác đường dẫn biên dịch NestJS (\texttt{dist/src/main.js}), cấu hình \texttt{DOCKER\_BUILD=true} cho Next.js \texttt{standalone} trong container độc lập, và bổ sung cờ \texttt{SEED\_IF\_EMPTY=true} để không ghi đè dữ liệu thật khi container khởi động lại.
+  \item \textbf{Kế hoạch cải tiến v1.1 (Action items):} Bổ sung giao diện Barista Kitchen Display System (KDS) cập nhật trạng thái đơn realtime qua WebSocket/SSE và mở rộng kiểm thử trình duyệt Playwright đa thiết bị.
 \end{itemize}
 
 \newpage
@@ -424,28 +448,32 @@ Bảng ma trận truy vết thể hiện tính liên kết 100\% từ Yêu cầu
 \hline
 \textbf{Mã FR} & \textbf{Tên chức năng} & \textbf{Use Case} & \textbf{Thiết kế / Sơ đồ} & \textbf{Code / API Endpoint} & \textbf{Mã Test} \\
 \hline
-\textbf{FR-01} & Duyệt thực đơn & UC01 & Activity-Flow, Class-Domain & \texttt{GET /products} & API-T01 \\
+\textbf{FR-01} & Duyệt thực đơn & UC01 & Activity-Flow, Class-Domain & \texttt{GET /products}, \texttt{categories} & API-T01, UI-T01 \\
 \hline
-\textbf{FR-02} & Tùy biến món & UC03 & Activity-Flow, Class-Domain & \texttt{GET /products/:id} & UI-T02 \\
+\textbf{FR-02} & Tùy biến món & UC03 & Activity-Flow, Class-Domain & \texttt{GET /products/:id}, \texttt{toppings} & UI-T02 \\
 \hline
-\textbf{FR-03} & Quản lý giỏ hàng & UC04 & Activity-Flow, Class-Domain & \texttt{useCartStore.ts} & UNIT-CART01 \\
+\textbf{FR-03} & Quản lý giỏ hàng & UC04 & Activity-Flow, Class-Domain & \texttt{useCartStore.ts}, \texttt{CartDrawer} & UNIT-CART01 \\
 \hline
-\textbf{FR-04} & Xác thực người dùng & UC05 & Sequence-Checkout & \texttt{POST /auth/login} & API-AUTH01 \\
+\textbf{FR-04} & Xác thực JWT & UC05 & Sequence-Checkout & \texttt{POST /auth/register}, \texttt{login} & API-AUTH01 \\
 \hline
-\textbf{FR-05} & Khởi tạo đơn hàng & UC06 & Sequence-Checkout & \texttt{POST /orders} & INT-ORD01 \\
+\textbf{FR-05} & Khởi tạo đơn hàng & UC06 & Sequence-Checkout & \texttt{POST /orders} (\texttt{OrdersService}) & INT-ORD01 \\
 \hline
-\textbf{FR-06} & Khóa lạc quan & UC06 & Activity-Flow, State-Machine & \texttt{orders.service.ts} & UNIT-LOCK01 \\
+\textbf{FR-06} & Thanh toán Idempotent & UC07 & Sequence-Checkout & \texttt{POST /payments} (\texttt{PaymentsService}) & INT-PAY01 \\
 \hline
-\textbf{FR-07} & Thanh toán trực tuyến & UC07 & Sequence-Checkout & \texttt{POST /payments} & INT-PAY01 \\
+\textbf{FR-07} & Máy trạng thái đơn & UC11 & Sequence-Checkout & \texttt{order-state-machine.ts}, \texttt{PATCH} & UNIT-STATE01 \\
 \hline
-\textbf{FR-08} & Máy trạng thái đơn & UC08 & Activity-Flow, Class-Domain & \texttt{order-state.ts} & UNIT-STATE01 \\
+\textbf{FR-08} & Kiểm soát tồn kho & UC14 & Sequence-Checkout & \texttt{PaymentsService} (\texttt{version} lock) & UNIT-CONCUR01 \\
 \hline
-\textbf{FR-09} & Tích điểm thành viên & UC07 & Activity-Flow, Class-Domain & \texttt{loyalty.service.ts} & UNIT-LOY01 \\
+\textbf{FR-09} & Tích điểm Loyalty & UC08 & Sequence-Checkout & \texttt{PaymentsService} (\texttt{loyaltyPoints}) & UNIT-LOYAL01 \\
 \hline
-\textbf{FR-10} & Xem lịch sử đơn & UC09 & Activity-Flow & \texttt{GET /orders/me} & E2E-FLOW01 \\
+\textbf{FR-10} & Xem lịch sử đơn & UC09 & Activity-Flow & \texttt{GET /orders/me}, \texttt{OrderHistory} & E2E-FLOW01 \\
+\hline
+\textbf{FR-11} & Áp dụng Voucher & UC06.1 & Class-Domain & \texttt{GET /vouchers/validate} & INT-VOUCH01 \\
+\hline
+\textbf{FR-12} & Điều phối Barista & UC10, UC11 & Activity-Flow & \texttt{PATCH /orders/:id/status} & UNIT-STATE01 \\
 \hline
 \end{tabularx}
-\caption{Ma trận truy vết yêu cầu hệ thống BrewLite (Mục 8 Đề bài gốc)}
+\caption{Ma trận truy vết yêu cầu hệ thống BrewLite (Mục 8 Đề bài gốc \& \texttt{docs/traceability-matrix.md})}
 \end{table}
 
 \newpage
