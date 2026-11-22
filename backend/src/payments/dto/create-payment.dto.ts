@@ -15,6 +15,7 @@ const ALLOWED_PAYMENT_METHODS = [
   'MOCK_WALLET',
   'MOCK_MOMO',
   'MOCK_VNPAY',
+  'PAYOS_VIETQR',
 ] as const;
 
 function trimRequiredString({ value }: TransformFnParams): unknown {

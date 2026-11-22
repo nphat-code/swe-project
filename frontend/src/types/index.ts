@@ -111,7 +111,31 @@ export type OrderStatus =
 
 export type PaymentStatus = 'UNPAID' | 'PAID' | 'FAILED';
 
-export type PaymentMethod = 'WALLET' | 'CARD' | 'MOCK_WALLET' | 'MOCK_MOMO' | 'MOCK_VNPAY';
+export type PaymentMethod =
+  | 'WALLET'
+  | 'CARD'
+  | 'MOCK_WALLET'
+  | 'MOCK_MOMO'
+  | 'MOCK_VNPAY'
+  | 'PAYOS_VIETQR';
+
+export interface PayosCheckoutResponse {
+  orderId: string;
+  orderCode: number;
+  amount: number;
+  description: string;
+  bin: string;
+  accountNumber: string;
+  accountName: string;
+  checkoutUrl: string;
+  qrCode: string;
+}
+
+export interface PayosSyncResponse {
+  paid: boolean;
+  payosStatus: string;
+  paymentResult?: ProcessPaymentResponse;
+}
 
 export interface OrderItemToppingSummary {
   id?: string;

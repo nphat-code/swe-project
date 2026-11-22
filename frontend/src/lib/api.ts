@@ -7,6 +7,8 @@ import {
   LoginPayload,
   OrderRecord,
   OrderStatus,
+  PayosCheckoutResponse,
+  PayosSyncResponse,
   ProcessPaymentPayload,
   ProcessPaymentResponse,
   Product,
@@ -307,6 +309,51 @@ export async function processPayment(
   }
 
   return (await response.json()) as ProcessPaymentResponse;
+}
+
+export async function createPayosPayment(
+  accessToken: string,
+  payload: { orderId: string; idempotencyKey: string }
+): Promise<PayosCheckoutResponse> {
+  const response = await fetch(`${API_BASE_URL}/payments/payos`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+      'Idempotency-Key': payload.idempotencyKey,
+    },
+    body: JSON.stringify({
+      orderId: payload.orderId,
+      method: 'PAYOS_VIETQR',
+      idempotencyKey: payload.idempotencyKey,
+    }),
+  });
+
+  if (!response.ok) {
+    const message = await extractApiErrorMessage(response, 'Không thể tạo mã QR thanh toán PayOS');
+    throw new Error(message);
+  }
+
+  return (await response.json()) as PayosCheckoutResponse;
+}
+
+export async function syncPayosPayment(
+  accessToken: string,
+  orderId: string
+): Promise<PayosSyncResponse> {
+  const response = await fetch(`${API_BASE_URL}/payments/payos/sync/${orderId}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    const message = await extractApiErrorMessage(response, 'Không thể kiểm tra trạng thái PayOS');
+    throw new Error(message);
+  }
+
+  return (await response.json()) as PayosSyncResponse;
 }
 
 export async function fetchMyOrders(accessToken: string): Promise<OrderRecord[]> {
