@@ -26,11 +26,11 @@
 
 ## 2. KẾ HOẠCH KIỂM TRA CHI TIẾT (5 BƯỚC)
 
-### Bước 1: Kiểm tra Quy trình Agile Scrum & Tài liệu (Mục 2, 3, 4, 10, 11)
-- [ ] **Product Vision & 6 Stakeholders:** Kiểm tra khớp giữa `Assignment1_report.tex` và đề bài gốc Mục 3.
-- [ ] **User Stories (`US-01` $\rightarrow$ `US-10`):** Kiểm tra file `docs/requirements/user-stories.md` và bảng trong `Assignment1_report.tex` đúng mẫu *"Là một ..., tôi muốn ..., để ..."* kèm Acceptance Criteria.
-- [ ] **Sprint Backlog & Burndown Chart:** Kiểm tra `docs/sprint/product-backlog.md`, `sprint-1-backlog.md` (23 SP) và `sprint-2-backlog.md` (33 SP + Burndown 10 ngày + Sprint Review + Retrospective + Backlog v1.1).
-- [ ] **Definition of Done (DoD — Mục 10):** Kiểm tra `docs/sprint/definition-of-done.md` và đối chiếu thực tế (`lint`, `build`, `README`, `validation`, `loading/error`).
+### Bước 1: Kiểm tra Quy trình Agile Scrum & Tài liệu (Mục 2, 3, 4, 10, 11) — ✅ HOÀN TẤT
+- [x] **Product Vision & 6 Stakeholders:** Khớp 100% giữa `Assignment1_report.tex` ([L140–151](file:///c:/Study/HK1Nam3/CNPM/Project/docs/report/Assigment_template_SGU/Assignment1_report.tex#L140-L151)) và đề bài gốc Mục 3.
+- [x] **User Stories (`US-01` $\rightarrow$ `US-10`):** Đã hoàn chỉnh tại `docs/requirements/user-stories.md` và bảng trong `Assignment1_report.tex` đúng mẫu *"Là một ..., tôi muốn ..., để ..."* kèm Acceptance Criteria.
+- [x] **Sprint Backlog & Burndown Chart:** Đủ `docs/sprint/product-backlog.md` (15 PBIs / 56 SP), `sprint-1-backlog.md` (23 SP) và `sprint-2-backlog.md` (33 SP + Burndown 10 ngày + Sprint Review 8/8 + Retrospective + Backlog v1.1).
+- [x] **Definition of Done (DoD — Mục 10):** Đủ 4 tiêu chuẩn DoD tại `docs/sprint/definition-of-done.md` và CI Pipeline Run `#58` vừa PASS 100% cả Frontend & Backend.
 
 ### Bước 2: Kiểm tra API & Thực thể tối thiểu (Mục 12)
 - [ ] Đối chiếu đủ 7 endpoint tối thiểu ở Mục 12.1 (`GET /products`, `GET /products/:id`, `POST /auth/register`, `POST /auth/login`, `POST /orders`, `POST /payments`, `GET /orders/me`).
@@ -50,3 +50,4 @@
 ### Bước 5: Hoàn tất Hồ sơ nộp Assignment 1
 - [ ] Biên dịch `docs/report/Assigment_template_SGU/Assignment1_report.tex` trên Overleaf thành `Assignment1_report.pdf`.
 - [ ] Chuẩn bị kịch bản Demo / Video end-to-end (chọn món $\rightarrow$ size/topping $\rightarrow$ giỏ hàng $\rightarrow$ đăng nhập $\rightarrow$ thanh toán $\rightarrow$ xác nhận `#xxxxxx` $\rightarrow$ lịch sử đơn) kèm link GitHub `https://github.com/nphat-code/swe-project`.
+
