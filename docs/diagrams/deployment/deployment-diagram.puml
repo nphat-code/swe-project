@@ -30,47 +30,47 @@ node "DevOps Workstation (Admin Machine)" as devopsNode {
 cloud "Internet / Public Network" as internet
 
 cloud "Domain Name System (DNS Provider)" as dnsCloud {
-  component "DNS A-Record\n(brewlite.coffee -> Elastic IP)" as dnsRecord
+  component "DNS A-Record (sslip.io)\n(3.26.221.207.sslip.io -> 3.26.221.207)" as dnsRecord
 }
 
-cloud "GitHub Repository" as githubCloud {
-  component "Git Remote Repository\n(ghcr.io / git repo)" as gitRemote
+cloud "GitHub Repository & Actions" as githubCloud {
+  component "Git Remote & GHCR\n(nphat-code/swe-project)" as gitRemote
 }
 
 node "Payment Gateway Mock Service" as paymentService {
-  component "Mock Payment Gateway\n(MoMo / VNPay / Visa Webhook)" as mockPay
+  component "Mock Payment Adapter\n(MoMo / VNPay / Card / Wallet)" as mockPay
 }
 
 ' ====================================================
 ' 3. AWS CLOUD INFRASTRUCTURE (UBUNTU SERVER)
 ' ====================================================
-cloud "AWS Cloud VPC (Region: ap-southeast-1)" as awsCloud {
+cloud "AWS Cloud VPC (Region: ap-southeast-2 Sydney)" as awsCloud {
 
-  node "AWS EC2 Virtual Machine Instance (Ubuntu 22.04 LTS)\n[Elastic Public IP: 13.250.x.x | Domain: brewlite.coffee]" as ec2Instance {
+  node "AWS EC2 Virtual Machine Instance (Ubuntu 26.04 LTS)\n[Public IP: 3.26.221.207 | Domain: 3.26.221.207.sslip.io]" as ec2Instance {
     
     component "OpenSSH Server (sshd)\n[TCP Port 22]" as sshd
-    component "Git CLI Runner\n[git pull origin main]" as gitPull
-    artifact "Configuration & Secrets\n(.env, nginx.conf, docker-compose.yml)" as appConfig
+    component "Deploy Runner\n[docker compose -f docker-compose.prod.yml]" as gitPull
+    artifact "Configuration & Secrets\n(.env, deploy/nginx/brewlite.conf, docker-compose.prod.yml)" as appConfig
 
     node "Web Server & Reverse Proxy" as nginxNode {
-      component "Nginx Web Server\n(SSL/TLS 1.3 Termination, Ports 80 & 443)" as nginx
+      component "Nginx Web Server + Certbot\n(Let's Encrypt SSL/TLS 1.3, Ports 80 & 443)" as nginx
     }
 
     package "Docker Container Runtime Engine (Docker Compose)" as dockerEngine {
       
-      node "Container: Frontend (web)" as webContainer {
-        component "Next.js Node Server\n[Internal Port 3000]" as nextjsApp
+      node "Container: frontend (brewlite_frontend_prod)" as webContainer {
+        component "Next.js 16 Standalone Server\n[127.0.0.1:3000]" as nextjsApp
       }
 
-      node "Container: Backend API (api)" as apiContainer {
-        component "NestJS REST API Service\n[Internal Port 3001]" as nestjsApp
-        component "Health Check Probe\n[GET /health]" as healthProbe
-        component "Structured JSON Logger\n(Stdout Stream)" as logger
+      node "Container: backend (brewlite_backend_prod)" as apiContainer {
+        component "NestJS 10 REST API Service\n[127.0.0.1:3001]" as nestjsApp
+        component "Health Check Probe\n[GET /health -> SELECT 1]" as healthProbe
+        component "Structured Logger\n(Stdout Stream)" as logger
       }
 
-      node "Container: Database (db)" as dbContainer {
-        database "PostgreSQL 16 Engine\n[Port 5432 (Internal Network)]" as pgEngine {
-          storage "Mounted AWS EBS SSD Volume\n(/var/lib/postgresql/data - Persistent)" as ebsVolume
+      node "Container: postgres (brewlite_postgres_prod)" as dbContainer {
+        database "PostgreSQL 16 Alpine\n[Port 5432 (Internal Bridge Only)]" as pgEngine {
+          storage "Persistent Docker Volume on AWS EBS\n(postgres_prod_data -> /var/lib/postgresql/data)" as ebsVolume
         }
       }
     }
@@ -81,8 +81,8 @@ cloud "AWS Cloud VPC (Region: ap-southeast-1)" as awsCloud {
 ' 4. CONNECTORS & PROTOCOLS
 ' ====================================================
 ' DNS resolution
-browser ..> dnsRecord : 1. Resolve Domain\n(brewlite.coffee)
-dnsRecord ..> nginx : Maps to Elastic IP
+browser ..> dnsRecord : 1. Resolve Domain\n(3.26.221.207.sslip.io)
+dnsRecord ..> nginx : Maps to 3.26.221.207
 
 ' User traffic to Nginx
 ui --> nginx : 2. HTTPS : 443 (Static Assets & HTML)

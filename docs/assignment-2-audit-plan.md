@@ -14,7 +14,7 @@
 | :--- | :---: | :--- | :---: | :--- |
 | **Task 1** — Khai thác & đặc tả yêu cầu | 2.0 | `docs/requirements/context-and-scope.md`, `system-requirements-matrix.md`, `core-use-case-specification.md` | 🟢 100% | Đã đồng bộ 100% tên danh mục, API (`GET /vouchers/validate`), component (`OrderConfirmationModal`, `OrderHistoryModal`) và AWS EC2. |
 | **Task 2** — Mô hình hóa hệ thống (UML) | 2.0 | `docs/diagrams/{use-case,activity,sequence,class}/` (đủ nguồn `.puml`/`.mmd` & ảnh `.png`/`.svg`) | 🟢 100% | Đã đồng bộ `class-domain.mmd` khớp `schema.prisma` (`Role: STAFF`, `PaymentStatus: UNPAID/PAID/FAILED`, xóa `CASH` khỏi `PaymentMethod`). |
-| **Task 3** — Thiết kế kiến trúc | 2.0 | `docs/architecture/architecture-description.md`, 6 ADRs (`001`–`006`), `deployment-diagram.{puml,png}`, `docs/deployment.md` | 🟡 95% | Cập nhật tên miền thật `3.26.221.207.sslip.io` vào `deployment-diagram.puml`. |
+| **Task 3** — Thiết kế kiến trúc | 2.0 | `docs/architecture/architecture-description.md`, 6 ADRs (`001`–`006`), `deployment-diagram.{puml,png}`, `docs/deployment.md` | 🟢 100% | Đã đồng bộ `architecture-description.md`, `deployment-diagram.puml` và `diagrams/deployment/README.md` đúng hạ tầng AWS EC2 thật (`3.26.221.207.sslip.io`, `ap-southeast-2`, 3 containers prod). |
 | **Task 4** — Triển khai Sprint 1 & CI | 2.0 | Monorepo (`frontend/`, `backend/`, `docs/`), Backlog, DoD, Products API + Menu MVP, `.github/workflows/ci.yml`, `docs/sprint/ci-evidence/README.md` | 🟢 98% | Xác minh `ci-evidence/README.md` có đủ link PR, ảnh/log 1 lần CI đỏ và 1 lần CI xanh (Mục 6.4). |
 | **Task 5** — Sprint 2, CD & Delivery | 2.0 | MVP End-to-End, 32 suites / 143 tests + E2E, `docker-compose.yml` + `prod`, `.github/workflows/cd.yml`, AWS HTTPS live, tag `v1.0.0`, `docs/release-notes.md` | 🟡 85% | Cấu hình GitHub Secrets để CD chạy xanh thật lên AWS, mở Public Repo, xuất PDF mới và quay Video demo. |
 | **Mục 8** — Truy vết bắt buộc | Bắt buộc | `docs/traceability-matrix.md` | 🟢 100% | Đã cập nhật dòng `FR-12` khớp chính xác `PATCH /orders/:id/status` (RBAC `STAFF`/`ADMIN`) và ghi rõ UI KDS là mở rộng v1.1. |
@@ -30,9 +30,9 @@
 - [x] Đối chiếu 3 sơ đồ UML (`activity-flow.puml`, `sequence-checkout.mmd`, `class-domain.mmd`) với `backend/prisma/schema.prisma` (loại bỏ `CASH` khỏi `PaymentMethod`, đồng bộ enum `Role`/`PaymentStatus`/`Size`).
 - [x] Rà soát toàn bộ bảng `docs/traceability-matrix.md` (12 FR + 9 NFR).
 
-### Bước 2: Rà soát Kiến trúc & Sơ đồ Triển khai Production (Task 3)
-- [ ] Đối chiếu `docs/architecture/architecture-description.md` và 6 file `docs/architecture/adr/001..006*.md` khớp phiên bản thực tế (`Next.js 16`, `NestJS 10`, `PostgreSQL 16`, `Prisma 6`).
-- [ ] Cập nhật `docs/diagrams/deployment/deployment-diagram.puml` phản ánh đúng hạ tầng AWS EC2 thực tế (`3.26.221.207.sslip.io`, Nginx SSL, 3 container `frontend`, `backend`, `postgres` cô lập nội bộ).
+### Bước 2: Rà soát Kiến trúc & Sơ đồ Triển khai Production (Task 3) — ✅ HOÀN TẤT
+- [x] Đối chiếu `docs/architecture/architecture-description.md` và 6 file `docs/architecture/adr/001..006*.md` khớp phiên bản thực tế (`Next.js 16`, `NestJS 10`, `PostgreSQL 16`, `Prisma 6`, 5 Domain Modules + `AppController /health`, 9 thực thể).
+- [x] Cập nhật `docs/diagrams/deployment/deployment-diagram.puml` và `docs/diagrams/deployment/README.md` phản ánh đúng hạ tầng AWS EC2 thực tế (`3.26.221.207.sslip.io`, Region `ap-southeast-2`, Ubuntu 26.04 LTS, Nginx SSL, 3 container `frontend`, `backend`, `postgres` cô lập nội bộ).
 
 ### Bước 3: Xác thực toàn bộ Quality Gate cục bộ (Task 4 + Task 5.2)
 - [ ] Chạy `npm run lint` (0 lỗi ESLint ở cả `backend` & `frontend`).

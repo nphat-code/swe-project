@@ -35,31 +35,31 @@ graph TD
     end
 
     subgraph Level2 ["C4 Level 2: Container Diagram"]
-        NextClient["Next.js 15 PWA Client<br/>(React 19, Tailwind CSS, Zustand Store)"]
-        NestServer["NestJS REST API Server<br/>(Modular Monolith, JWT, Guards, Pipes)"]
-        PostgresDB[("PostgreSQL 16 Database<br/>(Prisma ORM, ACID Transactions)")]
+        NextClient["Next.js 16 PWA Client<br/>(React 19, Tailwind CSS v4, Zustand Store)"]
+        NestServer["NestJS 10 REST API Server<br/>(Modular Monolith, JWT, Guards, Pipes)"]
+        PostgresDB[("PostgreSQL 16 Database<br/>(Prisma ORM 6, ACID Transactions)")]
         MockGateway["Mock Payment Gateway<br/>(Idempotent Payment Processor)"]
 
         Customer -.->|HTTPS / Web Browser| NextClient
         Barista -.->|HTTPS / Web Browser| NextClient
         NextClient -->|HTTPS / JSON REST API| NestServer
         NestServer -->|TCP / Prisma Client Pooled| PostgresDB
-        NestServer -->|HTTPS / REST API| MockGateway
+        NestServer -->|In-process / Mock Adapter| MockGateway
     end
 
     subgraph Level3 ["C4 Level 3: Component Diagram (Backend API)"]
         AuthComp["AuthModule<br/>(Bcrypt, JWT Service, JwtAuthGuard)"]
-        ProdComp["ProductsModule<br/>(Category, Product, Options, Stock)"]
-        OrderComp["OrdersModule<br/>(Server Price Calc, State Machine, Optimistic Lock)"]
-        PayComp["PaymentsModule<br/>(Idempotency Interceptor, Webhook Handler)"]
-        LoyaltyComp["LoyaltyModule<br/>(Point Awarding: Total / 10.000)"]
-        HealthComp["HealthModule<br/>(DB Ping, System Uptime Check)"]
+        ProdComp["ProductsModule<br/>(Category, Product, SizeOption, Topping)"]
+        VoucherComp["VouchersModule<br/>(GET /vouchers/validate, Discount Rules)"]
+        OrderComp["OrdersModule<br/>(Server Price Calc, State Machine, RBAC)"]
+        PayComp["PaymentsModule<br/>(Idempotency-Key, Optimistic Lock, Loyalty)"]
+        HealthComp["AppController / AppService<br/>(GET /health, DB Ping SELECT 1)"]
 
         NestServer -.-> AuthComp
         NestServer -.-> ProdComp
+        NestServer -.-> VoucherComp
         NestServer -.-> OrderComp
         NestServer -.-> PayComp
-        NestServer -.-> LoyaltyComp
         NestServer -.-> HealthComp
     end
 ```
@@ -69,45 +69,44 @@ graph TD
 ## 3. CHI TIẾT CÁC TẦNG KIẾN TRÚC (ARCHITECTURAL LAYERS)
 
 ### 3.1. Lớp Trình diễn (Presentation Layer — Next.js PWA Client)
-* **Công nghệ cốt lõi:** Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS.
+* **Công nghệ cốt lõi:** Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4.
 * **Định hướng Mobile-First & PWA:**
   - Khách hàng có thể quét mã QR tại bàn để truy cập tức thì hoặc cài đặt ứng dụng vào màn hình chính (Add to Home Screen - A2HS) thông qua tệp `manifest.json`.
-  - Service Worker hỗ trợ lưu trữ bộ nhớ đệm tài nguyên tĩnh (caching), giúp tăng tốc độ tải trang ban đầu (FCP $\le 1.8\text{s}$ đáp ứng `NFR-01`).
+  - Hỗ trợ tối ưu tải trang ban đầu (FCP $\le 1.8\text{s}$ đáp ứng `NFR-01`) với Next.js Standalone build trên Docker.
 * **Quản lý trạng thái (Client State Management):**
-  - Sử dụng **Zustand** kết hợp `localStorage` đồng bộ tức thì cho giỏ hàng (`useCartStore`).
+  - Sử dụng **Zustand** kết hợp `localStorage` đồng bộ tức thì cho giỏ hàng (`useCartStore`) và phiên đăng nhập (`useAuthStore`).
   - Đảm bảo khi khách hàng chưa đăng nhập hoặc gặp lỗi thanh toán/hết hàng, hệ thống giữ nguyên giỏ hàng để khách thử lại mà không phải chọn món lại từ đầu.
 * **Chuẩn hóa trải nghiệm người dùng (UX Guidelines):**
   - Đảm bảo 3 trạng thái giao diện bắt buộc theo `NFR-03`: Skeleton Loading khi tải dữ liệu, Empty State khi không có món, và Error State kèm nút Thử lại tự động.
 
 ### 3.2. Lớp Dịch vụ & Điều phối (Application & API Layer — NestJS Server)
-Backend tổ chức theo các Domain Module độc lập, tuân thủ nguyên lý Dependency Injection (DI) và Single Responsibility Principle (SRP):
+Backend tổ chức theo 5 Domain Module độc lập cùng `AppController` (`GET /health`), tuân thủ nguyên lý Dependency Injection (DI) và Single Responsibility Principle (SRP):
 
 1. **`AuthModule`:**
-   - Cung cấp luồng Đăng ký (`POST /auth/register`) và Đăng nhập (`POST /auth/login`).
+   - Cung cấp luồng Đăng ký (`POST /auth/register`), Đăng nhập (`POST /auth/login`) và hồ sơ hiện tại (`GET /auth/me`).
    - Mật khẩu được băm an toàn bằng thư viện `bcrypt` với Salt Round $\ge 10$ (`NFR-02`).
-   - Cấp phát JSON Web Token (JWT) có hạn sử dụng và phân quyền vai trò (`Role: CUSTOMER | BARISTA | ADMIN`).
-   - `JwtAuthGuard` bảo vệ các endpoint nhạy cảm (Tạo đơn hàng, tra cứu lịch sử, đổi trạng thái).
+   - Cấp phát JSON Web Token (JWT) có hạn sử dụng và phân quyền vai trò (`Role: CUSTOMER | STAFF | ADMIN`).
+   - `JwtAuthGuard` bảo vệ các endpoint nhạy cảm (Tạo đơn hàng, thanh toán, tra cứu lịch sử, đổi trạng thái).
 2. **`ProductsModule`:**
-   - Cung cấp danh mục đồ uống (`Category`), danh sách sản phẩm (`Product`), tùy chọn kích cỡ (`Size: SMALL | MEDIUM | LARGE`) và Topping kèm theo.
-   - Quản lý trạng thái khả dụng (`isAvailable`) và số lượng tồn kho khả dụng (`stock`).
-3. **`OrdersModule` (Trọng tâm nghiệp vụ):**
+   - Cung cấp 4 danh mục đồ uống (`Category`), 12 sản phẩm (`Product`), tùy chọn kích cỡ (`Size: S | M | L`) và 6 loại Topping kèm theo.
+   - Quản lý trạng thái khả dụng (`isAvailable`), tồn kho (`stock`) và số phiên bản khóa lạc quan (`version`).
+3. **`VouchersModule`:**
+   - Cung cấp `GET /vouchers/validate` kiểm tra hiệu lực, hạn sử dụng, giá trị đơn hàng tối thiểu và mức giảm tối đa cho các mã khuyến mãi (`BREWLITEFIRST`, `COFFEELOVER`).
+4. **`OrdersModule` (Trọng tâm nghiệp vụ):**
    - **Thẩm định giá Server-side:** Bỏ qua hoàn toàn đơn giá do Client gửi lên; hệ thống truy vấn giá gốc từ CSDL và tự động tính lại tổng tiền an toàn trên máy chủ (`NFR-04`).
-   - **Khóa lạc quan (Optimistic Locking):** Sử dụng trường số nguyên `version` trên bảng `Product` trong một Prisma ACID `$transaction`. Ngăn chặn triệt để tình trạng bán vượt tồn kho khi nhiều khách cùng tranh chấp món cuối cùng (`FR-08`).
-   - **Cỗ máy trạng thái (Order State Machine):** Quản lý vòng đời đơn hàng nghiêm ngặt qua hàm `assertTransition()`:
+   - **Cỗ máy trạng thái (Order State Machine):** Quản lý vòng đời đơn hàng nghiêm ngặt qua hàm `assertTransition()` trong `order-state-machine.ts`:
      $$\text{PENDING} \longrightarrow \text{PAID} \longrightarrow \text{PREPARING} \longrightarrow \text{READY} \longrightarrow \text{COMPLETED}$$
-     (với các nhánh ngoại lệ: `PAYMENT_FAILED`, `CANCELLED`).
-4. **`PaymentsModule`:**
-   - Xử lý thanh toán số tích hợp cơ chế chống trừ tiền trùng lặp qua Header bắt buộc: `Idempotency-Key: <UUID-v4>` (`FR-06`).
-   - Kiểm tra khóa lũy đẳng: Nếu khóa đã tồn tại trong CSDL, trả về ngay kết quả giao dịch trước đó.
-5. **`LoyaltyModule`:**
-   - Tự động cộng điểm thưởng cho Khách thành viên (`Member`) sau khi đơn hàng chuyển sang `PAID` theo tỷ lệ: $\text{Điểm} = \lfloor\text{Tổng tiền} / 10.000\rfloor$ (`FR-09`).
-6. **`HealthModule`:**
-   - Cung cấp endpoint công khai `GET /health` kiểm tra tình trạng sống của API và ping kết nối tới CSDL PostgreSQL (`NFR-09`).
+     (với các nhánh ngoại lệ: `PAYMENT_FAILED`, `CANCELLED` kèm hoàn tồn kho nếu hủy đơn `PAID`).
+5. **`PaymentsModule`:**
+   - Xử lý thanh toán không tiền mặt tích hợp chống trừ tiền trùng lặp qua Header bắt buộc `Idempotency-Key: <UUID-v4>` và ràng buộc duy nhất `Payment.idempotencyKey` (`FR-06`).
+   - Thực thi **Khóa lạc quan (Optimistic Locking)** bằng `Product.version` và tự động cộng điểm thưởng Loyalty ($\lfloor\text{finalAmount} / 10.000\rfloor$) trong cùng một `prisma.$transaction` (`FR-08`, `FR-09`).
+6. **`AppController` / `AppService` (Health Probe):**
+   - Cung cấp endpoint công khai `GET /health` kiểm tra tình trạng sống của API và ping thực tế tới PostgreSQL (`SELECT 1`), trả `200 OK` hoặc `503 Service Unavailable` (`NFR-09`).
 
 ### 3.3. Lớp Dữ liệu & Lưu trữ (Persistence Layer — PostgreSQL & Prisma ORM)
 * **Hệ quản trị CSDL:** PostgreSQL 16 (Relational Database) đảm bảo các đặc tính ACID nghiêm ngặt cho dữ liệu tài chính, thanh toán và tồn kho.
-* **Prisma ORM:**
-  - `schema.prisma`: Khai báo Declarative Schema tập trung cho 7 thực thể cốt lõi (`User`, `Product`, `Order`, `OrderItem`, `Payment`, `Promotion`, `LoyaltyTransaction`).
+* **Prisma ORM 6:**
+  - `schema.prisma`: Khai báo Declarative Schema tập trung cho 9 thực thể (`User`, `Category`, `Product`, `SizeOption`, `Topping`, `Order`, `OrderItem`, `Payment`, `Voucher`).
   - **Quy trình di chuyển lược đồ (Migration Workflow):**
     - Môi trường phát triển cục bộ: `npx prisma migrate dev --name <migration_name>` tự động sinh các file SQL có phiên bản trong `prisma/migrations/`.
     - Môi trường CI/CD & Production: Chạy lệnh `npx prisma migrate deploy` không làm mất dữ liệu hiện có.

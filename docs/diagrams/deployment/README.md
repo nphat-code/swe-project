@@ -53,21 +53,21 @@ Mã nguồn sơ đồ được lưu trữ độc lập tại tệp [`deployment-
      ```
   3. **Kéo mã nguồn & Cấu hình:** Thực hiện `git pull` để nhận mã nguồn mới nhất, áp dụng tệp biến môi trường `.env` và tệp điều phối `docker-compose.yml`.
 
-### 3.3. Máy chủ AWS EC2 Ubuntu & Reverse Proxy Nginx
-* **Hạ tầng:** AWS EC2 Instance cấu hình hệ điều hành **Ubuntu 22.04 LTS**, gắn địa chỉ **Elastic IP** tĩnh.
-* **Tên miền (Domain Name):** Thuê tên miền (ví dụ: `brewlite.coffee`), cấu hình DNS Bản ghi A (`A-Record`) trỏ thẳng về Elastic IP của EC2.
-* **Nginx Reverse Proxy:**
-  - Tiếp nhận kết nối HTTPS cổng 443 (được mã hóa SSL/TLS bởi Let's Encrypt / Certbot).
+### 3.3. Máy chủ AWS EC2 Ubuntu & Reverse Proxy Nginx (Production thực tế)
+* **Hạ tầng:** AWS EC2 Instance (Region `ap-southeast-2` Sydney) chạy **Ubuntu 26.04 LTS**, địa chỉ IP công khai `3.26.221.207`.
+* **Tên miền (Domain Name):** `3.26.221.207.sslip.io` (trỏ A-Record trực tiếp về `3.26.221.207`), cấp chứng chỉ SSL/TLS hợp lệ từ **Let's Encrypt (Certbot)**.
+* **Nginx Reverse Proxy (`deploy/nginx/brewlite.conf`):**
+  - Tiếp nhận kết nối HTTPS cổng 443 (tự động chuyển hướng HTTP 80 $\rightarrow$ HTTPS 443).
   - Tự động định tuyến (Reverse Proxy):
-    - Các yêu cầu tải trang (`/`) $\rightarrow$ chuyển tiếp tới Next.js Container (`HTTP : 3000`).
-    - Các yêu cầu gọi API (`/api/*`) $\rightarrow$ chuyển tiếp tới NestJS API Container (`HTTP : 3001`).
-  - Định kỳ thăm dò sức khỏe hệ thống (`Health Check Probe`) qua endpoint `GET /health`.
+    - Các yêu cầu tải trang (`/`) $\rightarrow$ chuyển tiếp tới container `frontend` (`127.0.0.1:3000`).
+    - Các yêu cầu gọi API (`/api/*`) $\rightarrow$ chuyển tiếp tới container `backend` (`127.0.0.1:3001`).
+    - Thăm dò sức khỏe hệ thống (`/health`) $\rightarrow$ chuyển tiếp tới `127.0.0.1:3001/health`.
 
-### 3.4. Cụm Docker Compose (Container Runtime)
+### 3.4. Cụm Docker Compose (`docker-compose.prod.yml`)
 Toàn bộ hệ thống chạy khép kín trong mạng nội bộ Docker:
-1. **Frontend Container (`web`):** Chạy Next.js Node.js Server phục vụ Server-Side Rendering (SSR) và Client Component.
-2. **Backend Container (`api`):** Chạy NestJS REST API Server, xử lý logic nghiệp vụ, quản lý trạng thái đơn hàng (`assertTransition`), thẩm định bảo mật và ghi log ra luồng JSON (`stdout`).
-3. **Database Container (`db`):** Chạy PostgreSQL 16 Engine. Thư mục dữ liệu `/var/lib/postgresql/data` được gắn trực tiếp ra phân vùng ổ cứng ngoài (**AWS EBS SSD Volume**) nhằm đảm bảo an toàn dữ liệu, không bị mất mát khi container khởi động lại.
+1. **Frontend Container (`brewlite_frontend_prod`):** Chạy Next.js 16 Standalone Server (`127.0.0.1:3000`).
+2. **Backend Container (`brewlite_backend_prod`):** Chạy NestJS 10 REST API (`127.0.0.1:3001`), tự chạy `prisma migrate deploy` và nạp dữ liệu mẫu khi DB rỗng (`SEED_IF_EMPTY=true`).
+3. **Database Container (`brewlite_postgres_prod`):** Chạy PostgreSQL 16 Alpine, **chỉ mở cổng nội bộ `5432` trong bridge network** (không public ra Internet) và gắn volume bền vững `postgres_prod_data` trên phân vùng ổ đĩa AWS EBS.
 
 ---
 
