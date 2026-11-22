@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import Image from 'next/image';
 import QRCode from 'qrcode';
 import {
   AlertCircle,
@@ -622,9 +623,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
                 {payosQrDataUrl && (
                   <div className="inline-block p-2.5 bg-white rounded-2xl shadow-sm border border-stone-200">
-                    <img
+                    <Image
                       src={payosQrDataUrl}
                       alt="Mã QR thanh toán PayOS VietQR"
+                      width={192}
+                      height={192}
+                      unoptimized
                       className="w-48 h-48 mx-auto"
                     />
                   </div>
