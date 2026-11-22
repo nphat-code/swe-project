@@ -32,16 +32,16 @@
 - [x] **Sprint Backlog & Burndown Chart:** Đủ `docs/sprint/product-backlog.md` (15 PBIs / 56 SP), `sprint-1-backlog.md` (23 SP) và `sprint-2-backlog.md` (33 SP + Burndown 10 ngày + Sprint Review 8/8 + Retrospective + Backlog v1.1).
 - [x] **Definition of Done (DoD — Mục 10):** Đủ 4 tiêu chuẩn DoD tại `docs/sprint/definition-of-done.md` và CI Pipeline Run `#58` vừa PASS 100% cả Frontend & Backend.
 
-### Bước 2: Kiểm tra API & Thực thể tối thiểu (Mục 12)
-- [ ] Đối chiếu đủ 7 endpoint tối thiểu ở Mục 12.1 (`GET /products`, `GET /products/:id`, `POST /auth/register`, `POST /auth/login`, `POST /orders`, `POST /payments`, `GET /orders/me`).
-- [ ] Đối chiếu đủ 5 thực thể tối thiểu ở Mục 12.2 (`Product`, `User`, `Order`, `OrderItem`, `Payment`) trong `backend/prisma/schema.prisma`.
+### Bước 2: Kiểm tra API & Thực thể tối thiểu (Mục 12) — ✅ HOÀN TẤT
+- [x] Đủ 7/7 endpoint tối thiểu ở Mục 12.1 (`GET /products`, `GET /products/:id`, `POST /auth/register`, `POST /auth/login`, `POST /orders`, `POST /payments`, `GET /orders/me`), kèm thêm `GET /health`, `GET /products/categories`, `GET /products/toppings`, `GET /vouchers/validate`, `PATCH /orders/:id/status` và 3 endpoint PayOS VietQR thật.
+- [x] Đủ 5/5 thực thể tối thiểu ở Mục 12.2 (`Product`, `User`, `Order`, `OrderItem`, `Payment`) cùng `Category`, `SizeOption`, `Topping`, `Voucher` trong `backend/prisma/schema.prisma`.
 
-### Bước 3: Kiểm tra Task 10 & Chạy Test chứng minh `(a)`, `(b)`, `(c)` (Mục 9 & 9.1)
-- [ ] Chạy `npm --prefix backend test -- order-state-machine.spec.ts concurrency-inventory.spec.ts payments.service.spec.ts vouchers.service.spec.ts` để xác nhận pass 100%:
-  - **(a)** `order-state-machine.spec.ts`: kiểm tra đủ ma trận 7 trạng thái & chặn nhảy cóc.
-  - **(b)** `concurrency-inventory.spec.ts`: bắn song song cùng `Idempotency-Key` chỉ xử lý 1 lần.
-  - **(c)** `concurrency-inventory.spec.ts`: nhiều khách đặt đồng thời món tồn kho ít, không bán âm (`409 Conflict`).
-- [ ] Chạy `npm --prefix frontend test` kiểm chứng đủ 5 màn hình MVP (Mục 7): Menu, Chi tiết, Giỏ hàng, Thanh toán, Xác nhận + Lịch sử đơn.
+### Bước 3: Kiểm tra Task 10 & Chạy Test chứng minh `(a)`, `(b)`, `(c)` (Mục 9 & 9.1) — ✅ HOÀN TẤT
+- [x] Chạy `order-state-machine.spec.ts`, `concurrency-inventory.spec.ts`, `payments.service.spec.ts`, `vouchers.service.spec.ts` (**4/4 suites, 23/23 tests PASS**):
+  - **(a)** `order-state-machine.spec.ts`: kiểm tra đủ ma trận $7 \times 7$ (49 cặp) & chặn nhảy cóc.
+  - **(b)** `concurrency-inventory.spec.ts`: bắn 5 request song song cùng `Idempotency-Key` chỉ xử lý 1 lần.
+  - **(c)** `concurrency-inventory.spec.ts`: 8 khách đặt đồng thời món `stock = 3`, đúng 3 đơn `PAID` và 5 đơn nhận `409 Conflict`, không bán âm.
+- [x] Chạy `page.test.tsx`, `ProductDetailModal.test.tsx`, `CartDrawer.test.tsx`, `CheckoutModal.test.tsx`, `OrderConfirmationModal.test.tsx`, `OrderHistoryModal.test.tsx` (**6/6 suites, 19/19 tests PASS**), chứng minh đủ 5 màn hình MVP (Mục 7) + Lịch sử đơn hàng.
 
 ### Bước 4: Kiểm tra Khởi chạy & Demo End-to-End (Mục 9, 11)
 - [ ] Kiểm tra cấu hình `docker-compose.yml` có đủ 3 services (`postgres`, `backend`, `frontend`) và `README.md` có hướng dẫn chạy chi tiết.
