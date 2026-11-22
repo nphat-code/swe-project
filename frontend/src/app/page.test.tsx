@@ -322,9 +322,8 @@ describe('Home Page (Sprint 1 + Sprint 2 Cart & Auth Flow)', () => {
 
     expect(screen.getByRole('dialog', { name: 'Thanh toán đơn hàng' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /Tạo mã QR thanh toán/i }));
-    fireEvent.click(await screen.findByRole('button', { name: /Tôi đã chuyển khoản/i }));
 
-    expect(await screen.findByText('Đặt hàng thành công')).toBeInTheDocument();
+    expect(await screen.findByText('Đặt hàng thành công', {}, { timeout: 4500 })).toBeInTheDocument();
     expect(screen.getByText('#990001')).toBeInTheDocument();
     expect(screen.getAllByText('Đã thanh toán').length).toBeGreaterThan(0);
     expect(screen.getByText('13 điểm')).toBeInTheDocument();

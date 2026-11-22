@@ -5,8 +5,6 @@ import Image from 'next/image';
 import QRCode from 'qrcode';
 import {
   AlertCircle,
-  CheckCircle2,
-  ExternalLink,
   Loader2,
   QrCode,
   RefreshCw,
@@ -78,7 +76,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [payosSession, setPayosSession] = useState<PayosCheckoutResponse | null>(null);
   const [payosQrDataUrl, setPayosQrDataUrl] = useState<string>('');
-  const [isCheckingPayos, setIsCheckingPayos] = useState<boolean>(false);
 
   const cartTotals = useMemo(
     () => calculateCartTotals(items, appliedVoucher),
@@ -109,7 +106,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     if (!payosSession) {
       return;
     }
-    setIsCheckingPayos(true);
     try {
       const syncResult = await syncPayosPayment(accessToken, payosSession.orderId);
       if (syncResult.paid && syncResult.paymentResult) {
@@ -120,8 +116,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       }
     } catch {
       return;
-    } finally {
-      setIsCheckingPayos(false);
     }
   }, [accessToken, clearCart, onPaymentSuccess, payosSession, retryOrder]);
 
@@ -525,31 +519,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     <span className="text-[#595959]">Nội dung CK:</span>
                     <span className="font-bold font-mono text-[#006241]">{payosSession.description}</span>
                   </div>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <button
-                    type="button"
-                    disabled={isCheckingPayos}
-                    onClick={() => void handleVerifyPayosNow()}
-                    className="flex-1 py-2.5 px-3 rounded-xl bg-[#006241] hover:bg-[#00754a] disabled:opacity-60 text-white text-xs font-bold flex items-center justify-center gap-1.5"
-                  >
-                    {isCheckingPayos ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    ) : (
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                    )}
-                    <span>Tôi đã chuyển khoản</span>
-                  </button>
-                  <a
-                    href={payosSession.checkoutUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex-1 py-2.5 px-3 rounded-xl bg-white border border-stone-300 hover:border-[#006241] text-[#1e3932] text-xs font-bold flex items-center justify-center gap-1.5"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5" />
-                    <span>Mở trang thanh toán</span>
-                  </a>
                 </div>
 
                 <p className="text-[11px] text-[#595959] flex items-center justify-center gap-1.5">

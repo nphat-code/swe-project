@@ -171,11 +171,15 @@ describe('CheckoutModal', () => {
     });
 
     expect(await screen.findByText(/NGUYEN TAN PHAT/i)).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: /Tôi đã chuyển khoản/i }));
+    expect(screen.queryByRole('button', { name: /Tôi đã chuyển khoản/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /Mở trang thanh toán/i })).not.toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(onPaymentSuccess).toHaveBeenCalledWith(paidResponse);
-    });
+    await waitFor(
+      () => {
+        expect(onPaymentSuccess).toHaveBeenCalledWith(paidResponse);
+      },
+      { timeout: 4500 }
+    );
     expect(useCartStore.getState().items).toHaveLength(0);
   });
 
@@ -239,11 +243,15 @@ describe('CheckoutModal', () => {
     fireEvent.click(screen.getByRole('button', { name: /Thử thanh toán lại/i }));
 
     expect(await screen.findByText(/NGUYEN TAN PHAT/i)).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: /Tôi đã chuyển khoản/i }));
+    expect(screen.queryByRole('button', { name: /Tôi đã chuyển khoản/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /Mở trang thanh toán/i })).not.toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(onPaymentSuccess).toHaveBeenCalledWith(paidResponse);
-    });
+    await waitFor(
+      () => {
+        expect(onPaymentSuccess).toHaveBeenCalledWith(paidResponse);
+      },
+      { timeout: 4500 }
+    );
     expect(api.createOrder).not.toHaveBeenCalled();
     expect(useCartStore.getState().items).toHaveLength(1);
   });
