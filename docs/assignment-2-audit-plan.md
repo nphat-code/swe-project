@@ -12,23 +12,23 @@
 
 | Hạng mục (Rubric) | Điểm | Tạo phẩm chính đã kiểm tra | Trạng thái | Hạng mục cần rà soát / bổ sung |
 | :--- | :---: | :--- | :---: | :--- |
-| **Task 1** — Khai thác & đặc tả yêu cầu | 2.0 | `docs/requirements/context-and-scope.md`, `system-requirements-matrix.md`, `core-use-case-specification.md` | 🟡 95% | Đồng bộ tên endpoint/component nhỏ (`POST /vouchers/apply` $\rightarrow$ `GET /vouchers/validate`, `app/orders/page.tsx` $\rightarrow$ `OrderHistoryModal.tsx`). |
-| **Task 2** — Mô hình hóa hệ thống (UML) | 2.0 | `docs/diagrams/{use-case,activity,sequence,class}/` (đủ nguồn `.puml`/`.mmd` & ảnh `.png`/`.svg`) | 🟢 98% | Đối chiếu chéo tên lớp/trạng thái với `backend/prisma/schema.prisma`. |
+| **Task 1** — Khai thác & đặc tả yêu cầu | 2.0 | `docs/requirements/context-and-scope.md`, `system-requirements-matrix.md`, `core-use-case-specification.md` | 🟢 100% | Đã đồng bộ 100% tên danh mục, API (`GET /vouchers/validate`), component (`OrderConfirmationModal`, `OrderHistoryModal`) và AWS EC2. |
+| **Task 2** — Mô hình hóa hệ thống (UML) | 2.0 | `docs/diagrams/{use-case,activity,sequence,class}/` (đủ nguồn `.puml`/`.mmd` & ảnh `.png`/`.svg`) | 🟢 100% | Đã đồng bộ `class-domain.mmd` khớp `schema.prisma` (`Role: STAFF`, `PaymentStatus: UNPAID/PAID/FAILED`, xóa `CASH` khỏi `PaymentMethod`). |
 | **Task 3** — Thiết kế kiến trúc | 2.0 | `docs/architecture/architecture-description.md`, 6 ADRs (`001`–`006`), `deployment-diagram.{puml,png}`, `docs/deployment.md` | 🟡 95% | Cập nhật tên miền thật `3.26.221.207.sslip.io` vào `deployment-diagram.puml`. |
 | **Task 4** — Triển khai Sprint 1 & CI | 2.0 | Monorepo (`frontend/`, `backend/`, `docs/`), Backlog, DoD, Products API + Menu MVP, `.github/workflows/ci.yml`, `docs/sprint/ci-evidence/README.md` | 🟢 98% | Xác minh `ci-evidence/README.md` có đủ link PR, ảnh/log 1 lần CI đỏ và 1 lần CI xanh (Mục 6.4). |
 | **Task 5** — Sprint 2, CD & Delivery | 2.0 | MVP End-to-End, 32 suites / 143 tests + E2E, `docker-compose.yml` + `prod`, `.github/workflows/cd.yml`, AWS HTTPS live, tag `v1.0.0`, `docs/release-notes.md` | 🟡 85% | Cấu hình GitHub Secrets để CD chạy xanh thật lên AWS, mở Public Repo, xuất PDF mới và quay Video demo. |
-| **Mục 8** — Truy vết bắt buộc | Bắt buộc | `docs/traceability-matrix.md` | 🟢 95% | Rà lại dòng `FR-12` (Barista) khớp chính xác phần API đã hiện thực (`PATCH /orders/:id/status`) vs UI mở rộng (`Could Have`). |
+| **Mục 8** — Truy vết bắt buộc | Bắt buộc | `docs/traceability-matrix.md` | 🟢 100% | Đã cập nhật dòng `FR-12` khớp chính xác `PATCH /orders/:id/status` (RBAC `STAFF`/`ADMIN`) và ghi rõ UI KDS là mở rộng v1.1. |
 
 ---
 
 ## 2. KẾ HOẠCH KIỂM TRA CHI TIẾT (6 BƯỚC)
 
-### Bước 1: Rà soát độ nhất quán Tài liệu & Sơ đồ (Task 1 + Task 2 + Mục 8)
-- [ ] Đối chiếu `docs/requirements/context-and-scope.md` (đủ 6 Stakeholder, In-scope, Out-of-scope, giả định, ràng buộc).
-- [ ] Đối chiếu `docs/requirements/system-requirements-matrix.md` với Controller thực tế trong `backend/src/` và các component trong `frontend/src/components/`.
-- [ ] Đối chiếu `docs/requirements/core-use-case-specification.md` (Actor, Trigger, Tiền/Hậu điều kiện, Luồng chính/thay thế/ngoại lệ, mã FR).
-- [ ] Đối chiếu 3 sơ đồ UML (`activity-flow.puml`, `sequence-checkout.mmd`, `class-domain.mmd`) với `backend/prisma/schema.prisma` đảm bảo không mâu thuẫn.
-- [ ] Rà soát toàn bộ bảng `docs/traceability-matrix.md` (12 FR + 9 NFR).
+### Bước 1: Rà soát độ nhất quán Tài liệu & Sơ đồ (Task 1 + Task 2 + Mục 8) — ✅ HOÀN TẤT
+- [x] Đối chiếu `docs/requirements/context-and-scope.md` (đủ 6 Stakeholder, In-scope, Out-of-scope, giả định, ràng buộc; đồng bộ 4 danh mục thực tế & AWS EC2).
+- [x] Đối chiếu `docs/requirements/system-requirements-matrix.md` với Controller thực tế trong `backend/src/` và các component trong `frontend/src/components/`.
+- [x] Đối chiếu `docs/requirements/core-use-case-specification.md` (Actor, Trigger, Tiền/Hậu điều kiện, Luồng chính/thay thế/ngoại lệ, mã FR; sửa `GET /vouchers/validate`, `BREWLITEFIRST`, `OrderHistoryModal.tsx`).
+- [x] Đối chiếu 3 sơ đồ UML (`activity-flow.puml`, `sequence-checkout.mmd`, `class-domain.mmd`) với `backend/prisma/schema.prisma` (loại bỏ `CASH` khỏi `PaymentMethod`, đồng bộ enum `Role`/`PaymentStatus`/`Size`).
+- [x] Rà soát toàn bộ bảng `docs/traceability-matrix.md` (12 FR + 9 NFR).
 
 ### Bước 2: Rà soát Kiến trúc & Sơ đồ Triển khai Production (Task 3)
 - [ ] Đối chiếu `docs/architecture/architecture-description.md` và 6 file `docs/architecture/adr/001..006*.md` khớp phiên bản thực tế (`Next.js 16`, `NestJS 10`, `PostgreSQL 16`, `Prisma 6`).
@@ -65,3 +65,4 @@
 - [ ] **7.** URL Production HTTPS (`https://3.26.221.207.sslip.io`), API (`/api`) và Health Check (`/health`).
 - [ ] **8.** Release notes (`docs/release-notes.md`), `README.md` và hướng dẫn rollback (`docs/deployment.md`).
 - [ ] **9.** Xuất PDF mới từ `Assignment_report.tex` & `Assignment1_report.tex` trên Overleaf, chuẩn bị Video/Demo và Sprint Retrospective (`docs/sprint/sprint-2-backlog.md`).
+

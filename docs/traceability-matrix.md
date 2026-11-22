@@ -25,7 +25,7 @@
 | **FR-09** | **Tích lũy điểm thưởng thành viên** | `UC08` (Tích lũy điểm thưởng) | - `use-case-checkout.mmd`<br/>- `class-domain.mmd` (`LoyaltyTransaction`) | - `PaymentsService.calculateLoyaltyPoints` (`Math.floor(finalAmount / 10000)` khi `PAID`)<br/>- `Header.tsx`, `CheckoutModal.tsx`, `OrderConfirmationModal.tsx` | `UNIT-LOYAL01` (`payments.service.spec.ts`, `OrderConfirmationModal.test.tsx`, `page.test.tsx`) | 🟢 Hoàn tất Backend & UI Loyalty (Task 10.4) |
 | **FR-10** | **Xem lịch sử đơn hàng** | `UC09` (Xem lịch sử đơn hàng) | - `activity-flow.puml`<br/>- `class-domain.mmd` (`Order`) | - `GET /orders/me`, `GET /orders/:id`<br/>- `OrderHistoryModal.tsx`, `Header.tsx` | `E2E-FLOW01` (`orders.*.spec.ts`, `checkout-flow.e2e-spec.ts`, `OrderHistoryModal.test.tsx`, `page.test.tsx`) | 🟢 Hoàn tất Task 9 (Lịch sử đơn & Retry) |
 | **FR-11** | **Áp dụng mã Voucher giảm giá** | `UC06.1` (Áp dụng Voucher) | - `use-case-checkout.mmd`<br/>- `class-domain.mmd` (`Promotion`) | - `GET /vouchers/validate`<br/>- `VouchersController.validateVoucher`, `VouchersService`<br/>- `CartDrawer.tsx` | `INT-VOUCH01` (`vouchers.*.spec.ts`, `useCartStore.test.ts`) | 🟢 Hoàn tất Backend & UI Voucher (Task 10.4) |
-| **FR-12** | **Quầy tiếp nhận pha chế Barista** | `UC10`, `UC11`, `UC12` | - `activity-flow.puml` | - `app/barista/page.tsx` *(Mở rộng)* | `UI-BARISTA01` | 🟢 Hoàn tất Task 1 & Task 2 |
+| **FR-12** | **Điều phối trạng thái đơn Barista** | `UC10`, `UC11`, `UC12` | - `activity-flow.puml` | - `PATCH /orders/:id/status` (`OrdersController`, `OrdersService`, RBAC `STAFF`/`ADMIN`)<br/>- UI KDS chuyên dụng *(Could Have — mở rộng v1.1)* | `UNIT-STATE01`, `E2E-FLOW01` (`orders.*.spec.ts`, `checkout-flow.e2e-spec.ts`) | 🟢 Hoàn tất API & RBAC (UI KDS v1.1) |
 
 ---
 

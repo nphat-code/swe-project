@@ -152,12 +152,12 @@ sequenceDiagram
   * Tại bước 3, hệ thống hiển thị số điểm thưởng hiện có trong tài khoản thành viên.
   * Khách hàng tích chọn *"Dùng điểm thưởng giảm giá"* (ví dụ: 50 điểm = giảm 50.000đ). Tổng tiền thanh toán được trừ đi tương ứng trước khi gọi thanh toán.
 * **A3. Khách hàng áp dụng mã Voucher ưu đãi (Voucher Flow):**
-  * Tại bước 2, khách hàng nhập mã khuyến mãi (ví dụ: `BREWNEW20`) vào ô voucher và nhấn *"Áp dụng"*.
-  * Hệ thống gọi `POST /vouchers/validate` để kiểm tra tính hợp lệ: hạn dùng, số lượt còn lại, giá trị đơn hàng tối thiểu.
+  * Tại bước 2, khách hàng nhập mã khuyến mãi (ví dụ: `BREWLITEFIRST`, `COFFEELOVER`) vào ô voucher và nhấn *"Áp dụng"*.
+  * Hệ thống gọi `GET /vouchers/validate?code=...` để kiểm tra tính hợp lệ: hạn dùng, trạng thái hoạt động, giá trị đơn hàng tối thiểu.
   * Nếu hợp lệ, hệ thống trừ số tiền chiết khấu vào mục `Giảm giá Voucher` và tính lại tổng tiền.
 * **A4. Xử lý yêu cầu gửi lặp lại do mạng gián đoạn (Idempotent Flow):**
   * Nếu khách hàng vô tình bấm nút *"Thanh toán"* 2 lần liên tiếp hoặc đường truyền mạng bị ngắt quãng khiến Client gửi lại request `POST /payments` có cùng `Idempotency-Key`.
-  * Bộ chặn `IdempotencyInterceptor` tại Backend phát hiện khóa này đã được xử lý thành công trước đó.
+  * `PaymentsService.processPayment` kiểm tra khóa duy nhất `Payment.idempotencyKey` trong CSDL và phát hiện khóa này đã được xử lý trước đó.
   * Backend **không trừ tiền lần thứ hai**, mà trả về ngay lập tức kết quả giao dịch đã lưu trước đó kèm mã `200 OK`.
 
 ---
@@ -223,12 +223,12 @@ Use case trọng tâm này kết nối trực tiếp với các mã định danh
 | | `FR-03` | Quản lý giỏ hàng phía Client | `useCartStore` (Zustand), `localStorage` |
 | | `FR-04` | Xác thực tài khoản thành viên (JWT) | `POST /auth/login`, `JwtAuthGuard` |
 | | `FR-05` | Khởi tạo đơn hàng (Server Calculation & JWT Guard) | `POST /orders`, `OrdersService.createOrder` |
-| | `FR-06` | Thanh toán trực tuyến Idempotent | `POST /payments`, `PaymentsService.processPayment`, `IdempotencyInterceptor` |
-| | `FR-07` | Cỗ máy trạng thái đơn hàng | `assertTransition`, `OrderStatus` (`PENDING` $\rightarrow$ `PAID`) |
-| | `FR-08` | Kiểm soát tồn kho tranh chấp | `Optimistic Locking` (`version` column), Prisma Transaction |
-| | `FR-09` | Tích lũy điểm thưởng thành viên | `LoyaltyService.awardPoints` |
-| | `FR-10` | Xem lịch sử đơn hàng (dành cho Member) | `app/orders/page.tsx`, `GET /orders/me` |
-| | `FR-11` | Áp dụng mã Voucher giảm giá | `POST /vouchers/apply` |
+| | `FR-06` | Thanh toán trực tuyến Idempotent | `POST /payments`, `PaymentsService.processPayment` (`idempotencyKey`) |
+| | `FR-07` | Cỗ máy trạng thái đơn hàng | `order-state-machine.ts` (`assertTransition`), `OrderStatus` |
+| | `FR-08` | Kiểm soát tồn kho tranh chấp | `Optimistic Locking` (`Product.version`), `prisma.$transaction` |
+| | `FR-09` | Tích lũy điểm thưởng thành viên | `PaymentsService.calculateLoyaltyPoints`, `User.loyaltyPoints` |
+| | `FR-10` | Xem lịch sử đơn hàng (dành cho Member) | `OrderHistoryModal.tsx`, `GET /orders/me` |
+| | `FR-11` | Áp dụng mã Voucher giảm giá | `GET /vouchers/validate` (`VouchersService`) |
 | **Phi chức năng (NFR)** | `NFR-01` | Hiệu năng phản hồi API $\le 500\text{ ms}$ | Prisma Connection Pooling, Stateless REST API |
 | | `NFR-02` | Bảo mật giao dịch & Idempotent Header | HTTPS/TLS, JWT Guard, UUIDv4 Idempotency Key |
 | | `NFR-03` | Trải nghiệm Mobile-first & Skeleton | Tailwind CSS v4, Lucide React Icons |

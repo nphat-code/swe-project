@@ -104,21 +104,21 @@ classDiagram
 
     class Role["«enumeration»<br/>Role"] {
         CUSTOMER
-        BARISTA
+        STAFF
         ADMIN
     }
 
     class ProductCategory["«enumeration»<br/>ProductCategory"] {
-        COFFEE
-        TEA
-        FREEZE
-        PASTRY
+        VIETNAMESE_COFFEE
+        ESPRESSO
+        TEA_AND_FRUIT
+        ICE_BLENDED
     }
 
     class Size["«enumeration»<br/>Size"] {
-        SMALL
-        MEDIUM
-        LARGE
+        S
+        M
+        L
     }
 
     class OrderStatus["«enumeration»<br/>OrderStatus"] {
@@ -134,14 +134,13 @@ classDiagram
     class PaymentMethod["«enumeration»<br/>PaymentMethod"] {
         MOMO
         VNPAY
-        ZALOPAY
-        CREDIT_CARD
-        CASH
+        CARD
+        WALLET
     }
 
     class PaymentStatus["«enumeration»<br/>PaymentStatus"] {
-        PENDING
-        SUCCESS
+        UNPAID
+        PAID
         FAILED
     }
 
