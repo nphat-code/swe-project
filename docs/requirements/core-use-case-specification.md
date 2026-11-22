@@ -94,7 +94,7 @@ sequenceDiagram
     end
     UI->>C: 6. Hiển thị Form Checkout (Họ tên, SĐT tự điền, Phương thức)
     C->>UI: 7. Chọn Ví MoMo & Bấm "Thanh toán ngay"
-    UI->>API: 8. POST /orders (Items, Size, Topping; Header: Bearer JWT)
+    UI->>API: 8. POST /orders (Items, Size, Topping, Bearer JWT)
     Note over API: JwtAuthGuard: Xác thực JWT & lấy userId<br/>Kiểm tra DTO & Tính lại giá từ CSDL
     API->>DB: 9. Tạo Order (Trạng thái = PENDING, userId)
     DB-->>API: 10. Trả về Order (#1042)
