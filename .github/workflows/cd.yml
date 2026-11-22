@@ -167,7 +167,7 @@ jobs:
             chmod 600 ~/.ssh/ec2_deploy_key
             ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
             ssh -i ~/.ssh/ec2_deploy_key -o StrictHostKeyChecking=accept-new -o ConnectTimeout=30 -o ServerAliveInterval=30 -o ServerAliveCountMax=10 "${EC2_USER}@${EC2_HOST}" \
-              "cd '${EC2_APP_DIR}' && git fetch --all --tags && git checkout '${TARGET_REF}' && (git pull --ff-only origin '${TARGET_REF}' || true) && docker compose -f docker-compose.prod.yml up --build -d"
+              "cd '${EC2_APP_DIR}' && git fetch --all --tags && git checkout '${TARGET_REF}' && (git pull --ff-only origin '${TARGET_REF}' || true) && docker compose -f docker-compose.prod.yml up --build -d --remove-orphans"
           elif [ -n "$DEPLOY_HOOK_URL" ]; then
             curl -fsSL --max-time 30 -X POST "$DEPLOY_HOOK_URL"
           else

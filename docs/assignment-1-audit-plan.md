@@ -43,9 +43,9 @@
   - **(c)** `concurrency-inventory.spec.ts`: 8 khách đặt đồng thời món `stock = 3`, đúng 3 đơn `PAID` và 5 đơn nhận `409 Conflict`, không bán âm.
 - [x] Chạy `page.test.tsx`, `ProductDetailModal.test.tsx`, `CartDrawer.test.tsx`, `CheckoutModal.test.tsx`, `OrderConfirmationModal.test.tsx`, `OrderHistoryModal.test.tsx` (**6/6 suites, 19/19 tests PASS**), chứng minh đủ 5 màn hình MVP (Mục 7) + Lịch sử đơn hàng.
 
-### Bước 4: Kiểm tra Khởi chạy & Demo End-to-End (Mục 9, 11)
-- [ ] Kiểm tra cấu hình `docker-compose.yml` có đủ 3 services (`postgres`, `backend`, `frontend`) và `README.md` có hướng dẫn chạy chi tiết.
-- [ ] Chạy kiểm tra luồng thực tế trên AWS Production (`https://3.26.221.207.sslip.io`) gồm cả PayOS VietQR Webhook (`/api/payments/payos-webhook`) và Mock Payment.
+### Bước 4: Kiểm tra Khởi chạy & Demo End-to-End (Mục 9, 11) — ✅ HOÀN TẤT
+- [x] Kiểm tra cấu hình `docker-compose.yml` có đủ 3 services (`postgres`, `backend`, `frontend`) và `README.md` có hướng dẫn chạy chi tiết.
+- [x] Chạy kiểm tra luồng thực tế trên AWS Production (`https://3.26.221.207.sslip.io`) gồm cả PayOS VietQR Webhook (`/api/payments/payos-webhook`) và Mock Payment.
 
 ### Bước 5: Hoàn tất Hồ sơ nộp Assignment 1
 - [ ] Biên dịch `docs/report/Assigment_template_SGU/Assignment1_report.tex` trên Overleaf thành `Assignment1_report.pdf`.
