@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
 
@@ -11,6 +11,15 @@ const beVietnamPro = Be_Vietnam_Pro({
 export const metadata: Metadata = {
   title: "BrewLite — Đặt cà phê không dùng tiền mặt",
   description: "Ứng dụng đặt đồ uống trực tuyến không dùng tiền mặt BrewLite. Chọn món, chọn size, topping nhanh chóng và thanh toán tức thì.",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "BrewLite",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#006241",
 };
 
 export default function RootLayout({

@@ -16,7 +16,7 @@
 | **Task 2** — Mô hình hóa hệ thống (UML) | 2.0 | `docs/diagrams/{use-case,activity,sequence,class}/` (đủ nguồn `.puml`/`.mmd` & ảnh `.png`/`.svg`) | 🟢 100% | Đã đồng bộ `class-domain.mmd` khớp `schema.prisma` (`Role: STAFF`, `PaymentStatus: UNPAID/PAID/FAILED`, xóa `CASH` khỏi `PaymentMethod`). |
 | **Task 3** — Thiết kế kiến trúc | 2.0 | `docs/architecture/architecture-description.md`, 6 ADRs (`001`–`006`), `deployment-diagram.{puml,png}`, `docs/deployment.md` | 🟢 100% | Đã đồng bộ `architecture-description.md`, `deployment-diagram.puml` và `diagrams/deployment/README.md` đúng hạ tầng AWS EC2 thật (`3.26.221.207.sslip.io`, `ap-southeast-2`, 3 containers prod). |
 | **Task 4** — Triển khai Sprint 1 & CI | 2.0 | Monorepo (`frontend/`, `backend/`, `docs/`), Backlog, DoD, Products API + Menu MVP, `.github/workflows/ci.yml`, `docs/sprint/ci-evidence/README.md` | 🟢 100% | Đã xác thực toàn bộ local Quality Gate (Lint, TypeCheck, 32 suites/143 tests, Build, 0-comment) & `ci-evidence/README.md` đủ bằng chứng Run `#24` (fail) và `#25` (pass). |
-| **Task 5** — Sprint 2, CD & Delivery | 2.0 | MVP End-to-End, 32 suites / 143 tests + E2E, `docker-compose.yml` + `prod`, `.github/workflows/cd.yml`, AWS HTTPS live, tag `v1.0.0`, `docs/release-notes.md` | 🟡 90% | AWS E2E live đã Pass 9/9 bước (kể cả chặn cổng 5432). Chỉ còn: thêm GitHub Secrets chạy CD xanh, bật Public Repo, xuất PDF mới và quay Video demo. |
+| **Task 5** — Sprint 2, CD & Delivery | 2.0 | MVP End-to-End, 32 suites / 143 tests + E2E, `docker-compose.yml` + `prod`, `.github/workflows/cd.yml`, AWS HTTPS live, tag `v1.0.0`, `docs/release-notes.md` | 🟢 98% | CI (`Run #51`) & CD (`Run #17`, `#18`) đều xanh 100% lên AWS, đã bật Public Repo, bổ sung PWA `manifest.ts` & siết CORS production. Chỉ còn xuất PDF mới trên Overleaf và quay Video demo. |
 | **Mục 8** — Truy vết bắt buộc | Bắt buộc | `docs/traceability-matrix.md` | 🟢 100% | Đã cập nhật dòng `FR-12` khớp chính xác `PATCH /orders/:id/status` (RBAC `STAFF`/`ADMIN`) và ghi rõ UI KDS là mở rộng v1.1. |
 
 ---
@@ -50,19 +50,19 @@
   - Áp mã `BREWLITEFIRST` (giảm 20%, đơn tối thiểu `40.000đ`) $\rightarrow$ Đăng nhập `customer@brewlite.vn` $\rightarrow$ Đặt đơn `#561645` (`70.000đ -> 56.000đ`) $\rightarrow$ Thanh toán thất bại (`PAYMENT_FAILED`) $\rightarrow$ Thanh toán lại thành công (`PAID`, cộng `+5` điểm Loyalty) $\rightarrow$ Replay `Idempotency-Key` (`idempotentReplay: true`) $\rightarrow$ Xem lịch sử `GET /api/orders/me` $\rightarrow$ Hủy đơn hoàn kho (`CANCELLED`).
 - [x] Xác nhận cổng PostgreSQL `5432` trên `3.26.221.207` bị chặn hoàn toàn từ bên ngoài Internet (`timeout`).
 
-### Bước 5: Kích hoạt & kiểm chứng GitHub Actions CD tự động (Task 5.3)
-- [ ] Khai báo GitHub Repository Secrets: `EC2_HOST` (`3.26.221.207`), `EC2_USER` (`ubuntu`), `EC2_SSH_KEY` (nội dung `brewlite-key.pem`).
-- [ ] Khai báo GitHub Repository Variables: `PRODUCTION_API_URL` (`https://3.26.221.207.sslip.io/api`), `PRODUCTION_WEB_URL` (`https://3.26.221.207.sslip.io`).
-- [ ] Kích hoạt workflow `.github/workflows/cd.yml` trên GitHub Actions và kiểm tra xanh trọn chuỗi: `quality-gate` $\rightarrow$ `docker-package-and-smoke` $\rightarrow$ `deploy-production` (SSH AWS + smoke `/health`) $\rightarrow$ `create-release`.
+### Bước 5: Kích hoạt & kiểm chứng GitHub Actions CD tự động (Task 5.3) — ✅ HOÀN TẤT
+- [x] Khai báo GitHub Repository Secrets: `EC2_HOST` (`3.26.221.207`), `EC2_USER` (`ubuntu`), `EC2_SSH_KEY` (nội dung `brewlite-key.pem`).
+- [x] Khai báo GitHub Repository Variables: `PRODUCTION_API_URL` (`https://3.26.221.207.sslip.io/api`), `PRODUCTION_WEB_URL` (`https://3.26.221.207.sslip.io`).
+- [x] Kích hoạt workflow `.github/workflows/cd.yml` trên GitHub Actions — **Run `#17` & Run `#18` xanh 100%** trọn chuỗi: `quality-gate` $\rightarrow$ `docker-package-and-smoke` $\rightarrow$ `deploy-production` (SSH AWS + smoke `/health`).
 
 ### Bước 6: Chốt Checklist nộp bài Mục 9.1 (Đề bài gốc)
-- [ ] **1.** Link repository (`https://github.com/nphat-code/swe-project`) đã bật **Public** hoặc đã cấp quyền Collaborator cho giảng viên.
-- [ ] **2.** SRS, đặc tả use-case và ma trận truy vết (`docs/requirements/`, `docs/traceability-matrix.md`).
-- [ ] **3.** Activity, Sequence, Class và Deployment diagram (`docs/diagrams/`).
-- [ ] **4.** Source code Frontend, Backend và Migration (`frontend/`, `backend/prisma/migrations/`).
-- [ ] **5.** Unit, Integration và End-to-End test (`npm test`, `test:e2e`).
-- [ ] **6.** Pipeline CI/CD chạy thành công trên GitHub Actions (`.github/workflows/ci.yml`, `cd.yml`).
-- [ ] **7.** URL Production HTTPS (`https://3.26.221.207.sslip.io`), API (`/api`) và Health Check (`/health`).
-- [ ] **8.** Release notes (`docs/release-notes.md`), `README.md` và hướng dẫn rollback (`docs/deployment.md`).
-- [ ] **9.** Xuất PDF mới từ `Assignment_report.tex` & `Assignment1_report.tex` trên Overleaf, chuẩn bị Video/Demo và Sprint Retrospective (`docs/sprint/sprint-2-backlog.md`).
+- [x] **1.** Link repository (`https://github.com/nphat-code/swe-project`) đã bật **Public** cho giảng viên truy cập.
+- [x] **2.** SRS, đặc tả use-case và ma trận truy vết (`docs/requirements/`, `docs/traceability-matrix.md`).
+- [x] **3.** Activity, Sequence, Class (trắng đen) và Deployment diagram (`docs/diagrams/`).
+- [x] **4.** Source code Frontend (kèm PWA `manifest.ts`), Backend (CORS production) và Migration (`frontend/`, `backend/prisma/migrations/`).
+- [x] **5.** Unit, Integration và End-to-End test (`npm test`, `test:e2e`).
+- [x] **6.** Pipeline CI/CD chạy thành công 100% trên GitHub Actions (`CI #51`, `CD #17/#18`).
+- [x] **7.** URL Production HTTPS (`https://3.26.221.207.sslip.io`), API (`/api`) và Health Check (`/health`).
+- [x] **8.** Release notes (`docs/release-notes.md`), `README.md` và hướng dẫn rollback (`docs/deployment.md`).
+- [ ] **9.** Xuất PDF mới từ `Assignment_report.tex` & `Assignment1_report.tex` trên Overleaf và chuẩn bị Video/Demo (Sprint Retrospective đã có tại `docs/sprint/sprint-2-backlog.md`).
 
