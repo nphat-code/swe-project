@@ -17,6 +17,7 @@
 * 📜 **[Đặc Tả Đề Bài Gốc Assignment 2 (Single Source of Truth)](docs/DE_BAI_ASSIGNMENT_2_GOC.md):** Toàn văn nội dung gốc 9 mục của Assignment 2, tiêu chuẩn kỹ thuật, thang điểm chi tiết (5 Task x 2.0đ) và checklist 9.1 nộp bài.
 * 📋 **[Kế Hoạch Triển Khai Master Plan (Theo dõi tiến độ)](implementation_plan.md):** Kế hoạch chi tiết từng bước, tiêu chí chấp nhận và trạng thái nghiệm thu của từng Task.
 * 📑 **Tài liệu Task 1 — Khai thác & Đặc tả Yêu cầu (2.0đ):**
+  * 📝 [Danh mục 10 User Stories & Acceptance Criteria (Assignment 1)](docs/requirements/user-stories.md)
   * 📋 [Task 1.1: Bối cảnh, Stakeholder & Phạm vi](docs/requirements/context-and-scope.md)
   * 📋 [Task 1.2: Danh mục yêu cầu FR/NFR & Sơ đồ Use Case tổng quát](docs/requirements/system-requirements-matrix.md)
   * 📋 [Task 1.3: Đặc tả Use Case trọng tâm (Đặt hàng & Thanh toán)](docs/requirements/core-use-case-specification.md)

@@ -183,11 +183,42 @@ Tổng cam kết Sprint 2 là \textbf{33 Story Points} trong 10 ngày làm việ
 \newpage
 \section{Yêu cầu phần mềm, Luồng nghiệp vụ và Kiến trúc MVP}
 
-\subsection{Yêu cầu chức năng và Phi chức năng}
+\subsection{Yêu cầu chức năng, Phi chức năng và Danh mục User Stories}
 \begin{itemize}
   \item \textbf{Yêu cầu chức năng (6 nhóm cốt lõi):} (1) Hiển thị thực đơn kèm ảnh, tên, giá định dạng VND và bộ lọc danh mục; (2) Xem chi tiết sản phẩm, chọn Size (S/M/L) và đa Topping; (3) Quản lý giỏ hàng (thêm/sửa/xóa, tự tính tổng tiền, lưu bền vững); (4) Đăng ký/Đăng nhập bằng JWT; (5) Tạo đơn hàng và thanh toán không dùng tiền mặt; (6) Hiển thị màn hình xác nhận (mã đơn \texttt{\#xxxxxx}, trạng thái \texttt{PAID}) và lịch sử đơn hàng.
   \item \textbf{Yêu cầu phi chức năng:} Thời gian phản hồi API dưới $500$ms (đo thực tế trên AWS EC2 đạt độ trễ CSDL $1$ms); mật khẩu băm bằng \texttt{bcrypt} (salt $\ge 10$), bảo vệ endpoint bằng \texttt{JwtAuthGuard}, kiểm tra dữ liệu đầu vào bằng \texttt{ValidationPipe}; giao diện Mobile-First tương thích tốt trên di động và máy tính.
 \end{itemize}
+
+\begin{table}[h!]
+\centering
+\scriptsize
+\begin{tabularx}{\textwidth}{|c|l|X|}
+\hline
+\textbf{Mã US} & \textbf{Vai trò} & \textbf{Đặc tả User Story (Tài liệu chi tiết: \texttt{docs/requirements/user-stories.md})} \\
+\hline
+\textbf{US-01} & Lập trình viên & Là một lập trình viên, tôi muốn khởi tạo Monorepo (\texttt{frontend/}, \texttt{backend/}, \texttt{docs/}), Git và \texttt{README.md}, để cả hệ thống có nền tảng thống nhất dễ chạy và kiểm thử. \\
+\hline
+\textbf{US-02} & Khách hàng & Là một khách hàng, tôi muốn hệ thống có API \texttt{GET /products} lấy thực đơn từ PostgreSQL kèm danh mục và topping, để luôn xem được món đang phục vụ và giá chính xác. \\
+\hline
+\textbf{US-03} & Khách hàng & Là một khách hàng, tôi muốn duyệt thực đơn theo Tabs danh mục, tìm kiếm món và thấy trạng thái tải/rỗng/lỗi rõ ràng trên di động, để chọn nước nhanh chóng. \\
+\hline
+\textbf{US-04} & Khách hàng & Là một khách hàng, tôi muốn mở chi tiết món để chọn Size (S/M/L), đa Topping, nhập ghi chú và xem giá cập nhật tức thì, để đặt đúng ly nước theo sở thích. \\
+\hline
+\textbf{US-05} & Khách hàng & Là một khách hàng, tôi muốn thêm/sửa/xóa món trong giỏ hàng và lưu bền vững qua \texttt{localStorage}, để không mất đơn khi tải lại trang hoặc đăng nhập. \\
+\hline
+\textbf{US-06} & Khách hàng & Là một khách hàng, tôi muốn tạo đơn hàng trạng thái \texttt{PENDING} với tổng tiền tính lại hoàn toàn trên Server, để đảm bảo minh bạch và chống gian lận giá. \\
+\hline
+\textbf{US-07} & Thành viên & Là một khách hàng, tôi muốn đăng ký và đăng nhập bảo mật bằng JWT, để bảo vệ thông tin cá nhân, lịch sử đơn và điểm thưởng của riêng tôi. \\
+\hline
+\textbf{US-08} & Khách hàng & Là một khách hàng, tôi muốn thanh toán không dùng tiền mặt (Ví/Thẻ mô phỏng hoặc VietQR PayOS thật) và giữ giỏ hàng nếu lỗi, để trả tiền nhanh không cần tiền mặt. \\
+\hline
+\textbf{US-09} & Khách hàng & Là một khách hàng, tôi muốn thấy màn hình xác nhận kèm mã đơn \texttt{\#xxxxxx} và tra cứu lịch sử (\texttt{GET /orders/me}), để theo dõi đơn tại quầy. \\
+\hline
+\textbf{US-10} & Hệ thống & Là một thành viên \& hệ thống, tôi muốn xử lý đơn tuân thủ State Machine, Idempotency, Optimistic Locking, Voucher và tích điểm Loyalty, để giao dịch an toàn tuyệt đối. \\
+\hline
+\end{tabularx}
+\caption{Danh mục 10 User Stories cốt lõi của hệ thống BrewLite (Assignment 1)}
+\end{table}
 
 \subsection{Luồng nghiệp vụ từ chọn sản phẩm đến thanh toán}
 Luồng nghiệp vụ chính (Happy Path) của BrewLite MVP:
@@ -439,3 +470,4 @@ Prisma Data, Inc.,
 \end{thebibliography}
 
 \end{document}
+

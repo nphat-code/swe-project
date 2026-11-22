@@ -1,8 +1,8 @@
 # 📋 PRODUCT BACKLOG HỆ THỐNG BREWLITE
 
 > **Dự án:** BrewLite — Hệ thống đặt đồ uống không dùng tiền mặt  
-> **Căn cứ đề bài:** Mục 6.1 (Task 4.1) & Mục 7.1 (Task 5.1) trong tệp đặc tả gốc [`docs/DE_BAI_ASSIGNMENT_2_GOC.md`](../DE_BAI_ASSIGNMENT_2_GOC.md).  
-> **Chỉ đạo Giảng viên ([notes](../../notes)):** *Thay thế User Story bằng các sơ đồ UML (Use Case, Activity, Sequence, Class); không viết User Story dài dòng, quản lý Product Backlog bằng bảng mã FR tinh gọn để phục vụ truy vết.*  
+> **Căn cứ đề bài:** Mục 8 ([`docs/DE_BAI_ASSIGNMENT_1_GOC.md`](../DE_BAI_ASSIGNMENT_1_GOC.md)) & Mục 6.1, 7.1 ([`docs/DE_BAI_ASSIGNMENT_2_GOC.md`](../DE_BAI_ASSIGNMENT_2_GOC.md)).  
+> **Tài liệu User Stories chi tiết:** [`docs/requirements/user-stories.md`](../requirements/user-stories.md) (`US-01` $\rightarrow$ `US-10`).  
 > **Kho mã nguồn:** [https://github.com/nphat-code/swe-project](https://github.com/nphat-code/swe-project)
 
 ---
@@ -48,7 +48,7 @@ Product Backlog của BrewLite được quản lý theo mô hình Agile Scrum, t
 
 ## 3. ÁNH XẠ HẠNG MỤC BACKLOG VỚI SƠ ĐỒ UML & TIÊU CHÍ CHẤP NHẬN
 
-Thay vì sử dụng mẫu câu User Story văn bản dài dòng, mọi hạng mục trong Product Backlog được quy chiếu trực tiếp đến các sơ đồ mô hình hóa UML tại Task 2:
+Mọi hạng mục trong Product Backlog được đặc tả đầy đủ cả dạng **User Story (`US-01` $\rightarrow$ `US-10`)** tại [user-stories.md](../requirements/user-stories.md) lẫn ánh xạ trực tiếp sang các **sơ đồ mô hình hóa UML** tại Task 2:
 
 ### 3.1 PBI-01: Cấu trúc Monorepo & CSDL (FR-12)
 - **Ánh xạ Kiến trúc:** Container Diagram trong [architecture-description.md](../architecture/architecture-description.md).

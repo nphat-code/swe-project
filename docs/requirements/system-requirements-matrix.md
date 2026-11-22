@@ -7,7 +7,7 @@
 > **Môn học:** Công nghệ Phần mềm (Software Engineering)  
 > **Hạng mục:** Assignment 2 — Task 1.2: Yêu cầu chức năng và phi chức năng (SRS rút gọn)  
 > **Phiên bản:** v1.0  
-> **Quy chuẩn thực hiện:** Theo chỉ đạo của Giảng viên, thay thế tài liệu User Story văn bản dài dòng bằng **Sơ đồ mô hình hóa UML trực quan** kết hợp **Bảng danh mục mã định danh FR/NFR** để làm đầu vào cho Ma trận truy vết (Traceability Matrix).  
+> **Liên kết User Stories (Assignment 1):** [`docs/requirements/user-stories.md`](user-stories.md) (`US-01` $\rightarrow$ `US-10`).  
 
 ---
 
