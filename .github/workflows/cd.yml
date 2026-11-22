@@ -111,6 +111,12 @@ jobs:
           done
           curl -sf http://localhost:3001/health
           curl -sf http://localhost:3001/products | grep -q "Cà Phê"
+          for attempt in $(seq 1 30); do
+            if curl -sf http://localhost:3000 >/dev/null; then
+              break
+            fi
+            sleep 2
+          done
           curl -sf http://localhost:3000 >/dev/null
           docker compose down -v
 
