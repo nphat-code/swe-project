@@ -15,8 +15,8 @@
 | **Task 1** — Khai thác & đặc tả yêu cầu | 2.0 | `docs/requirements/context-and-scope.md`, `system-requirements-matrix.md`, `core-use-case-specification.md` | 🟢 100% | Đã đồng bộ 100% tên danh mục, API (`GET /vouchers/validate`), component (`OrderConfirmationModal`, `OrderHistoryModal`) và AWS EC2. |
 | **Task 2** — Mô hình hóa hệ thống (UML) | 2.0 | `docs/diagrams/{use-case,activity,sequence,class}/` (đủ nguồn `.puml`/`.mmd` & ảnh `.png`/`.svg`) | 🟢 100% | Đã đồng bộ `class-domain.mmd` khớp `schema.prisma` (`Role: STAFF`, `PaymentStatus: UNPAID/PAID/FAILED`, xóa `CASH` khỏi `PaymentMethod`). |
 | **Task 3** — Thiết kế kiến trúc | 2.0 | `docs/architecture/architecture-description.md`, 6 ADRs (`001`–`006`), `deployment-diagram.{puml,png}`, `docs/deployment.md` | 🟢 100% | Đã đồng bộ `architecture-description.md`, `deployment-diagram.puml` và `diagrams/deployment/README.md` đúng hạ tầng AWS EC2 thật (`3.26.221.207.sslip.io`, `ap-southeast-2`, 3 containers prod). |
-| **Task 4** — Triển khai Sprint 1 & CI | 2.0 | Monorepo (`frontend/`, `backend/`, `docs/`), Backlog, DoD, Products API + Menu MVP, `.github/workflows/ci.yml`, `docs/sprint/ci-evidence/README.md` | 🟢 98% | Xác minh `ci-evidence/README.md` có đủ link PR, ảnh/log 1 lần CI đỏ và 1 lần CI xanh (Mục 6.4). |
-| **Task 5** — Sprint 2, CD & Delivery | 2.0 | MVP End-to-End, 32 suites / 143 tests + E2E, `docker-compose.yml` + `prod`, `.github/workflows/cd.yml`, AWS HTTPS live, tag `v1.0.0`, `docs/release-notes.md` | 🟡 85% | Cấu hình GitHub Secrets để CD chạy xanh thật lên AWS, mở Public Repo, xuất PDF mới và quay Video demo. |
+| **Task 4** — Triển khai Sprint 1 & CI | 2.0 | Monorepo (`frontend/`, `backend/`, `docs/`), Backlog, DoD, Products API + Menu MVP, `.github/workflows/ci.yml`, `docs/sprint/ci-evidence/README.md` | 🟢 100% | Đã xác thực toàn bộ local Quality Gate (Lint, TypeCheck, 32 suites/143 tests, Build, 0-comment) & `ci-evidence/README.md` đủ bằng chứng Run `#24` (fail) và `#25` (pass). |
+| **Task 5** — Sprint 2, CD & Delivery | 2.0 | MVP End-to-End, 32 suites / 143 tests + E2E, `docker-compose.yml` + `prod`, `.github/workflows/cd.yml`, AWS HTTPS live, tag `v1.0.0`, `docs/release-notes.md` | 🟡 90% | AWS E2E live đã Pass 9/9 bước (kể cả chặn cổng 5432). Chỉ còn: thêm GitHub Secrets chạy CD xanh, bật Public Repo, xuất PDF mới và quay Video demo. |
 | **Mục 8** — Truy vết bắt buộc | Bắt buộc | `docs/traceability-matrix.md` | 🟢 100% | Đã cập nhật dòng `FR-12` khớp chính xác `PATCH /orders/:id/status` (RBAC `STAFF`/`ADMIN`) và ghi rõ UI KDS là mở rộng v1.1. |
 
 ---
@@ -34,21 +34,21 @@
 - [x] Đối chiếu `docs/architecture/architecture-description.md` và 6 file `docs/architecture/adr/001..006*.md` khớp phiên bản thực tế (`Next.js 16`, `NestJS 10`, `PostgreSQL 16`, `Prisma 6`, 5 Domain Modules + `AppController /health`, 9 thực thể).
 - [x] Cập nhật `docs/diagrams/deployment/deployment-diagram.puml` và `docs/diagrams/deployment/README.md` phản ánh đúng hạ tầng AWS EC2 thực tế (`3.26.221.207.sslip.io`, Region `ap-southeast-2`, Ubuntu 26.04 LTS, Nginx SSL, 3 container `frontend`, `backend`, `postgres` cô lập nội bộ).
 
-### Bước 3: Xác thực toàn bộ Quality Gate cục bộ (Task 4 + Task 5.2)
-- [ ] Chạy `npm run lint` (0 lỗi ESLint ở cả `backend` & `frontend`).
-- [ ] Chạy `npm run typecheck` (`tsc --noEmit` đạt 0 lỗi).
-- [ ] Chạy `npm test` (Backend `17 suites / 89 tests` + Frontend `14 suites / 53 tests`).
-- [ ] Chạy `npm --prefix backend run test:e2e` (Supertest HTTP E2E `checkout-flow.e2e-spec.ts`).
-- [ ] Chạy `npm run build` (`nest build` & `next build`).
-- [ ] Quét AST đảm bảo `0` comment trong mã nguồn `.ts`/`.tsx`/`.js`/`.css` theo `AGENTS.md`.
-- [ ] Kiểm tra `docs/sprint/ci-evidence/README.md` đủ link PR + log/ảnh 1 lần CI đỏ & 1 lần CI xanh.
+### Bước 3: Xác thực toàn bộ Quality Gate cục bộ (Task 4 + Task 5.2) — ✅ HOÀN TẤT
+- [x] Chạy `npm run lint` (0 lỗi ESLint ở cả `backend` & `frontend`).
+- [x] Chạy `npm run typecheck` (`tsc --noEmit` đạt 0 lỗi).
+- [x] Chạy `npm test` (Backend `17 suites / 89 tests` + Frontend `14 suites / 53 tests` — 100% PASS).
+- [x] Chạy `npm --prefix backend run test:e2e` (Supertest HTTP E2E `checkout-flow.e2e-spec.ts` — PASS `890ms`).
+- [x] Chạy `nest build` & `next build` (thành công 100%).
+- [x] Kiểm tra `0` comment trong mã nguồn `.ts`/`.tsx`/`.js`/`.css` theo `AGENTS.md` (83 file sạch 100%).
+- [x] Kiểm tra `docs/sprint/ci-evidence/README.md` đủ bằng chứng Run `#24` (fail ESLint) & Run `#25` (pass) kèm ảnh chụp màn hình.
 
-### Bước 4: Kiểm thử End-to-End trực tiếp trên AWS Production (Task 5.1 + Task 5.4)
-- [ ] Kiểm tra `GET https://3.26.221.207.sslip.io/health` trả HTTP `200 OK` (`status: "ok"`, `database.status: "up"`).
-- [ ] Kiểm tra `GET https://3.26.221.207.sslip.io/api/products` trả đủ 12 món / 4 danh mục.
-- [ ] Kiểm thử trọn luồng người dùng trên `https://3.26.221.207.sslip.io`:
-  - Duyệt menu $\rightarrow$ Chọn Size/Topping $\rightarrow$ Thêm giỏ hàng $\rightarrow$ Áp mã `BREWLITEFIRST` $\rightarrow$ Đăng nhập `customer@brewlite.vn` $\rightarrow$ Thanh toán thất bại (`PAYMENT_FAILED`, giữ nguyên giỏ) $\rightarrow$ Thanh toán lại thành công (`PAID`, cộng điểm Loyalty) $\rightarrow$ Xem lịch sử đơn (`GET /api/orders/me`).
-- [ ] Xác nhận cổng PostgreSQL `5432` không mở public từ bên ngoài Internet.
+### Bước 4: Kiểm thử End-to-End trực tiếp trên AWS Production (Task 5.1 + Task 5.4) — ✅ HOÀN TẤT
+- [x] Kiểm tra `GET https://3.26.221.207.sslip.io/health` trả HTTP `200 OK` (`status: "ok"`, `database.status: "up"`, `latencyMs: 1`).
+- [x] Kiểm tra `GET https://3.26.221.207.sslip.io/api/products` trả đủ `12` món / `4` danh mục.
+- [x] Kiểm thử trọn luồng người dùng trực tiếp trên `https://3.26.221.207.sslip.io`:
+  - Áp mã `BREWLITEFIRST` (giảm 20%, đơn tối thiểu `40.000đ`) $\rightarrow$ Đăng nhập `customer@brewlite.vn` $\rightarrow$ Đặt đơn `#561645` (`70.000đ -> 56.000đ`) $\rightarrow$ Thanh toán thất bại (`PAYMENT_FAILED`) $\rightarrow$ Thanh toán lại thành công (`PAID`, cộng `+5` điểm Loyalty) $\rightarrow$ Replay `Idempotency-Key` (`idempotentReplay: true`) $\rightarrow$ Xem lịch sử `GET /api/orders/me` $\rightarrow$ Hủy đơn hoàn kho (`CANCELLED`).
+- [x] Xác nhận cổng PostgreSQL `5432` trên `3.26.221.207` bị chặn hoàn toàn từ bên ngoài Internet (`timeout`).
 
 ### Bước 5: Kích hoạt & kiểm chứng GitHub Actions CD tự động (Task 5.3)
 - [ ] Khai báo GitHub Repository Secrets: `EC2_HOST` (`3.26.221.207`), `EC2_USER` (`ubuntu`), `EC2_SSH_KEY` (nội dung `brewlite-key.pem`).
