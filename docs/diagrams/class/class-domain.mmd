@@ -168,13 +168,13 @@ classDiagram
         EXPIRE
     }
 
-    User "1" --> "0..*" Order : places
-    User "1" --> "0..*" LoyaltyTransaction : owns
+    User "1" -- "0..*" Order : places
+    User "1" -- "0..*" LoyaltyTransaction : owns
     Order "1" *-- "1..*" OrderItem : contains
-    Product "1" <-- "0..*" OrderItem : references
-    Order "1" --> "0..1" Payment : settled by
-    Promotion "0..1" <-- "0..*" Order : applied to
-    Order "0..1" --> "0..1" LoyaltyTransaction : triggers
+    Product "1" -- "0..*" OrderItem : references
+    Order "1" -- "0..1" Payment : settled by
+    Promotion "0..1" -- "0..*" Order : applied to
+    Order "0..1" -- "0..1" LoyaltyTransaction : triggers
 
     User ..> Role
     Product ..> ProductCategory
