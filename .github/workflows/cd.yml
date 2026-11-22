@@ -58,16 +58,19 @@ jobs:
           npm run test:e2e
           npm run build
 
-      - name: Frontend Install, Lint, TypeCheck, Tests & Build
+      - name: Frontend Install, Lint, TypeCheck & Tests
         working-directory: frontend
-        env:
-          NEXT_PUBLIC_API_URL: ${{ vars.PRODUCTION_API_URL || 'https://api.brewlite.nphat.dev' }}
         run: |
           npm ci
           npm run lint
           npm run typecheck
           npm run test -- --ci --coverage
-          npm run build
+
+      - name: Frontend Production Build
+        working-directory: frontend
+        env:
+          NEXT_PUBLIC_API_URL: ${{ vars.PRODUCTION_API_URL || 'https://3.26.221.207.sslip.io/api' }}
+        run: npm run build
 
   docker-package-and-smoke:
     name: Docker Build, Registry Tagging & Compose E2E Smoke
