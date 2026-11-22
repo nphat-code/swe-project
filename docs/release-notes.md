@@ -8,8 +8,12 @@
 
 ## 1. TỔNG QUAN PHIÊN BẢN `v1.0.0`
 
-Phiên bản `v1.0.0` hoàn thiện toàn bộ 10 Tasks của **Assignment 1** và lộ trình 5 Tasks của **Assignment 2** từ đặc tả yêu cầu đến đóng gói, kiểm thử 3 tầng và quy trình CI/CD:
+Phiên bản `v1.0.0` hoàn thiện toàn bộ 10 Tasks của **Assignment 1** và lộ trình 5 Tasks của **Assignment 2** từ đặc tả yêu cầu đến đóng gói, kiểm thử 3 tầng, quy trình CI/CD và triển khai thực tế trên máy chủ **AWS EC2 (Ubuntu 26.04 LTS)**:
 
+* **Production URL (AWS EC2):**
+  * Frontend Web / PWA: [https://3.26.221.207.sslip.io](https://3.26.221.207.sslip.io)
+  * Backend REST API: [https://3.26.221.207.sslip.io/api](https://3.26.221.207.sslip.io/api)
+  * Health Probe (`GET /health`): [https://3.26.221.207.sslip.io/health](https://3.26.221.207.sslip.io/health) (`200 OK`, `database.status: "up"`, `latencyMs: 1ms`)
 * **Menu & Tùy biến đồ uống (`FR-01`, `FR-02`):** Danh mục đồ uống, lọc tìm kiếm, trạng thái Skeleton/Empty/Error, chọn Size (`S`/`M`/`L`), đa Topping, ghi chú và tính giá động.
 * **Giỏ hàng & Xác thực (`FR-03`, `FR-04`):** Giỏ hàng Zustand đồng bộ `localStorage`, gộp món trùng tùy biến, áp mã khuyến mãi (`BREWLITEFIRST`, `COFFEELOVER`); đăng ký/đăng nhập JWT + `bcrypt` bảo vệ route đơn hàng.
 * **Đặt hàng & Thanh toán Idempotent (`FR-05`, `FR-06`, `FR-08`, `FR-11`):**

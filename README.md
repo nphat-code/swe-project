@@ -4,7 +4,10 @@
 
 > **Mô hình quy trình:** Chuỗi quy trình phát triển 5 Tasks tuần tự (Khai thác yêu cầu $\rightarrow$ Mô hình hóa $\rightarrow$ Kiến trúc $\rightarrow$ Sprint 1 $\rightarrow$ Sprint 2 & CI/CD Delivery)  
 > **Product Vision:** *"BrewLite giúp khách hàng đặt và thanh toán đồ uống không dùng tiền mặt chỉ trong vài chạm, giảm thời gian xếp hàng và nhận đơn nhanh tại quầy."*  
-> **Kho mã nguồn:** [nphat-code/swe-project](https://github.com/nphat-code/swe-project)
+> **Kho mã nguồn:** [nphat-code/swe-project](https://github.com/nphat-code/swe-project)  
+> 🌐 **Live Production URL (AWS EC2):** [https://3.26.221.207.sslip.io](https://3.26.221.207.sslip.io)  
+> 🔌 **Live REST API:** [https://3.26.221.207.sslip.io/api](https://3.26.221.207.sslip.io/api)  
+> 🩺 **Live Health Probe:** [https://3.26.221.207.sslip.io/health](https://3.26.221.207.sslip.io/health) (`status: ok`, `database: up`, `latency: 1ms`)
 
 ---
 

@@ -425,7 +425,15 @@ Hệ thống xây dựng tháp kiểm thử tự động 3 tầng với tổng c
 \begin{itemize}
   \item \textbf{Đóng gói Docker Multi-stage \& Compose 3 Services:} Xây dựng \texttt{backend/Dockerfile} (\texttt{node:20-alpine}, entrypoint \texttt{dist/src/main}) và \texttt{frontend/Dockerfile} (\texttt{DOCKER\_BUILD=true}, Next.js \texttt{standalone}); tệp \texttt{docker-compose.yml} khởi chạy đồng thời 3 dịch vụ (\texttt{postgres}, \texttt{backend} tự chạy \texttt{prisma migrate deploy} + \texttt{SEED\_IF\_EMPTY=true}, \texttt{frontend}) với healthcheck đầy đủ.
   \item \textbf{Pipeline CD (\texttt{.github/workflows/cd.yml}):} Tự động chạy \texttt{quality-gate} $\rightarrow$ \texttt{docker-package-and-smoke} (dựng stack Docker Compose thật và gọi \texttt{GET /health} xác thực DB \texttt{up}) $\rightarrow$ đẩy image gắn tag SHA/SemVer lên GitHub Container Registry (\texttt{ghcr.io}) $\rightarrow$ kích hoạt \texttt{DEPLOY\_HOOK\_URL}, xác minh health endpoint sau deploy và hỗ trợ rollback nhanh theo hướng dẫn tại \texttt{docs/release-notes.md}.
-  \item \textbf{Tình trạng bàn giao hạ tầng:} Toàn bộ mã nguồn, kiểm thử, cấu hình Docker Compose, pipeline CD và tài liệu vận hành (\texttt{README.md}, \texttt{docs/deployment.md}, \texttt{docs/release-notes.md}) đã hoàn tất và đẩy lên nhánh \texttt{main}; việc gắn URL HTTPS công khai và tạo tag \texttt{v1.0.0} sẵn sàng kích hoạt ngay khi cấu hình biến Secrets trên hạ tầng Cloud đích.
+  \item \textbf{Continuous Delivery \& Bàn giao Production thực tế:} 
+    \begin{itemize}
+      \item Máy chủ đám mây \textbf{AWS EC2 Ubuntu (Elastic IP 3.26.221.207)} vận hành cụm Docker Compose 3 services kết hợp Nginx Reverse Proxy và chứng chỉ bảo mật SSL (Let's Encrypt) cấp phát tự động.
+      \item \textbf{URL Production Frontend Web / PWA:} \url{https://3.26.221.207.sslip.io}
+      \item \textbf{URL Production Backend API:} \url{https://3.26.221.207.sslip.io/api}
+      \item \textbf{URL Giám sát sức khỏe (Health Check):} \url{https://3.26.221.207.sslip.io/health} (phản hồi HTTP \texttt{200 OK}, \texttt{database.status: "up"}, \texttt{latencyMs: 1ms}).
+      \item CSDL PostgreSQL được cô lập hoàn toàn trong mạng nội bộ Docker, không mở cổng trực tiếp ra Internet theo đúng chuẩn an toàn thông tin (Mục 7.4 đề bài gốc).
+      \item Quy trình bàn giao đầy đủ hướng dẫn chạy local, Docker, kịch bản rollback và ghi chú phiên bản tại \texttt{README.md}, \texttt{docs/deployment.md} và \texttt{docs/release-notes.md}.
+    \end{itemize}
 \end{itemize}
 
 \subsection{Sprint Review và Sprint Retrospective}
