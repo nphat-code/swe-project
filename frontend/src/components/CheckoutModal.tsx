@@ -136,28 +136,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   }, [accessToken, clearCart, onPaymentSuccess, payosSession, retryOrder]);
 
   useEffect(() => {
-    if (!payosSession?.qrCode) {
-      setPayosQrDataUrl('');
-      return;
-    }
-    let active = true;
-    QRCode.toDataURL(payosSession.qrCode, { width: 220, margin: 1 })
-      .then((url) => {
-        if (active) {
-          setPayosQrDataUrl(url);
-        }
-      })
-      .catch(() => {
-        if (active) {
-          setPayosQrDataUrl('');
-        }
-      });
-    return () => {
-      active = false;
-    };
-  }, [payosSession?.qrCode]);
-
-  useEffect(() => {
     if (!isOpen || !payosSession) {
       return;
     }
@@ -243,6 +221,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           orderId: targetOrder.id,
           idempotencyKey,
         });
+        const qrDataUrl = await QRCode.toDataURL(payosData.qrCode, {
+          width: 220,
+          margin: 1,
+        }).catch(() => '');
+        setPayosQrDataUrl(qrDataUrl);
         setPayosSession(payosData);
         return;
       }
