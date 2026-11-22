@@ -137,8 +137,9 @@ describe('CheckoutModal', () => {
     );
 
     expect(screen.getByText(/Americano Đá Tươi Mát/i)).toBeInTheDocument();
-    expect(screen.getByText(/Chuyển khoản VietQR \(PayOS\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/Chuyển khoản nhanh VietQR/i)).toBeInTheDocument();
     expect(screen.queryByText(/Mô phỏng thanh toán thất bại/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Idempotency-Key:/i)).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /Tạo mã QR thanh toán/i }));
 

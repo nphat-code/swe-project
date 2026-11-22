@@ -50,6 +50,9 @@ export function getOrderStatusPresentation(status: OrderStatus): OrderStatusPres
 
 export function getPaymentMethodLabel(method: string): string {
   const normalized = method.trim().toUpperCase();
+  if (normalized === 'PAYOS_VIETQR') {
+    return 'Chuyển khoản VietQR';
+  }
   if (normalized === 'WALLET' || normalized === 'MOCK_WALLET') {
     return 'Ví điện tử';
   }

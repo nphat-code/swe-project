@@ -196,7 +196,12 @@ describe('Home Page (Sprint 1 + Sprint 2 Cart & Auth Flow)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Đăng nhập' }));
     expect(screen.getByRole('dialog', { name: 'Đăng nhập BrewLite' })).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: /Điền nhanh tài khoản mẫu/i }));
+    fireEvent.change(screen.getByLabelText('Email'), {
+      target: { value: 'customer@brewlite.vn' },
+    });
+    fireEvent.change(screen.getByLabelText('Mật khẩu'), {
+      target: { value: 'BrewLite@2026' },
+    });
     const loginButtons = screen.getAllByRole('button', { name: 'Đăng nhập' });
     fireEvent.click(loginButtons[loginButtons.length - 1]);
 
@@ -321,7 +326,7 @@ describe('Home Page (Sprint 1 + Sprint 2 Cart & Auth Flow)', () => {
 
     expect(await screen.findByText('Đặt hàng thành công')).toBeInTheDocument();
     expect(screen.getByText('#990001')).toBeInTheDocument();
-    expect(screen.getByText('Trạng thái: PAID')).toBeInTheDocument();
+    expect(screen.getAllByText('Đã thanh toán').length).toBeGreaterThan(0);
     expect(screen.getByText('13 điểm')).toBeInTheDocument();
     expect(useCartStore.getState().items).toHaveLength(0);
 

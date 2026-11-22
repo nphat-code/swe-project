@@ -7,7 +7,6 @@ import {
   AlertCircle,
   CheckCircle2,
   ExternalLink,
-  KeyRound,
   Loader2,
   QrCode,
   RefreshCw,
@@ -254,7 +253,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 {activeOrder ? `Thanh toán đơn ${activeOrder.orderNumber}` : 'Thanh toán không tiền mặt'}
               </h2>
               <p className="text-xs text-[#595959]">
-                Xác nhận nhanh tại quầy • Bảo vệ Idempotency-Key
+                Xác nhận nhanh tại quầy • Thanh toán bảo mật
               </p>
             </div>
           </div>
@@ -479,10 +478,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                       <span className="text-xs sm:text-sm font-black text-[#1e3932]">
-                        Chuyển khoản VietQR (PayOS)
+                        Chuyển khoản nhanh VietQR
                       </span>
                       <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-[#d4e9e2] text-[#006241]">
-                        Real-time
+                        Tức thì
                       </span>
                     </div>
                     <span className="block text-[11px] text-[#595959]">
@@ -549,7 +548,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     className="flex-1 py-2.5 px-3 rounded-xl bg-white border border-stone-300 hover:border-[#006241] text-[#1e3932] text-xs font-bold flex items-center justify-center gap-1.5"
                   >
                     <ExternalLink className="w-3.5 h-3.5" />
-                    <span>Mở trang PayOS</span>
+                    <span>Mở trang thanh toán</span>
                   </a>
                 </div>
 
@@ -558,14 +557,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <span>Đang tự động chờ xác nhận từ ngân hàng (mỗi 3 giây)...</span>
                 </p>
               </div>
-            ) : (
-              <div className="rounded-2xl border border-stone-200/90 bg-[#f2f0eb]/60 p-3.5 space-y-2">
-                <div className="flex items-center gap-1.5 text-[11px] text-[#595959] font-mono break-all">
-                  <KeyRound className="w-3.5 h-3.5 text-[#006241] flex-shrink-0" />
-                  <span>Idempotency-Key: {idempotencyKey}</span>
-                </div>
-              </div>
-            )}
+            ) : null}
           </div>
 
           <div className="p-4 sm:p-5 border-t border-stone-200 bg-white space-y-3 flex-shrink-0 shadow-lg">

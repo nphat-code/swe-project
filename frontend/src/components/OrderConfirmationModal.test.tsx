@@ -68,7 +68,7 @@ describe('OrderConfirmationModal', () => {
 
     expect(screen.getByText('Đặt hàng thành công')).toBeInTheDocument();
     expect(screen.getByText('#104299')).toBeInTheDocument();
-    expect(screen.getByText('Trạng thái: PAID')).toBeInTheDocument();
+    expect(screen.getAllByText('Đã thanh toán').length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Mời tới quầy lấy nước/i).length).toBeGreaterThan(0);
     expect(screen.getByText('+12 điểm')).toBeInTheDocument();
     expect(screen.getByText('Số dư hiện tại: 37 điểm')).toBeInTheDocument();

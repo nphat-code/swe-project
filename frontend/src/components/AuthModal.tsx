@@ -7,7 +7,6 @@ import {
   Eye,
   EyeOff,
   Loader2,
-  Sparkles,
   X,
 } from 'lucide-react';
 import { loginUser, registerUser } from '../lib/api';
@@ -69,12 +68,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   const handleSwitchMode = (nextMode: AuthMode) => {
     setMode(nextMode);
-    setErrorMessage(null);
-  };
-
-  const handleFillDemoAccount = () => {
-    setEmail('customer@brewlite.vn');
-    setPassword('BrewLite@2026');
     setErrorMessage(null);
   };
 
@@ -293,17 +286,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 </button>
               </div>
             </div>
-
-            {mode === 'login' && (
-              <button
-                type="button"
-                onClick={handleFillDemoAccount}
-                className="w-full py-2 px-3 rounded-xl bg-[#f2f0eb] hover:bg-[#d4e9e2]/60 text-[#1e3932] text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-[#006241]" />
-                <span>Điền nhanh tài khoản mẫu (customer@brewlite.vn)</span>
-              </button>
-            )}
 
             <button
               type="submit"

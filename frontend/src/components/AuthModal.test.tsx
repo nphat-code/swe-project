@@ -36,15 +36,18 @@ describe('AuthModal', () => {
     jest.clearAllMocks();
   });
 
-  it('fills demo credentials and logs in user into Zustand store', async () => {
+  it('logs in user with email and password into Zustand store', async () => {
     (api.loginUser as jest.Mock).mockResolvedValue(mockAuthResponse);
 
     render(<AuthModal isOpen={true} onClose={onClose} onSuccess={onSuccess} />);
 
-    fireEvent.click(
-      screen.getByRole('button', { name: /Điền nhanh tài khoản mẫu/i })
-    );
-    expect(screen.getByLabelText('Email')).toHaveValue('customer@brewlite.vn');
+    fireEvent.change(screen.getByLabelText('Email'), {
+      target: { value: 'customer@brewlite.vn' },
+    });
+    fireEvent.change(screen.getByLabelText('Mật khẩu'), {
+      target: { value: 'BrewLite@2026' },
+    });
+    expect(screen.queryByRole('button', { name: /Điền nhanh tài khoản mẫu/i })).not.toBeInTheDocument();
 
     const submitButtons = screen.getAllByRole('button', { name: 'Đăng nhập' });
     fireEvent.click(submitButtons[submitButtons.length - 1]);

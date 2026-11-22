@@ -109,7 +109,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
               </div>
 
               <span className="px-3 py-1 rounded-full bg-white text-[#006241] text-xs font-black">
-                Trạng thái: {order.status}
+                {statusPresentation.label}
               </span>
             </div>
 
@@ -123,7 +123,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
 
           {idempotentReplay && (
             <div className="px-3.5 py-2.5 rounded-2xl bg-sky-50 border border-sky-200 text-sky-800 text-xs font-semibold">
-              Giao dịch đã được xác nhận trước đó theo khóa Idempotency-Key (không trừ tiền 2 lần).
+              Giao dịch này đã được xác nhận trước đó (không trừ tiền 2 lần).
             </div>
           )}
 
