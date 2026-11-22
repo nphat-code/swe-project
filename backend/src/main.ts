@@ -45,6 +45,8 @@ async function bootstrap() {
     .addTag('orders', 'Khởi tạo và tra cứu lịch sử đơn hàng')
     .addTag('payments', 'Thanh toán không tiền mặt idempotent và tích điểm loyalty')
     .addTag('system', 'Giám sát hệ thống')
+    .addServer('/api', 'Production (HTTPS /api)')
+    .addServer('/', 'Local Development (:3001)')
     .addBearerAuth()
     .build();
 
