@@ -16,10 +16,15 @@ jest.mock('../lib/api', () => {
     loginUser: jest.fn(),
     fetchCurrentUser: jest.fn(),
     createOrder: jest.fn(),
-    processPayment: jest.fn(),
+    createPayosPayment: jest.fn(),
+    syncPayosPayment: jest.fn(),
     fetchMyOrders: jest.fn(),
   };
 });
+
+jest.mock('qrcode', () => ({
+  toDataURL: jest.fn().mockResolvedValue('data:image/png;base64,MOCKQR'),
+}));
 
 const mockCategories: Category[] = [
   { id: 'cat-1', name: 'Cà phê Việt Nam', slug: 'ca-phe-viet', displayOrder: 1, _count: { products: 1 } },
@@ -286,7 +291,22 @@ describe('Home Page (Sprint 1 + Sprint 2 Cart & Auth Flow)', () => {
     (api.fetchToppings as jest.Mock).mockResolvedValue(mockToppings);
     (api.fetchCurrentUser as jest.Mock).mockResolvedValue(authUser);
     (api.createOrder as jest.Mock).mockResolvedValue(pendingOrder);
-    (api.processPayment as jest.Mock).mockResolvedValue(paymentResponse);
+    (api.createPayosPayment as jest.Mock).mockResolvedValue({
+      orderId: 'order-e2e-1',
+      orderCode: 990001001,
+      amount: 38000,
+      description: 'BREWLITE 990001',
+      qrCode: '00020101021238570010A000000727',
+      checkoutUrl: 'https://pay.payos.vn/web/990001001',
+      accountName: 'NGUYEN TAN PHAT',
+      accountNumber: '0001715061549',
+      bin: '970422',
+    });
+    (api.syncPayosPayment as jest.Mock).mockResolvedValue({
+      paid: true,
+      payosStatus: 'PAID',
+      paymentResult: paymentResponse,
+    });
     (api.fetchMyOrders as jest.Mock).mockResolvedValue([paidOrder]);
 
     render(<Home />);
@@ -296,7 +316,8 @@ describe('Home Page (Sprint 1 + Sprint 2 Cart & Auth Flow)', () => {
     fireEvent.click(screen.getByRole('button', { name: /Tiến hành thanh toán/i }));
 
     expect(screen.getByRole('dialog', { name: 'Thanh toán đơn hàng' })).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: /Xác nhận trả/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Tạo mã QR thanh toán/i }));
+    fireEvent.click(await screen.findByRole('button', { name: /Tôi đã chuyển khoản/i }));
 
     expect(await screen.findByText('Đặt hàng thành công')).toBeInTheDocument();
     expect(screen.getByText('#990001')).toBeInTheDocument();

@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as api from '../lib/api';
 import { useCartStore } from '../store/useCartStore';
-import { AuthUser, OrderRecord, ProcessPaymentResponse } from '../types';
+import { AuthUser, OrderRecord, PayosCheckoutResponse, ProcessPaymentResponse } from '../types';
 import { CheckoutModal } from './CheckoutModal';
 
 jest.mock('../lib/api', () => {
@@ -10,10 +10,15 @@ jest.mock('../lib/api', () => {
   return {
     ...actual,
     createOrder: jest.fn(),
-    processPayment: jest.fn(),
+    createPayosPayment: jest.fn(),
+    syncPayosPayment: jest.fn(),
     validateVoucherCode: jest.fn(),
   };
 });
+
+jest.mock('qrcode', () => ({
+  toDataURL: jest.fn().mockResolvedValue('data:image/png;base64,MOCKQR'),
+}));
 
 describe('CheckoutModal', () => {
   const user: AuthUser = {
@@ -35,7 +40,7 @@ describe('CheckoutModal', () => {
     note: null,
     status: 'PENDING',
     paymentStatus: 'UNPAID',
-    paymentMethod: 'CARD',
+    paymentMethod: 'PAYOS_VIETQR',
     totalAmount: 76000,
     discountAmount: 0,
     finalAmount: 76000,
@@ -57,6 +62,18 @@ describe('CheckoutModal', () => {
     updatedAt: '2026-11-09T10:00:00.000Z',
   };
 
+  const payosSession: PayosCheckoutResponse = {
+    orderId: 'order-1',
+    orderCode: 551234001,
+    amount: 76000,
+    description: 'BREWLITE 551234',
+    qrCode: '00020101021238570010A000000727',
+    checkoutUrl: 'https://pay.payos.vn/web/551234001',
+    accountName: 'NGUYEN TAN PHAT',
+    accountNumber: '0001715061549',
+    bin: '970422',
+  };
+
   beforeEach(() => {
     localStorage.clear();
     useCartStore.getState().clearCart();
@@ -74,7 +91,7 @@ describe('CheckoutModal', () => {
     jest.clearAllMocks();
   });
 
-  it('creates order, processes payment with Idempotency-Key, clears cart, and invokes onPaymentSuccess', async () => {
+  it('creates order with PAYOS_VIETQR, generates QR, syncs payment, clears cart, and invokes onPaymentSuccess', async () => {
     const onClose = jest.fn();
     const onPaymentSuccess = jest.fn();
     const paidResponse: ProcessPaymentResponse = {
@@ -86,9 +103,9 @@ describe('CheckoutModal', () => {
         orderId: 'order-1',
         idempotencyKey: 'key-1',
         amount: 76000,
-        method: 'CARD',
+        method: 'PAYOS_VIETQR',
         status: 'PAID',
-        transactionId: 'TXN-1001',
+        transactionId: '551234001',
         paidAt: '2026-11-09T10:01:00.000Z',
         createdAt: '2026-11-09T10:01:00.000Z',
       },
@@ -102,7 +119,12 @@ describe('CheckoutModal', () => {
     };
 
     (api.createOrder as jest.Mock).mockResolvedValueOnce(pendingOrder);
-    (api.processPayment as jest.Mock).mockResolvedValueOnce(paidResponse);
+    (api.createPayosPayment as jest.Mock).mockResolvedValueOnce(payosSession);
+    (api.syncPayosPayment as jest.Mock).mockResolvedValueOnce({
+      paid: true,
+      payosStatus: 'PAID',
+      paymentResult: paidResponse,
+    });
 
     render(
       <CheckoutModal
@@ -115,16 +137,16 @@ describe('CheckoutModal', () => {
     );
 
     expect(screen.getByText(/Americano Đá Tươi Mát/i)).toBeInTheDocument();
-    expect(screen.getByText(/Idempotency-Key:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Chuyển khoản VietQR \(PayOS\)/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Mô phỏng thanh toán thất bại/i)).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByLabelText(/Thẻ ngân hàng/i));
-    fireEvent.click(screen.getByRole('button', { name: /Xác nhận trả/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Tạo mã QR thanh toán/i }));
 
     await waitFor(() => {
       expect(api.createOrder).toHaveBeenCalledWith(
         'jwt-token',
         expect.objectContaining({
-          paymentMethod: 'CARD',
+          paymentMethod: 'PAYOS_VIETQR',
           items: [
             expect.objectContaining({
               productId: 'prod-1',
@@ -138,115 +160,25 @@ describe('CheckoutModal', () => {
     });
 
     await waitFor(() => {
-      expect(api.processPayment).toHaveBeenCalledWith(
+      expect(api.createPayosPayment).toHaveBeenCalledWith(
         'jwt-token',
         expect.objectContaining({
           orderId: 'order-1',
-          method: 'CARD',
-          simulateFailure: false,
           idempotencyKey: expect.any(String),
         })
       );
     });
 
-    expect(onPaymentSuccess).toHaveBeenCalledWith(paidResponse);
-    expect(useCartStore.getState().items).toHaveLength(0);
-  });
-
-  it('preserves cart on PAYMENT_FAILED and reuses the same order when retrying', async () => {
-    const onClose = jest.fn();
-    const onPaymentSuccess = jest.fn();
-    const onPaymentFailed = jest.fn();
-
-    const failedOrder: OrderRecord = {
-      ...pendingOrder,
-      status: 'PAYMENT_FAILED',
-      paymentStatus: 'FAILED',
-      paymentMethod: 'WALLET',
-    };
-
-    const failedResponse: ProcessPaymentResponse = {
-      success: false,
-      idempotentReplay: false,
-      message: 'Thanh toán thất bại',
-      payment: {
-        id: 'pay-fail',
-        orderId: 'order-1',
-        idempotencyKey: 'key-fail',
-        amount: 76000,
-        method: 'WALLET',
-        status: 'FAILED',
-        transactionId: null,
-        paidAt: null,
-        createdAt: '2026-11-09T10:01:00.000Z',
-      },
-      order: failedOrder,
-      loyaltyPointsEarned: 0,
-      loyaltyPointsBalance: 10,
-    };
-
-    const paidResponse: ProcessPaymentResponse = {
-      success: true,
-      idempotentReplay: false,
-      message: 'Thanh toán thành công',
-      payment: {
-        id: 'pay-ok',
-        orderId: 'order-1',
-        idempotencyKey: 'key-ok',
-        amount: 76000,
-        method: 'WALLET',
-        status: 'PAID',
-        transactionId: 'TXN-OK',
-        paidAt: '2026-11-09T10:02:00.000Z',
-        createdAt: '2026-11-09T10:02:00.000Z',
-      },
-      order: {
-        ...pendingOrder,
-        status: 'PAID',
-        paymentStatus: 'PAID',
-      },
-      loyaltyPointsEarned: 7,
-      loyaltyPointsBalance: 17,
-    };
-
-    (api.createOrder as jest.Mock).mockResolvedValueOnce(pendingOrder);
-    (api.processPayment as jest.Mock)
-      .mockResolvedValueOnce(failedResponse)
-      .mockResolvedValueOnce(paidResponse);
-
-    render(
-      <CheckoutModal
-        isOpen={true}
-        user={user}
-        accessToken="jwt-token"
-        onClose={onClose}
-        onPaymentSuccess={onPaymentSuccess}
-        onPaymentFailed={onPaymentFailed}
-      />
-    );
-
-    const failToggle = screen.getByLabelText(/Mô phỏng thanh toán thất bại/i);
-    fireEvent.click(failToggle);
-    fireEvent.click(screen.getByRole('button', { name: /Xác nhận trả/i }));
-
-    expect(
-      await screen.findByText(/Thanh toán cho đơn #551234 không thành công \(PAYMENT_FAILED\)/i)
-    ).toBeInTheDocument();
-    expect(useCartStore.getState().items).toHaveLength(1);
-    expect(onPaymentFailed).toHaveBeenCalledWith(failedOrder);
-
-    fireEvent.click(failToggle);
-    fireEvent.click(screen.getByRole('button', { name: /Thử thanh toán lại/i }));
+    expect(await screen.findByText(/NGUYEN TAN PHAT/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Tôi đã chuyển khoản/i }));
 
     await waitFor(() => {
       expect(onPaymentSuccess).toHaveBeenCalledWith(paidResponse);
     });
-    expect(api.createOrder).toHaveBeenCalledTimes(1);
-    expect(api.processPayment).toHaveBeenCalledTimes(2);
     expect(useCartStore.getState().items).toHaveLength(0);
   });
 
-  it('retries existing order from history without recreating order or clearing cart', async () => {
+  it('retries existing order from history via PayOS without recreating order or clearing cart', async () => {
     const onClose = jest.fn();
     const onPaymentSuccess = jest.fn();
     const retryOrder: OrderRecord = {
@@ -266,9 +198,9 @@ describe('CheckoutModal', () => {
         orderId: 'history-order-99',
         idempotencyKey: 'retry-key',
         amount: 76000,
-        method: 'WALLET',
+        method: 'PAYOS_VIETQR',
         status: 'PAID',
-        transactionId: 'TXN-99',
+        transactionId: '889900001',
         paidAt: '2026-11-09T10:05:00.000Z',
         createdAt: '2026-11-09T10:05:00.000Z',
       },
@@ -281,7 +213,15 @@ describe('CheckoutModal', () => {
       loyaltyPointsBalance: 17,
     };
 
-    (api.processPayment as jest.Mock).mockResolvedValueOnce(paidResponse);
+    (api.createPayosPayment as jest.Mock).mockResolvedValueOnce({
+      ...payosSession,
+      orderId: 'history-order-99',
+    });
+    (api.syncPayosPayment as jest.Mock).mockResolvedValueOnce({
+      paid: true,
+      payosStatus: 'PAID',
+      paymentResult: paidResponse,
+    });
 
     render(
       <CheckoutModal
@@ -297,6 +237,9 @@ describe('CheckoutModal', () => {
     expect(screen.getByText(/Thanh toán đơn #889900/i)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /Thử thanh toán lại/i }));
 
+    expect(await screen.findByText(/NGUYEN TAN PHAT/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Tôi đã chuyển khoản/i }));
+
     await waitFor(() => {
       expect(onPaymentSuccess).toHaveBeenCalledWith(paidResponse);
     });
@@ -304,4 +247,3 @@ describe('CheckoutModal', () => {
     expect(useCartStore.getState().items).toHaveLength(1);
   });
 });
-

@@ -6,7 +6,6 @@ import QRCode from 'qrcode';
 import {
   AlertCircle,
   CheckCircle2,
-  CreditCard,
   ExternalLink,
   KeyRound,
   Loader2,
@@ -15,7 +14,6 @@ import {
   ShieldCheck,
   Sparkles,
   Tag,
-  Wallet,
   X,
 } from 'lucide-react';
 import {
@@ -23,7 +21,6 @@ import {
   createPayosPayment,
   formatCurrency,
   generateIdempotencyKey,
-  processPayment,
   syncPayosPayment,
   validateVoucherCode,
 } from '../lib/api';
@@ -57,7 +54,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   retryOrder = null,
   onClose,
   onPaymentSuccess,
-  onPaymentFailed,
 }) => {
   const items = useCartStore((state) => state.items);
   const appliedVoucher = useCartStore((state) => state.appliedVoucher);
@@ -65,10 +61,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const clearVoucher = useCartStore((state) => state.clearVoucher);
   const clearCart = useCartStore((state) => state.clearCart);
 
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
-    retryOrder?.paymentMethod === 'CARD' ? 'CARD' : 'WALLET'
-  );
-  const [simulateFailure, setSimulateFailure] = useState<boolean>(false);
+  const paymentMethod: PaymentMethod = 'PAYOS_VIETQR';
   const [customerName, setCustomerName] = useState<string>(
     retryOrder?.customerName ?? user.fullName
   );
@@ -80,10 +73,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [voucherError, setVoucherError] = useState<string | null>(null);
   const [isApplyingVoucher, setIsApplyingVoucher] = useState<boolean>(false);
   const [activeOrder, setActiveOrder] = useState<OrderRecord | null>(retryOrder);
-  const [failedOrder, setFailedOrder] = useState<OrderRecord | null>(
-    retryOrder?.status === 'PAYMENT_FAILED' ? retryOrder : null
-  );
-  const [idempotencyKey, setIdempotencyKey] = useState<string>(() => generateIdempotencyKey());
+  const failedOrder = retryOrder?.status === 'PAYMENT_FAILED' ? retryOrder : null;
+  const [idempotencyKey] = useState<string>(() => generateIdempotencyKey());
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [payosSession, setPayosSession] = useState<PayosCheckoutResponse | null>(null);
@@ -216,42 +207,16 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         setActiveOrder(targetOrder);
       }
 
-      if (paymentMethod === 'PAYOS_VIETQR') {
-        const payosData = await createPayosPayment(accessToken, {
-          orderId: targetOrder.id,
-          idempotencyKey,
-        });
-        const qrDataUrl = await QRCode.toDataURL(payosData.qrCode, {
-          width: 220,
-          margin: 1,
-        }).catch(() => '');
-        setPayosQrDataUrl(qrDataUrl);
-        setPayosSession(payosData);
-        return;
-      }
-
-      const paymentResult = await processPayment(accessToken, {
+      const payosData = await createPayosPayment(accessToken, {
         orderId: targetOrder.id,
-        method: paymentMethod,
         idempotencyKey,
-        simulateFailure,
       });
-
-      if (paymentResult.success) {
-        if (!retryOrder) {
-          clearCart();
-        }
-        onPaymentSuccess(paymentResult);
-        return;
-      }
-
-      setActiveOrder(paymentResult.order);
-      setFailedOrder(paymentResult.order);
-      setIdempotencyKey(generateIdempotencyKey());
-      setErrorMessage(
-        `Thanh toán cho đơn ${paymentResult.order.orderNumber} không thành công (${paymentResult.order.status}). Giỏ hàng của bạn vẫn được giữ nguyên, hãy tắt chế độ lỗi và thử thanh toán lại.`
-      );
-      onPaymentFailed?.(paymentResult.order);
+      const qrDataUrl = await QRCode.toDataURL(payosData.qrCode, {
+        width: 220,
+        margin: 1,
+      }).catch(() => '');
+      setPayosQrDataUrl(qrDataUrl);
+      setPayosSession(payosData);
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : 'Đã xảy ra lỗi khi thanh toán, vui lòng thử lại'
@@ -506,32 +471,15 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               <p className="text-xs font-bold text-[#1e3932]">
                 Phương thức thanh toán (Không dùng tiền mặt)
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                <label
-                  className={`flex items-center gap-3 p-3.5 rounded-2xl border-2 cursor-pointer transition-all sm:col-span-2 ${
-                    paymentMethod === 'PAYOS_VIETQR'
-                      ? 'border-[#006241] bg-[#d4e9e2]/35'
-                      : 'border-stone-200 bg-white hover:border-[#006241]/40'
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="PAYOS_VIETQR"
-                    checked={paymentMethod === 'PAYOS_VIETQR'}
-                    onChange={() => {
-                      setPaymentMethod('PAYOS_VIETQR');
-                      setSimulateFailure(false);
-                    }}
-                    className="sr-only"
-                  />
+              <div className="grid grid-cols-1 gap-2.5">
+                <div className="flex items-center gap-3 p-3.5 rounded-2xl border-2 border-[#006241] bg-[#d4e9e2]/35">
                   <div className="w-9 h-9 rounded-full bg-[#006241] text-white flex items-center justify-center flex-shrink-0">
                     <QrCode className="w-4 h-4" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                       <span className="text-xs sm:text-sm font-black text-[#1e3932]">
-                        Chuyển khoản VietQR (PayOS thật)
+                        Chuyển khoản VietQR (PayOS)
                       </span>
                       <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-[#d4e9e2] text-[#006241]">
                         Real-time
@@ -541,59 +489,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       Quét mã QR bằng app Ngân hàng bất kỳ • Tự động xác nhận đơn
                     </span>
                   </div>
-                </label>
-
-                <label
-                  className={`flex items-center gap-3 p-3.5 rounded-2xl border-2 cursor-pointer transition-all ${
-                    paymentMethod === 'WALLET'
-                      ? 'border-[#006241] bg-[#d4e9e2]/35'
-                      : 'border-stone-200 bg-white hover:border-[#006241]/40'
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="WALLET"
-                    checked={paymentMethod === 'WALLET'}
-                    onChange={() => setPaymentMethod('WALLET')}
-                    className="sr-only"
-                  />
-                  <div className="w-9 h-9 rounded-full bg-[#d4e9e2] text-[#006241] flex items-center justify-center flex-shrink-0">
-                    <Wallet className="w-4 h-4" />
-                  </div>
-                  <div className="min-w-0">
-                    <span className="block text-xs sm:text-sm font-black text-[#1e3932]">
-                      Ví điện tử
-                    </span>
-                    <span className="block text-[11px] text-[#595959]">MoMo / VNPay QR</span>
-                  </div>
-                </label>
-
-                <label
-                  className={`flex items-center gap-3 p-3.5 rounded-2xl border-2 cursor-pointer transition-all ${
-                    paymentMethod === 'CARD'
-                      ? 'border-[#006241] bg-[#d4e9e2]/35'
-                      : 'border-stone-200 bg-white hover:border-[#006241]/40'
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="CARD"
-                    checked={paymentMethod === 'CARD'}
-                    onChange={() => setPaymentMethod('CARD')}
-                    className="sr-only"
-                  />
-                  <div className="w-9 h-9 rounded-full bg-[#f2f0eb] text-[#1e3932] flex items-center justify-center flex-shrink-0">
-                    <CreditCard className="w-4 h-4" />
-                  </div>
-                  <div className="min-w-0">
-                    <span className="block text-xs sm:text-sm font-black text-[#1e3932]">
-                      Thẻ ngân hàng
-                    </span>
-                    <span className="block text-[11px] text-[#595959]">Visa / Napas / ATM</span>
-                  </div>
-                </label>
+                </div>
               </div>
             </div>
 
@@ -664,33 +560,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               </div>
             ) : (
               <div className="rounded-2xl border border-stone-200/90 bg-[#f2f0eb]/60 p-3.5 space-y-2">
-                {paymentMethod !== 'PAYOS_VIETQR' && (
-                  <div className="flex items-center justify-between gap-2">
-                    <label
-                      htmlFor="checkout-simulate-failure"
-                      className="flex items-center gap-2.5 text-xs font-bold text-[#1e3932] cursor-pointer"
-                    >
-                      <input
-                        id="checkout-simulate-failure"
-                        type="checkbox"
-                        checked={simulateFailure}
-                        onChange={(event) => setSimulateFailure(event.target.checked)}
-                        className="w-4 h-4 rounded accent-[#006241]"
-                      />
-                      <span>Mô phỏng thanh toán thất bại (PAYMENT_FAILED)</span>
-                    </label>
-                    <span
-                      className={`text-[10px] font-black px-2 py-0.5 rounded-full flex-shrink-0 ${
-                        simulateFailure
-                          ? 'bg-rose-100 text-rose-700'
-                          : 'bg-[#d4e9e2] text-[#006241]'
-                      }`}
-                    >
-                      {simulateFailure ? 'Thất bại' : 'Thành công'}
-                    </span>
-                  </div>
-                )}
-
                 <div className="flex items-center gap-1.5 text-[11px] text-[#595959] font-mono break-all">
                   <KeyRound className="w-3.5 h-3.5 text-[#006241] flex-shrink-0" />
                   <span>Idempotency-Key: {idempotencyKey}</span>
@@ -721,7 +590,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               </div>
             </div>
 
-            {earnedPointsPreview > 0 && !simulateFailure && (
+            {earnedPointsPreview > 0 && (
               <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#1e3932] bg-[#f2f0eb] px-3 py-1.5 rounded-xl">
                 <Sparkles className="w-3.5 h-3.5 text-[#cba258]" />
                 <span>Nhận ngay +{earnedPointsPreview} điểm thưởng sau khi thanh toán</span>
@@ -742,11 +611,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 ) : (
                   <>
                     <span>
-                      {paymentMethod === 'PAYOS_VIETQR'
-                        ? 'Tạo mã QR thanh toán'
-                        : failedOrder
-                          ? 'Thử thanh toán lại'
-                          : 'Xác nhận trả'}
+                      {failedOrder ? 'Thử thanh toán lại' : 'Tạo mã QR thanh toán'}
                     </span>
                     <span>•</span>
                     <span className="font-black">{formatCurrency(displayFinalAmount)}</span>
