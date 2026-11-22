@@ -19,7 +19,7 @@
 | **US-07** | Task 7 | `FR-04` | Khách thành viên | Là một **khách hàng**, tôi muốn đăng ký và đăng nhập bảo mật bằng JWT, để bảo vệ thông tin cá nhân, đơn hàng và điểm thưởng của riêng tôi. | 🟢 Done |
 | **US-08** | Task 8 | `FR-06` | Khách hàng | Là một **khách hàng**, tôi muốn thanh toán không dùng tiền mặt (Ví/Thẻ mô phỏng hoặc VietQR PayOS thật) và giữ nguyên giỏ hàng nếu giao dịch lỗi, để thanh toán nhanh chóng không cần mang tiền mặt. | 🟢 Done |
 | **US-09** | Task 9 | `FR-10` | Khách hàng | Là một **khách hàng**, tôi muốn thấy màn hình xác nhận kèm mã nhận nước `#xxxxxx` sau khi trả tiền và xem lại lịch sử đơn hàng cá nhân (`GET /orders/me`), để theo dõi tiến độ pha chế tại quầy. | 🟢 Done |
-| **US-10** | Task 10 | `FR-07`, `FR-08`, `FR-09`, `FR-11` | Hệ thống & Thành viên | Là một **khách thành viên & hệ thống**, tôi muốn đơn hàng tuân thủ State Machine, không trừ tiền 2 lần (`Idempotency-Key`), không bán âm tồn kho (`Optimistic Lock`), áp mã Voucher và cộng điểm Loyalty khi `PAID`, để giao dịch luôn an toàn tuyệt đối. | 🟢 Done |
+| **US-10** | Task 10 | `FR-07`, `FR-08`, `FR-09`, `FR-11` | Khách thành viên | Là một **khách thành viên**, tôi muốn đơn hàng của mình được chuyển trạng thái đúng quy trình, không bị trừ tiền 2 lần (`Idempotency-Key`), không bị đặt vượt tồn kho (`Optimistic Lock`), được áp Voucher và cộng điểm thưởng khi `PAID`, để giao dịch luôn an toàn và chính xác. | 🟢 Done |
 
 ---
 
@@ -78,6 +78,7 @@
   - Hệ thống khởi chạy trọn bộ 3 services (`postgres`, `backend`, `frontend`) bằng `docker compose up --build -d` và chạy live trên AWS EC2 HTTPS (`https://3.26.221.207.sslip.io`).
 
 ### US-10 — Nghiệp vụ Backend nâng cao (Task 10)
-- **Story:** Là một *hệ thống và thành viên*, tôi muốn toàn bộ giao dịch tuân thủ State Machine (`assertTransition`), chống lặp (`Idempotency-Key`), chống bán âm tồn kho (`Product.version`), áp Voucher và tích điểm Loyalty, để hệ thống vận hành an toàn dưới tải đồng thời.
+- **Story:** Là một *khách thành viên*, tôi muốn toàn bộ giao dịch của mình tuân thủ State Machine (`assertTransition`), chống lặp (`Idempotency-Key`), chống đặt vượt tồn kho (`Product.version`), áp Voucher và tích điểm Loyalty, để luôn đặt món an toàn dưới tải cao.
 - **Acceptance Criteria:**
   - Có unit/integration test chứng minh đầy đủ 3 tiêu chí `(a)`, `(b)`, `(c)` và test HTTP E2E qua Supertest.
+
