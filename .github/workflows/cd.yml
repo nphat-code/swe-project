@@ -166,10 +166,10 @@ jobs:
             printf '%s\n' "$EC2_SSH_KEY" > ~/.ssh/ec2_deploy_key
             chmod 600 ~/.ssh/ec2_deploy_key
             ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
-            ssh -i ~/.ssh/ec2_deploy_key -o StrictHostKeyChecking=accept-new "${EC2_USER}@${EC2_HOST}" \
+            ssh -i ~/.ssh/ec2_deploy_key -o StrictHostKeyChecking=accept-new -o ConnectTimeout=30 -o ServerAliveInterval=30 -o ServerAliveCountMax=10 "${EC2_USER}@${EC2_HOST}" \
               "cd '${EC2_APP_DIR}' && git fetch --all --tags && git checkout '${TARGET_REF}' && (git pull --ff-only origin '${TARGET_REF}' || true) && docker compose -f docker-compose.prod.yml up --build -d"
           elif [ -n "$DEPLOY_HOOK_URL" ]; then
-            curl -fsSL -X POST "$DEPLOY_HOOK_URL"
+            curl -fsSL --max-time 30 -X POST "$DEPLOY_HOOK_URL"
           else
             echo "AWS EC2 SSH secrets or deploy hook not configured in GitHub repository secrets yet."
             echo "Verified immutable image tag ready for deployment: ${IMAGE_TAG}"
@@ -179,7 +179,7 @@ jobs:
 
           if [ -n "$PRODUCTION_API_URL" ]; then
             for attempt in $(seq 1 30); do
-              if curl -sf "${PRODUCTION_API_URL}/health" | grep -q '"status":"ok"'; then
+              if curl -sf --max-time 15 "${PRODUCTION_API_URL}/health" | grep -q '"status":"ok"'; then
                 echo "Production API health check passed."
                 break
               fi
@@ -192,7 +192,7 @@ jobs:
           fi
 
           if [ -n "$PRODUCTION_WEB_URL" ]; then
-            curl -fsS "$PRODUCTION_WEB_URL" >/dev/null
+            curl -fsS --max-time 15 "$PRODUCTION_WEB_URL" >/dev/null
           fi
 
   create-release:
