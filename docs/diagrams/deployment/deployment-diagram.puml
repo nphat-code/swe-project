@@ -30,7 +30,7 @@ node "DevOps Workstation (Admin Machine)" as devopsNode {
 cloud "Internet / Public Network" as internet
 
 cloud "Domain Name System (DNS Provider)" as dnsCloud {
-  component "DNS A-Record (sslip.io)\n(3.26.221.207.sslip.io -> 3.26.221.207)" as dnsRecord
+  component "DNS A-Record (sslip.io)\n(nphat-brewlite.duckdns.org -> 3.26.221.207)" as dnsRecord
 }
 
 cloud "GitHub Repository & Actions" as githubCloud {
@@ -46,7 +46,7 @@ node "PayOS VietQR Payment Gateway" as paymentService {
 ' ====================================================
 cloud "AWS Cloud VPC (Region: ap-southeast-2 Sydney)" as awsCloud {
 
-  node "AWS EC2 Virtual Machine Instance (Ubuntu 26.04 LTS)\n[Public IP: 3.26.221.207 | Domain: 3.26.221.207.sslip.io]" as ec2Instance {
+  node "AWS EC2 Virtual Machine Instance (Ubuntu 26.04 LTS)\n[Public IP: 3.26.221.207 | Domain: nphat-brewlite.duckdns.org]" as ec2Instance {
     
     component "OpenSSH Server (sshd)\n[TCP Port 22]" as sshd
     component "Deploy Runner\n[docker compose -f docker-compose.prod.yml]" as gitPull
@@ -81,7 +81,7 @@ cloud "AWS Cloud VPC (Region: ap-southeast-2 Sydney)" as awsCloud {
 ' 4. CONNECTORS & PROTOCOLS
 ' ====================================================
 ' DNS resolution
-browser ..> dnsRecord : 1. Resolve Domain\n(3.26.221.207.sslip.io)
+browser ..> dnsRecord : 1. Resolve Domain\n(nphat-brewlite.duckdns.org)
 dnsRecord ..> nginx : Maps to 3.26.221.207
 
 ' User traffic to Nginx

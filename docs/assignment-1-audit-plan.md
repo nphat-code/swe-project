@@ -45,7 +45,7 @@
 
 ### Bước 4: Kiểm tra Khởi chạy & Demo End-to-End (Mục 9, 11) — ✅ HOÀN TẤT
 - [x] Kiểm tra cấu hình `docker-compose.yml` có đủ 3 services (`postgres`, `backend`, `frontend`) và `README.md` có hướng dẫn chạy chi tiết.
-- [x] Chạy kiểm tra luồng thực tế trên AWS Production (`https://3.26.221.207.sslip.io`) gồm cả PayOS VietQR Webhook (`/api/payments/payos-webhook`) và Mock Payment.
+- [x] Chạy kiểm tra luồng thực tế trên AWS Production (`https://nphat-brewlite.duckdns.org`) gồm cả PayOS VietQR Webhook (`/api/payments/payos-webhook`) và Mock Payment.
 
 ### Bước 5: Hoàn tất Hồ sơ nộp Assignment 1
 - [ ] Biên dịch `docs/report/Assigment_template_SGU/Assignment1_report.tex` trên Overleaf thành `Assignment1_report.pdf`.

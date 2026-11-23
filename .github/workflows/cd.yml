@@ -69,7 +69,7 @@ jobs:
       - name: Frontend Production Build
         working-directory: frontend
         env:
-          NEXT_PUBLIC_API_URL: ${{ vars.PRODUCTION_API_URL || 'https://3.26.221.207.sslip.io/api' }}
+          NEXT_PUBLIC_API_URL: ${{ vars.PRODUCTION_API_URL || 'https://nphat-brewlite.duckdns.org/api' }}
         run: npm run build
 
   docker-package-and-smoke:

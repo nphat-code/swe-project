@@ -17,7 +17,7 @@ Sơ đồ Triển khai (Deployment Diagram) thể hiện kiến trúc phần c�
    - **Thiết bị người dùng (Client Device):** Smartphone / Máy tính chạy trình duyệt web hoặc PWA.
    - **Máy trạm quản trị (DevOps Workstation):** Kỹ sư vận hành kết nối dòng lệnh bảo mật qua SSH và điều khiển Git.
    - **Dịch vụ mạng ngoại vi (External Services):** Máy chủ phân giải tên miền (DNS Provider `sslip.io`) và Cổng thanh toán PayOS VietQR (`api-merchant.payos.vn`).
-   - **Đám mây AWS VPC (Cloud Infrastructure):** Máy chủ ảo AWS EC2 (`ap-southeast-2`) chạy hệ điều hành Ubuntu 26.04 LTS với địa chỉ IP `3.26.221.207` và tên miền `3.26.221.207.sslip.io`.
+   - **Đám mây AWS VPC (Cloud Infrastructure):** Máy chủ ảo AWS EC2 (`ap-southeast-2`) chạy hệ điều hành Ubuntu 26.04 LTS với địa chỉ IP `3.26.221.207` và tên miền `nphat-brewlite.duckdns.org`.
 2. **Ký hiệu chuẩn hóa theo UML 2.0:**
    - `node`: Thể hiện môi trường máy chủ vật lý, máy ảo (VM) hoặc Docker Container.
    - `component` / `artifact`: Thể hiện module mã nguồn, tiến trình chạy hoặc tệp cấu hình (`.env`, `nginx.conf`, `docker-compose.yml`).
@@ -55,7 +55,7 @@ Mã nguồn sơ đồ được lưu trữ độc lập tại tệp [`deployment-
 
 ### 3.3. Máy chủ AWS EC2 Ubuntu & Reverse Proxy Nginx (Production thực tế)
 * **Hạ tầng:** AWS EC2 Instance (Region `ap-southeast-2` Sydney) chạy **Ubuntu 26.04 LTS**, địa chỉ IP công khai `3.26.221.207`.
-* **Tên miền (Domain Name):** `3.26.221.207.sslip.io` (trỏ A-Record trực tiếp về `3.26.221.207`), cấp chứng chỉ SSL/TLS hợp lệ từ **Let's Encrypt (Certbot)**.
+* **Tên miền (Domain Name):** `nphat-brewlite.duckdns.org` (trỏ A-Record trực tiếp về `3.26.221.207`), cấp chứng chỉ SSL/TLS hợp lệ từ **Let's Encrypt (Certbot)**.
 * **Nginx Reverse Proxy (`deploy/nginx/brewlite.conf`):**
   - Tiếp nhận kết nối HTTPS cổng 443 (tự động chuyển hướng HTTP 80 $\rightarrow$ HTTPS 443).
   - Tự động định tuyến (Reverse Proxy):
@@ -75,7 +75,7 @@ Toàn bộ hệ thống chạy khép kín trong mạng nội bộ Docker:
 
 | Tuyến kết nối | Điểm bắt đầu (Source) | Điểm kết thúc (Target) | Giao thức (Protocol) | Cổng (Port) | Mục đích kỹ thuật |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **DNS Resolution** | Trình duyệt Client | DNS Provider | DNS / UDP | 53 | Phân giải tên miền `3.26.221.207.sslip.io` ra IP `3.26.221.207` |
+| **DNS Resolution** | Trình duyệt Client | DNS Provider | DNS / UDP | 53 | Phân giải tên miền `nphat-brewlite.duckdns.org` ra IP `3.26.221.207` |
 | **Client HTTPS Traffic** | Trình duyệt Client | Nginx Web Server | HTTPS / TLS 1.3 | 443 | Tải tài nguyên giao diện và gửi request đặt đơn |
 | **Remote SSH Admin** | Máy trạm DevOps | OpenSSH Server (sshd) | SSH / TCP | 22 | Quản trị từ xa (`ssh -i ...`) và SSH Tunnel tới `127.0.0.1:5432` |
 | **Git Deployment** | Máy chủ Ubuntu | GitHub Repository | HTTPS / Git Protocol | 443 / 9418 | Tải mã nguồn cập nhật về máy chủ (`git pull`) |

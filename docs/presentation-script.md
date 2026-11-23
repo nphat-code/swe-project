@@ -3,7 +3,7 @@
 **Đề tài:** BrewLite — Hệ thống đặt và thanh toán đồ uống không dùng tiền mặt (*Cashless Coffee Ordering System*)  
 **Phạm vi:** Assignment 1 (10 Tasks Scrum) & Assignment 2 (5 Tasks: Requirements → Deployment)  
 **Kho mã nguồn:** [https://github.com/nphat-code/swe-project](https://github.com/nphat-code/swe-project)  
-**Live Production:** [https://3.26.221.207.sslip.io](https://3.26.221.207.sslip.io)  
+**Live Production:** [https://nphat-brewlite.duckdns.org](https://nphat-brewlite.duckdns.org)  
 **Thời lượng gợi ý:** 6 – 8 phút (trình bày tổng quan + demo trực tiếp)
 
 ---
@@ -74,15 +74,15 @@
 ## Phần 5: Kịch bản Demo Live trên trình duyệt (2 – 3 phút)
 
 Mở sẵn các tab sau trước khi quay/trình bày:
-1. **Tab 1 — Trang chủ Production (`https://3.26.221.207.sslip.io`):**
+1. **Tab 1 — Trang chủ Production (`https://nphat-brewlite.duckdns.org`):**
    - Lọc danh mục, tìm kiếm món → chọn 1 món → chọn Size & Topping → thêm vào giỏ hàng.
    - Mở Giỏ hàng → bấm **Tiến hành thanh toán** → đăng nhập bằng nút điền nhanh tài khoản Demo (`customer@brewlite.vn`) hoặc tài khoản khách hàng.
    - Ở cửa sổ Checkout: áp thử mã voucher gợi ý (`BREWLITEFIRST`), nhập ghi chú cho Barista → bấm **Tạo mã QR thanh toán**.
    - Hiển thị mã QR VietQR thật của PayOS → quét mã thanh toán (hoặc cho xem thông tin tài khoản, nội dung chuyển khoản và cơ chế tự động kiểm tra trạng thái mỗi 3 giây) → đơn xác nhận thành công, hiện mã nhận nước và cộng điểm thưởng Loyalty.
    - Mở **Lịch sử đơn hàng** để kiểm tra đơn vừa đặt.
-2. **Tab 2 — Swagger API (`https://3.26.221.207.sslip.io/api`):**
+2. **Tab 2 — Swagger API (`https://nphat-brewlite.duckdns.org/api`):**
    - Lướt nhanh danh sách endpoint REST API (`Auth`, `Products`, `Vouchers`, `Orders`, `Payments`).
-3. **Tab 3 — Healthcheck (`https://3.26.221.207.sslip.io/health`):**
+3. **Tab 3 — Healthcheck (`https://nphat-brewlite.duckdns.org/health`):**
    - Chỉ ra `status: "ok"` và `database: { status: "up" }`.
 4. **Tab 4 — GitHub Actions (`https://github.com/nphat-code/swe-project/actions`):**
    - Cho thấy pipeline CI/CD chạy tự động và trạng thái xanh.
@@ -97,3 +97,4 @@ Mở sẵn các tab sau trước khi quay/trình bày:
    - *Trả lời:* Giao diện người dùng chỉ dùng **PayOS VietQR thật** để đảm bảo trải nghiệm thanh toán thực tế không mock. Backend vẫn giữ `POST /api/payments` để các bài kiểm thử tự động (Unit Test & E2E Test trong CI/CD) chạy ổn định, không phụ thuộc mạng ngoài hay phát sinh giao dịch ngân hàng thật khi chạy pipeline.
 3. **Làm sao đảm bảo khách bấm thanh toán 2 lần không bị trừ tiền/tạo đơn trùng?**  
    - *Trả lời:* Frontend sinh `Idempotency-Key` (UUIDv4) cho mỗi phiên thanh toán; Backend kiểm tra khóa này trong bảng `Payment` để trả về kết quả cũ nếu trùng lặp, kết hợp `assertTransition` và `Prisma.$transaction` đảm bảo tính nhất quán dữ liệu.
+

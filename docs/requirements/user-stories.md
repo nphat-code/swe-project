@@ -75,7 +75,7 @@
 ### US-09 — Xác nhận, Lịch sử đơn & Bàn giao (Task 9)
 - **Story:** Là một *khách hàng*, tôi muốn xem mã đơn `#xxxxxx` sau khi thanh toán và tra cứu lại toàn bộ đơn cũ ở `GET /orders/me`, để đến quầy nhận đúng ly nước của mình.
 - **Acceptance Criteria:**
-  - Hệ thống khởi chạy trọn bộ 3 services (`postgres`, `backend`, `frontend`) bằng `docker compose up --build -d` và chạy live trên AWS EC2 HTTPS (`https://3.26.221.207.sslip.io`).
+  - Hệ thống khởi chạy trọn bộ 3 services (`postgres`, `backend`, `frontend`) bằng `docker compose up --build -d` và chạy live trên AWS EC2 HTTPS (`https://nphat-brewlite.duckdns.org`).
 
 ### US-10 — Nghiệp vụ Backend nâng cao (Task 10)
 - **Story:** Là một *khách thành viên*, tôi muốn toàn bộ giao dịch của mình tuân thủ State Machine (`assertTransition`), chống lặp (`Idempotency-Key`), chống đặt vượt tồn kho (`Product.version`), áp Voucher và tích điểm Loyalty, để luôn đặt món an toàn dưới tải cao.
