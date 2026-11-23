@@ -15,7 +15,6 @@
 
 * 📜 **[Đặc Tả Đề Bài Gốc Assignment 1 (10 Tasks Scrum)](docs/DE_BAI_ASSIGNMENT_1_GOC.md):** Toàn văn nội dung gốc 12 mục của Assignment 1, lộ trình 3 Sprint và tiêu chí chấm Task 1–10.
 * 📜 **[Đặc Tả Đề Bài Gốc Assignment 2 (Single Source of Truth)](docs/DE_BAI_ASSIGNMENT_2_GOC.md):** Toàn văn nội dung gốc 9 mục của Assignment 2, tiêu chuẩn kỹ thuật, thang điểm chi tiết (5 Task x 2.0đ) và checklist 9.1 nộp bài.
-* 📋 **[Kế Hoạch Triển Khai Master Plan (Theo dõi tiến độ)](implementation_plan.md):** Kế hoạch chi tiết từng bước, tiêu chí chấp nhận và trạng thái nghiệm thu của từng Task.
 * 📑 **Tài liệu Task 1 — Khai thác & Đặc tả Yêu cầu (2.0đ):**
   * 📝 [Danh mục 10 User Stories & Acceptance Criteria (Assignment 1)](docs/requirements/user-stories.md)
   * 📋 [Task 1.1: Bối cảnh, Stakeholder & Phạm vi](docs/requirements/context-and-scope.md)
@@ -78,7 +77,6 @@ swe-project/
 ├── docker-compose.yml       # Docker Compose trọn bộ 3 services (postgres, backend, frontend)
 ├── .env.example             # Biến môi trường mẫu
 ├── AGENTS.md                # Quy định dự án (Git push ngay, Zero comment)
-├── implementation_plan.md   # Master Implementation Plan
 └── README.md                # Tài liệu hướng dẫn dự án
 ```
 
