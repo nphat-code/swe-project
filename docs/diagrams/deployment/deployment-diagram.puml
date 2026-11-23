@@ -37,7 +37,7 @@ cloud "Domain Name System (DNS Provider)" as dnsCloud {
 ' 2. CI / CD ENVIRONMENT
 ' ====================================================
 frame "2. CI / CD ENVIRONMENT (GitHub Cloud)" as ciBoundary {
-  cloud "GitHub Repository & Actions" as githubCloud {
+  node "GitHub Repository & Actions" as githubCloud {
     component "Git Remote\n(nphat-code/swe-project)" as gitRemote
     component "CI Quality Gate\n(Lint, TypeCheck, Unit & E2E Tests, Build)" as ciRunner
     component "Container Registry (GHCR)\n& Docker Smoke Test" as ghcrRegistry
