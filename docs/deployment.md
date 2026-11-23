@@ -14,15 +14,15 @@
 ### Ranh giới kiến trúc & Tuyến giao tiếp:
 * **Thiết bị người dùng (Client Tier):** Smartphone / Laptop truy cập qua trình duyệt Web Browser hoặc PWA giao tiếp mã hóa toàn diện qua **HTTPS (Cổng 443)**.
 * **Máy trạm DevOps (DevOps Station):** Kỹ sư quản trị kết nối dòng lệnh an toàn qua giao thức **SSH (Cổng 22)** bằng khóa bảo mật RSA/Ed25519 (`ssh -i key.pem ubuntu@IP`).
-* **Máy chủ Cloud AWS EC2 (Ubuntu 22.04 LTS):**
-  - **Nginx Reverse Proxy & SSL:** Tiếp nhận cổng 80 (HTTP tự động chuyển hướng sang 443) và cổng 443 (HTTPS), tự động định tuyến traffic:
-    - Yêu cầu trang giao diện (`/`) $\longrightarrow$ chuyển tiếp tới Next.js Container (`HTTP : 3000`).
-    - Yêu cầu gọi API (`/api/*`) $\longrightarrow$ chuyển tiếp tới NestJS API Container (`HTTP : 3001`).
-  - **Docker Compose Network:** Mạng bridge nội bộ khép kín kết nối 3 container:
-    - Container `web`: Frontend Next.js 15 PWA.
-    - Container `api`: Backend NestJS 11 REST API.
-    - Container `db`: CSDL PostgreSQL 16 gắn phân vùng ổ cứng ngoài (**AWS EBS SSD Volume**) tại `/var/lib/postgresql/data`.
-* **Cổng thanh toán ngoại vi (Mock Payment Gateway):** Backend giao tiếp qua HTTPS Outbound cổng 443 để xác thực giao dịch không dùng tiền mặt.
+* **Máy chủ Cloud AWS EC2 (`ap-southeast-2`, Ubuntu 26.04 LTS, IP `3.26.221.207`, Domain `nphat-brewlite.duckdns.org`):**
+  - **Nginx Reverse Proxy & SSL (Let's Encrypt):** Tiếp nhận cổng 80 (HTTP tự động chuyển hướng sang 443) và cổng 443 (HTTPS), tự động định tuyến traffic:
+    - Yêu cầu trang giao diện (`/`) $\longrightarrow$ chuyển tiếp tới Next.js Container (`127.0.0.1:3000`).
+    - Yêu cầu gọi API (`/api/*`) $\longrightarrow$ chuyển tiếp tới NestJS API Container (`127.0.0.1:3001`).
+  - **Docker Compose Network (`docker-compose.prod.yml`):** Mạng bridge nội bộ khép kín kết nối 3 container:
+    - Container `brewlite_frontend_prod`: Frontend Next.js 16 PWA (`127.0.0.1:3000`).
+    - Container `brewlite_backend_prod`: Backend NestJS 10 REST API (`127.0.0.1:3001`).
+    - Container `brewlite_postgres_prod`: CSDL PostgreSQL 16 (bind `127.0.0.1:5432` phục vụ SSH Tunnel, chặn hoàn toàn từ Internet) gắn volume bền vững `postgres_prod_data` tại `/var/lib/postgresql/data`.
+* **Cổng thanh toán ngoại vi (PayOS VietQR Gateway):** Backend giao tiếp qua HTTPS Outbound cổng 443 với `api-merchant.payos.vn` để tạo mã QR VietQR và nhận Webhook Inbound về `/api/payments/payos-webhook`.
 
 ---
 
@@ -32,7 +32,7 @@
 
 | Thành phần | Phiên bản tối thiểu | Mục đích sử dụng |
 | :--- | :--- | :--- |
-| **Hệ điều hành** | Ubuntu 22.04 LTS / macOS / Windows 11 (WSL2) | Nền tảng thực thi ứng dụng |
+| **Hệ điều hành** | Ubuntu 22.04 / 24.04 / 26.04 LTS / macOS / Windows 11 | Nền tảng thực thi ứng dụng |
 | **Node.js** | `v20.x` LTS (khuyên dùng Node `22.x`) | Runtime JavaScript cho Next.js & NestJS |
 | **npm** | `v10.x` trở lên | Quản lý gói phụ thuộc Monorepo Workspaces |
 | **Docker Engine** | `v24.x` trở lên | Đóng gói và cô lập các dịch vụ |
@@ -55,7 +55,9 @@ Hệ thống tuân thủ nguyên tắc **Twelve-Factor App**, toàn bộ thông 
 | `DATABASE_URL` | String | `postgresql://user:pass@localhost:5432/brewlite` | Chuỗi kết nối PostgreSQL cho Prisma ORM |
 | `JWT_SECRET` | String | `super-secret-jwt-key-min-32-chars` | Khóa bí mật ký token xác thực JWT |
 | `JWT_EXPIRES_IN` | String | `7d` | Thời gian sống của Bearer Token |
-| `NEXT_PUBLIC_API_URL` | String | `http://localhost:3001` (Dev) / `https://brewlite.coffee/api` (Prod) | URL gốc gọi API từ trình duyệt Client |
+| `NEXT_PUBLIC_API_URL` | String | `http://localhost:3001` (Dev) / `https://nphat-brewlite.duckdns.org/api` (Prod) | URL gốc gọi API từ trình duyệt Client |
+| `FRONTEND_URL` | String | `http://localhost:3000` (Dev) / `https://nphat-brewlite.duckdns.org` (Prod) | Domain được phép CORS & URL trả về |
+| `PAYOS_CLIENT_ID` / `PAYOS_API_KEY` / `PAYOS_CHECKSUM_KEY` | String | *(Secret từ PayOS)* | Bộ khóa xác thực tạo mã QR & kiểm tra chữ ký Webhook PayOS VietQR |
 
 ### 3.2. Khởi tạo tệp `.env`
 Sao chép từ tệp mẫu `.env.example` đã được chuẩn hóa tại thư mục gốc:
@@ -153,10 +155,10 @@ Mỗi khi lập trình viên tạo Pull Request hoặc đẩy mã nguồn lên n
 
 ### 🔴 MÔI TRƯỜNG 3: PRODUCTION CLOUD ENVIRONMENT (ĐÁM MÂY SẢN XUẤT)
 
-Triển khai thực tế trên máy chủ **AWS EC2 (Ubuntu 22.04 LTS)** theo đúng mô hình chỉ đạo của Giảng viên.
+Triển khai thực tế trên máy chủ **AWS EC2 (Ubuntu 26.04 LTS, IP `3.26.221.207`, Domain `nphat-brewlite.duckdns.org`)** theo đúng mô hình chỉ đạo của Giảng viên.
 
 #### Bước 1: Khởi tạo & Đăng nhập máy chủ AWS EC2
-1. Khởi tạo EC2 Instance **Ubuntu 22.04 / 24.04 LTS** (`t3.small` hoặc Free Tier `t2.micro` / `t3.micro` — script bootstrap tự tạo 2GB Swap chống tràn RAM khi build).
+1. Khởi tạo EC2 Instance **Ubuntu 22.04 / 24.04 / 26.04 LTS** (`t3.small` hoặc Free Tier `t2.micro` / `t3.micro` — script bootstrap tự tạo 2GB Swap chống tràn RAM khi build).
 2. Gán địa chỉ **Elastic IP** tĩnh cho instance để IP không bị đổi khi khởi động lại.
 3. Cấu hình Security Group mở đúng 3 cổng mạng cần thiết (tuyệt đối **không** mở cổng `5432` PostgreSQL):
    - `Port 22` (SSH): Giới hạn IP quản trị viên.
@@ -224,7 +226,7 @@ Sau khi hoàn tất triển khai, thực hiện các bước nghiệm thu kỹ t
 ### 5.1. Thăm dò Endpoint Sức khỏe (Health Check Probe)
 Thực thi lệnh kiểm tra:
 ```bash
-curl -i https://brewlite.coffee/health
+curl -i https://nphat-brewlite.duckdns.org/health
 ```
 
 Phản hồi chuẩn định dạng JSON (`HTTP 200 OK`):
