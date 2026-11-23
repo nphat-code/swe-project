@@ -7,6 +7,8 @@ skinparam roundCorner 6
 skinparam defaultTextAlignment center
 skinparam defaultFontSize 12
 skinparam ArrowFontSize 11
+skinparam nodesep 45
+skinparam ranksep 50
 
 ' ====================================================
 ' 1. CLIENT TIER & DEVOPS
@@ -14,7 +16,7 @@ skinparam ArrowFontSize 11
 node "Client Device (Mobile / Desktop)" as clientDevice {
   node "Web Browser (Chrome / Safari / Edge / PWA)" as browser {
     component "User Interface\n(Next.js React 19)" as ui
-    component "API Client\n(Axios / Fetch)" as apiClient
+    component "API Client\n(Fetch API)" as apiClient
     ui -> apiClient : In-memory
   }
 }
@@ -27,10 +29,8 @@ node "DevOps Workstation (Admin Machine)" as devopsNode {
 ' ====================================================
 ' 2. EXTERNAL CLOUD SERVICES & NETWORK
 ' ====================================================
-cloud "Internet / Public Network" as internet
-
 cloud "Domain Name System (DNS Provider)" as dnsCloud {
-  component "DNS A-Record (sslip.io)\n(nphat-brewlite.duckdns.org -> 3.26.221.207)" as dnsRecord
+  component "DNS A-Record (DuckDNS)\n(nphat-brewlite.duckdns.org -> 3.26.221.207)" as dnsRecord
 }
 
 cloud "GitHub Repository & Actions" as githubCloud {
