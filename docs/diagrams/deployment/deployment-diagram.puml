@@ -37,8 +37,8 @@ cloud "GitHub Repository & Actions" as githubCloud {
   component "Git Remote & GHCR\n(nphat-code/swe-project)" as gitRemote
 }
 
-node "Payment Gateway Mock Service" as paymentService {
-  component "Mock Payment Adapter\n(MoMo / VNPay / Card / Wallet)" as mockPay
+node "PayOS VietQR Payment Gateway" as paymentService {
+  component "PayOS API & Webhook\n(api-merchant.payos.vn)" as payosGateway
 }
 
 ' ====================================================
@@ -69,7 +69,7 @@ cloud "AWS Cloud VPC (Region: ap-southeast-2 Sydney)" as awsCloud {
       }
 
       node "Container: postgres (brewlite_postgres_prod)" as dbContainer {
-        database "PostgreSQL 16 Alpine\n[Port 5432 (Internal Bridge Only)]" as pgEngine {
+        database "PostgreSQL 16 Alpine\n[127.0.0.1:5432 (SSH Tunnel / Docker Bridge)]" as pgEngine {
           storage "Persistent Docker Volume on AWS EBS\n(postgres_prod_data -> /var/lib/postgresql/data)" as ebsVolume
         }
       }
@@ -101,6 +101,7 @@ nginx ..> healthProbe : Periodic Health Check\n(Every 30s)
 
 ' Database & External API
 nestjsApp --> pgEngine : TCP / SQL (Port 5432)\nPrisma Connection Pool
-nestjsApp --> mockPay : HTTPS (Outbound)\nPayment Verify & Callback
+nestjsApp --> payosGateway : HTTPS (Outbound)\nCreate VietQR & Sync Status
+payosGateway ..> nginx : HTTPS : 443 (Webhook)\nPOST /api/payments/payos-webhook
 
 @enduml

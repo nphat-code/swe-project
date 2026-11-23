@@ -16,8 +16,8 @@ Sơ đồ Triển khai (Deployment Diagram) thể hiện kiến trúc phần c�
 1. **Phân định rõ ràng các ranh giới thực thi (Execution Boundaries):**
    - **Thiết bị người dùng (Client Device):** Smartphone / Máy tính chạy trình duyệt web hoặc PWA.
    - **Máy trạm quản trị (DevOps Workstation):** Kỹ sư vận hành kết nối dòng lệnh bảo mật qua SSH và điều khiển Git.
-   - **Dịch vụ mạng ngoại vi (External Services):** Máy chủ phân giải tên miền (DNS Provider) và Cổng thanh toán giả lập (Mock Payment Gateway).
-   - **Đám mây AWS VPC (Cloud Infrastructure):** Máy chủ ảo AWS EC2 chạy hệ điều hành Ubuntu 22.04 LTS với địa chỉ IP tĩnh (Elastic IP) và tên miền định tuyến.
+   - **Dịch vụ mạng ngoại vi (External Services):** Máy chủ phân giải tên miền (DNS Provider `sslip.io`) và Cổng thanh toán PayOS VietQR (`api-merchant.payos.vn`).
+   - **Đám mây AWS VPC (Cloud Infrastructure):** Máy chủ ảo AWS EC2 (`ap-southeast-2`) chạy hệ điều hành Ubuntu 26.04 LTS với địa chỉ IP `3.26.221.207` và tên miền `3.26.221.207.sslip.io`.
 2. **Ký hiệu chuẩn hóa theo UML 2.0:**
    - `node`: Thể hiện môi trường máy chủ vật lý, máy ảo (VM) hoặc Docker Container.
    - `component` / `artifact`: Thể hiện module mã nguồn, tiến trình chạy hoặc tệp cấu hình (`.env`, `nginx.conf`, `docker-compose.yml`).
@@ -49,7 +49,7 @@ Mã nguồn sơ đồ được lưu trữ độc lập tại tệp [`deployment-
   1. **Đẩy mã nguồn:** Lập trình viên đẩy code lên kho chứa GitHub (`git push origin main`).
   2. **Kết nối máy chủ:** Kỹ sư DevOps đăng nhập vào máy chủ Ubuntu trên AWS thông qua giao thức SSH dòng lệnh:
      ```bash
-     ssh -i "brewlite-key.pem" ubuntu@13.250.x.x
+     ssh -i "brewlite-key.pem" ubuntu@3.26.221.207
      ```
   3. **Kéo mã nguồn & Cấu hình:** Thực hiện `git pull` để nhận mã nguồn mới nhất, áp dụng tệp biến môi trường `.env` và tệp điều phối `docker-compose.yml`.
 
@@ -67,7 +67,7 @@ Mã nguồn sơ đồ được lưu trữ độc lập tại tệp [`deployment-
 Toàn bộ hệ thống chạy khép kín trong mạng nội bộ Docker:
 1. **Frontend Container (`brewlite_frontend_prod`):** Chạy Next.js 16 Standalone Server (`127.0.0.1:3000`).
 2. **Backend Container (`brewlite_backend_prod`):** Chạy NestJS 10 REST API (`127.0.0.1:3001`), tự chạy `prisma migrate deploy` và nạp dữ liệu mẫu khi DB rỗng (`SEED_IF_EMPTY=true`).
-3. **Database Container (`brewlite_postgres_prod`):** Chạy PostgreSQL 16 Alpine, **chỉ mở cổng nội bộ `5432` trong bridge network** (không public ra Internet) và gắn volume bền vững `postgres_prod_data` trên phân vùng ổ đĩa AWS EBS.
+3. **Database Container (`brewlite_postgres_prod`):** Chạy PostgreSQL 16 Alpine, chỉ mở nội bộ Docker bridge và bind loopback `127.0.0.1:5432` phục vụ SSH Tunnel (chặn hoàn toàn từ Internet) và gắn volume bền vững `postgres_prod_data` trên phân vùng ổ đĩa AWS EBS.
 
 ---
 
@@ -75,15 +75,16 @@ Toàn bộ hệ thống chạy khép kín trong mạng nội bộ Docker:
 
 | Tuyến kết nối | Điểm bắt đầu (Source) | Điểm kết thúc (Target) | Giao thức (Protocol) | Cổng (Port) | Mục đích kỹ thuật |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **DNS Resolution** | Trình duyệt Client | DNS Provider | DNS / UDP | 53 | Phân giải tên miền `brewlite.coffee` ra Elastic IP |
+| **DNS Resolution** | Trình duyệt Client | DNS Provider | DNS / UDP | 53 | Phân giải tên miền `3.26.221.207.sslip.io` ra IP `3.26.221.207` |
 | **Client HTTPS Traffic** | Trình duyệt Client | Nginx Web Server | HTTPS / TLS 1.3 | 443 | Tải tài nguyên giao diện và gửi request đặt đơn |
-| **Remote SSH Admin** | Máy trạm DevOps | OpenSSH Server (sshd) | SSH / TCP | 22 | Quản trị từ xa bằng lệnh terminal `ssh -i ...` |
+| **Remote SSH Admin** | Máy trạm DevOps | OpenSSH Server (sshd) | SSH / TCP | 22 | Quản trị từ xa (`ssh -i ...`) và SSH Tunnel tới `127.0.0.1:5432` |
 | **Git Deployment** | Máy chủ Ubuntu | GitHub Repository | HTTPS / Git Protocol | 443 / 9418 | Tải mã nguồn cập nhật về máy chủ (`git pull`) |
 | **Web Reverse Proxy** | Nginx | Next.js Container | HTTP | 3000 | Chuyển tiếp request trang giao diện người dùng |
 | **API Reverse Proxy** | Nginx | NestJS API Container | HTTP | 3001 | Chuyển tiếp request gọi API nghiệp vụ |
 | **Health Probe** | Nginx / Cron | NestJS API Container | HTTP | 3001 | Kiểm tra sức khỏe hệ thống (`GET /health`) |
-| **Database Connection**| NestJS Service | PostgreSQL Engine | TCP (SSL internal) | 5432 | Truy vấn dữ liệu CRUD qua Prisma Connection Pool |
-| **Payment Gateway** | NestJS Service | Mock Payment Server | HTTPS Outbound | 443 | Giao tiếp xác thực giao dịch thanh toán |
+| **Database Connection**| NestJS Service | PostgreSQL Engine | TCP (Internal) | 5432 | Truy vấn dữ liệu CRUD qua Prisma Connection Pool |
+| **PayOS Outbound** | NestJS Service | PayOS VietQR API | HTTPS Outbound | 443 | Tạo mã QR VietQR và đồng bộ trạng thái thanh toán |
+| **PayOS Webhook** | PayOS Server | Nginx → NestJS | HTTPS Inbound | 443 | Gửi callback xác nhận thanh toán về `/api/payments/payos-webhook` |
 
 ---
 
