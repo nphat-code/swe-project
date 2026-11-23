@@ -1,18 +1,26 @@
 @startuml deployment-diagram
-title UML Deployment Diagram - Production Environment (AWS Ubuntu Architecture)
+title UML Deployment Diagram - Local, CI/CD & Production (AWS EC2 Architecture)
 
 skinparam monochrome true
 skinparam shadowing false
 skinparam roundCorner 6
 skinparam defaultTextAlignment center
-skinparam defaultFontSize 12
-skinparam ArrowFontSize 11
-skinparam nodesep 45
-skinparam ranksep 50
+skinparam defaultFontSize 11
+skinparam ArrowFontSize 10
+skinparam nodesep 35
+skinparam ranksep 40
 
 ' ====================================================
-' 1. CLIENT TIER & DEVOPS
+' 1. LOCAL ENVIRONMENT & CLIENT TIER
 ' ====================================================
+frame "1. LOCAL DEVELOPMENT ENVIRONMENT" as localBoundary {
+  node "Developer Workstation (Local Machine)" as devopsNode {
+    component "Local Docker Compose\n(docker-compose.yml: :3000 / :3001 / :5432)" as localStack
+    component "Git CLI\n[git push origin main]" as gitClient
+    component "Terminal (SSH Client)\n[ssh -i brewlite-key.pem ubuntu@3.26.221.207]" as sshClient
+  }
+}
+
 node "Client Device (Mobile / Desktop)" as clientDevice {
   node "Web Browser (Chrome / Safari / Edge / PWA)" as browser {
     component "User Interface\n(Next.js React 19)" as ui
@@ -21,33 +29,31 @@ node "Client Device (Mobile / Desktop)" as clientDevice {
   }
 }
 
-node "DevOps Workstation (Admin Machine)" as devopsNode {
-  component "Terminal (SSH Client)\n[ssh -i key.pem ubuntu@IP]" as sshClient
-  component "Git CLI\n[git push origin main]" as gitClient
-}
-
-' ====================================================
-' 2. EXTERNAL CLOUD SERVICES & NETWORK
-' ====================================================
 cloud "Domain Name System (DNS Provider)" as dnsCloud {
   component "DNS A-Record (DuckDNS)\n(nphat-brewlite.duckdns.org -> 3.26.221.207)" as dnsRecord
 }
 
-cloud "GitHub Repository & Actions" as githubCloud {
-  component "Git Remote & GHCR\n(nphat-code/swe-project)" as gitRemote
-}
-
-node "PayOS VietQR Payment Gateway" as paymentService {
-  component "PayOS API & Webhook\n(api-merchant.payos.vn)" as payosGateway
+' ====================================================
+' 2. CI / CD ENVIRONMENT
+' ====================================================
+frame "2. CI / CD ENVIRONMENT (GitHub Cloud)" as ciBoundary {
+  cloud "GitHub Repository & Actions" as githubCloud {
+    component "Git Remote\n(nphat-code/swe-project)" as gitRemote
+    component "CI Quality Gate\n(Lint, TypeCheck, Unit & E2E Tests, Build)" as ciRunner
+    component "Container Registry (GHCR)\n& Docker Smoke Test" as ghcrRegistry
+    component "CD SSH Deploy Job\n(cd.yml)" as cdJob
+    gitRemote --> ciRunner : Trigger on Push
+    ciRunner --> ghcrRegistry : Build & Tag Images
+    ghcrRegistry --> cdJob : Pass Smoke Check
+  }
 }
 
 ' ====================================================
-' 3. AWS CLOUD INFRASTRUCTURE (UBUNTU SERVER)
+' 3. PRODUCTION ENVIRONMENT (AWS CLOUD)
 ' ====================================================
-cloud "AWS Cloud VPC (Region: ap-southeast-2 Sydney)" as awsCloud {
-
+frame "3. PRODUCTION ENVIRONMENT (AWS Cloud VPC - ap-southeast-2 Sydney)" as prodBoundary {
   node "AWS EC2 Virtual Machine Instance (Ubuntu 26.04 LTS)\n[Public IP: 3.26.221.207 | Domain: nphat-brewlite.duckdns.org]" as ec2Instance {
-    
+
     component "OpenSSH Server (sshd)\n[TCP Port 22]" as sshd
     component "Deploy Runner\n[docker compose -f docker-compose.prod.yml]" as gitPull
     artifact "Configuration & Secrets\n(.env, deploy/nginx/brewlite.conf, docker-compose.prod.yml)" as appConfig
@@ -57,7 +63,7 @@ cloud "AWS Cloud VPC (Region: ap-southeast-2 Sydney)" as awsCloud {
     }
 
     package "Docker Container Runtime Engine (Docker Compose)" as dockerEngine {
-      
+
       node "Container: frontend (brewlite_frontend_prod)" as webContainer {
         component "Next.js 16 Standalone Server\n[127.0.0.1:3000]" as nextjsApp
       }
@@ -77,29 +83,29 @@ cloud "AWS Cloud VPC (Region: ap-southeast-2 Sydney)" as awsCloud {
   }
 }
 
+node "PayOS VietQR Payment Gateway" as paymentService {
+  component "PayOS API & Webhook\n(api-merchant.payos.vn)" as payosGateway
+}
+
 ' ====================================================
 ' 4. CONNECTORS & PROTOCOLS
 ' ====================================================
-' DNS resolution
 browser ..> dnsRecord : 1. Resolve Domain\n(nphat-brewlite.duckdns.org)
 dnsRecord ..> nginx : Maps to 3.26.221.207
 
-' User traffic to Nginx
 ui --> nginx : 2. HTTPS : 443 (Static Assets & HTML)
 apiClient --> nginx : 2. HTTPS : 443 (REST API Requests)
 
-' DevOps connections
 gitClient --> gitRemote : Git Push (Code changes)
-gitPull <.. gitRemote : Git Pull (Deploy code to server)
-gitPull ..> appConfig : Apply config & .env
-sshClient --> sshd : SSH (TCP Port 22)\nSecure Remote Management
+cdJob --> sshd : CD Deploy via SSH (Port 22)
+gitPull <.. gitRemote : Git Pull (Sync source)
+gitPull ..> appConfig : Apply .env & compose
+sshClient --> sshd : SSH (Port 22) & Tunnel (:5433 -> :5432)
 
-' Nginx Reverse Proxy routing
-nginx --> nextjsApp : Reverse Proxy\n(HTTP : 3000)
-nginx --> nestjsApp : Reverse Proxy\n(HTTP : 3001)
-nginx ..> healthProbe : Periodic Health Check\n(Every 30s)
+nginx --> nextjsApp : Reverse Proxy (HTTP : 3000)
+nginx --> nestjsApp : Reverse Proxy (HTTP : 3001)
+nginx ..> healthProbe : Health Check (Every 30s)
 
-' Database & External API
 nestjsApp --> pgEngine : TCP / SQL (Port 5432)\nPrisma Connection Pool
 nestjsApp --> payosGateway : HTTPS (Outbound)\nCreate VietQR & Sync Status
 payosGateway ..> nginx : HTTPS : 443 (Webhook)\nPOST /api/payments/payos-webhook
